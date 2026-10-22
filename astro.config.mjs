@@ -3,8 +3,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 export default defineConfig({
-  site: 'https://misofm.github.io',
-  base: '/docs',
+  site: 'https://docs.miso.fm',
   integrations: [
     starlight({
       title: 'Miso Docs',

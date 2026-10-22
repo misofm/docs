@@ -17,7 +17,7 @@ Both currencies use 6 decimals. Composition shares use `CSHARE`; recording share
 
 A share coin represents a claim **only when a revenue path pays a corresponding pool and the holder registers a stake there**. In [`royalty_pool`](https://github.com/misofm/royalty-pool), `RoyaltyPool<Share, Currency>` receives a payout `Currency` for holders of that `Share` type. A composition or recording can have one canonical pool per payout currency. Holders wrap share balances in `Stake<Share>`, register them, and claim accrued royalties. The pool distributes among **registered** shares; unstaked shares do not accrue there.
 
-A composition's share holders do not automatically receive a cut of all recordings that reference it. The [recording-license package](/docs/packages/recording-license/) can place an agreed cut of recording shares in a stake owned for the composition, then route that stake's recording royalties to the composition pool. This is an extension policy, not an automatic consequence of the core relationship.
+A composition's share holders do not automatically receive a cut of all recordings that reference it. The [recording-license package](/packages/recording-license/) can place an agreed cut of recording shares in a stake owned for the composition, then route that stake's recording royalties to the composition pool. This is an extension policy, not an automatic consequence of the core relationship.
 
 The `CompositionAdminCap` and `RecordingAdminCap` are separate bearer objects. They authorize extension writes but are not share coins. A holder can own shares without administrative control, or hold a cap without owning shares.
 

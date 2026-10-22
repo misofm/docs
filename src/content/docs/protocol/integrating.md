@@ -14,7 +14,7 @@ Choose the commit from the exact package generation you intend to deploy against
 
 ## Core creation flow
 
-For each work, first publish its [share coin template](/docs/protocol/shares/) and initialize the currency. With those values and the correct shared registries, the current source API has this shape:
+For each work, first publish its [share coin template](/protocol/shares/) and initialize the currency. With those values and the correct shared registries, the current source API has this shape:
 
 ```move
 let (composition, composition_cap, composition_shares) =
@@ -29,7 +29,7 @@ recording.publish(&recording_cap);
 
 This is a flow sketch, not a standalone module: your transaction must create the two currencies and handle every returned value. Recording creation needs only an immutable composition reference. For existing works, fetch the shared composition and registry objects for the same published generation.
 
-To publish a release, derive its target ID from the ordered recording IDs and salt, collect a `ReleaseConsent` from each recording admin, then call `release::new` and `publish`. See [Release consent](/docs/protocol/releases/) for the scope of that approval.
+To publish a release, derive its target ID from the ordered recording IDs and salt, collect a `ReleaseConsent` from each recording admin, then call `release::new` and `publish`. See [Release consent](/protocol/releases/) for the scope of that approval.
 
 ## Read and extend
 
@@ -38,6 +38,6 @@ To publish a release, derive its target ID from the ordered recording IDs and sa
 - `composition::uid_mut`, `recording::uid_mut`, and `release::uid_mut` expose the typed dynamic-field extension surface after verifying the matching admin cap.
 - `CompositionPublishedEvent`, `RecordingPublishedEvent`, and `ReleasePublishedEvent` carry core identities and relationships. Use extension events for optional metadata and economic state.
 
-For paid flows, follow [Royalty pools](/docs/packages/royalty-pool/) and [Recording licenses](/docs/packages/recording-license/). Creating a core object alone neither opens a pool nor licenses a recording. Verify that the chosen source revisions and deployed identities compose before wiring payments.
+For paid flows, follow [Royalty pools](/packages/royalty-pool/) and [Recording licenses](/packages/recording-license/). Creating a core object alone neither opens a pool nor licenses a recording. Verify that the chosen source revisions and deployed identities compose before wiring payments.
 
 Source: [core README](https://github.com/misofm/music-protocol/blob/main/README.md), [Move.toml](https://github.com/misofm/music-protocol/blob/main/Move.toml), and [source modules](https://github.com/misofm/music-protocol/tree/main/sources).

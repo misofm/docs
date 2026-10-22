@@ -38,8 +38,8 @@ release_title = { git = "https://github.com/misofm/music-protocol-extensions.git
 | Package | Role |
 | --- | --- |
 | [`share`](https://github.com/misofm/share) | Validates and fixes each work's canonical share coin supply. Called by core work constructors. |
-| [`recording-license`](https://github.com/misofm/recording-license) | Optional standing policy and a recording-share stake representing the composition's agreed cut. [Read the guide](/docs/packages/recording-license/). |
-| [`royalty-pool`](https://github.com/misofm/royalty-pool) | One derived pool per work and payout currency; registered share stakes receive royalties. [Read the guide](/docs/packages/royalty-pool/). |
+| [`recording-license`](https://github.com/misofm/recording-license) | Optional standing policy and a recording-share stake representing the composition's agreed cut. [Read the guide](/packages/recording-license/). |
+| [`royalty-pool`](https://github.com/misofm/royalty-pool) | One derived pool per work and payout currency; registered share stakes receive royalties. [Read the guide](/packages/royalty-pool/). |
 | [`release-revenue-forwarder`](https://github.com/misofm/release-revenue-forwarder) | Release-to-recording payout forwarding. Check its pinned core version and split policy before use. |
 | [`pay`](https://github.com/misofm/pay) | Typed payments to compositions, recordings, or releases with receipt events. |
 | [`crank`](https://github.com/misofm/crank) | Processes record-sale revenue into claimable royalties. |
