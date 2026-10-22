@@ -3,7 +3,7 @@ title: Release Consent
 description: How recording admins authorize an exact release membership and order.
 ---
 
-A `Release` is an ordered vector of recording IDs. It may include **1 to 1,000 distinct recordings**. Its ID is derived under the shared `ReleaseRegistry` from the ordered IDs and a **32-byte salt**. The creator can calculate this ID before creating the release and ask each recording admin for consent to that exact target.
+A [Release](/protocol/release/) is an ordered vector of recording IDs. It may include **1 to 1,000 distinct recordings**. Its ID is derived under the shared `ReleaseRegistry` from the ordered IDs and a **32-byte salt**. The creator can calculate this ID before creating the release and ask each recording admin for consent to that exact target.
 
 1. Choose the ordered recording IDs and a 32-byte salt.
 2. Call `release::derive_address` with the registry, IDs, and salt to predict the release ID.

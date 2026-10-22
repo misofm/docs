@@ -1,5 +1,5 @@
 ---
-title: Share Tokens
+title: Shares
 description: Fixed-supply composition and recording coins, and how holders receive royalties.
 ---
 

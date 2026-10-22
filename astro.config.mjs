@@ -13,9 +13,16 @@ export default defineConfig({
           label: 'Miso Music Protocol',
           items: [
             { label: 'Overview', slug: 'protocol/overview' },
-            { label: 'Share Tokens', slug: 'protocol/shares' },
-            { label: 'Release Consent', slug: 'protocol/releases' },
-            { label: 'Move Integration', slug: 'protocol/integrating' },
+            { label: 'Shares', slug: 'protocol/shares' },
+            { label: 'Composition', slug: 'protocol/composition' },
+            { label: 'Recording', slug: 'protocol/recording' },
+            {
+              label: 'Release',
+              items: [
+                { label: 'Overview', slug: 'protocol/release' },
+                { label: 'Release Consent', slug: 'protocol/releases' },
+              ],
+            },
           ],
         },
         {

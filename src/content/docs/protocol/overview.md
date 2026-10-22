@@ -24,10 +24,10 @@ Release                                ordered recording IDs
 
 | Core object | What it fixes | What it deliberately leaves out |
 | --- | --- | --- |
-| `Composition<CompositionShare>` | The written work's identity and canonical share type | Title, writers, lyrics, recording commission |
-| `Recording<RecordingShare>` | Its identity, share type, and immutable composition ID | Master audio, artist credits, version name, license terms |
-| `Release` | Its identity and ordered, distinct recording IDs | Title, cover art, price, release-wide revenue split |
-| `ReleaseConsent` | One recording admin's permission for their recording to appear in a specific release | Payment terms and presentation metadata |
+| [`Composition<CompositionShare>`](/protocol/composition/) | The written work's identity and canonical share type | Title, writers, lyrics, recording commission |
+| [`Recording<RecordingShare>`](/protocol/recording/) | Its identity, share type, and immutable composition ID | Master audio, artist credits, version name, license terms |
+| [`Release`](/protocol/release/) | Its identity and ordered, distinct recording IDs | Title, cover art, price, release-wide revenue split |
+| [`ReleaseConsent`](/protocol/releases/) | One recording admin's permission for their recording to appear in a specific release | Payment terms and presentation metadata |
 
 A recording's composition ID is a **relationship**, not proof of a license. The current core lets anyone create a recording that points to a composition. Apps that require permission to distribute the recording should check a recognized [recording license](/packages/recording-license/) or another agreement. A release is similarly a catalog relationship; a sales package determines its own commercial terms.
 
@@ -38,6 +38,8 @@ Each object is created and published in one transaction. Publication shares it a
 The admin capability controls the object's extension surface. [Share tokens](/protocol/shares/) express fractional economic ownership; owning shares does not grant the admin capability. Treat an extension value as a statement made under that capability and apply the extension's own trust rules.
 
 Core offers one `CompositionRegistry`, one `RecordingRegistry`, and one `ReleaseRegistry` per package publication. Composition and recording IDs derive from the registry and their unique share types. Release IDs derive from the ordered recording list and a 32-byte salt. These registries are shared at package initialization and have no public constructor.
+
+For a dependency entry and a creation flow, see [Move Integration](/protocol/integrating/).
 
 ## Where money flows
 
