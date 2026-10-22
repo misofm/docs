@@ -12,7 +12,7 @@ The two can have different contributors, owners, and licenses. A studio version,
 
 A **release** answers a different question: which recordings are assembled and distributed together? A single, EP, album, or compilation gives recordings an ordered place in a catalog. The same recording can appear on more than one release. The release is a distribution grouping, rather than a third class of song or master rights.
 
-The [Miso Music Protocol](https://github.com/misofm/music-protocol) models these familiar distinctions in Sui Move, so concepts such as publishing, masters, and releases carry over for builders. Published as the `miso_music` package, its core fixes the identities and relationships among these objects. Separate packages define licensing, payments, credits, artwork, and other details.
+The [Miso Music Protocol](https://github.com/misofm/music-protocol) models these familiar distinctions in Sui Move, so concepts such as publishing, masters, and releases carry over for builders. Published as the `miso_music` package, its core fixes the identities and relationships among these objects. Separate packages define licensing, payments, credits, artwork, and other details. The protocol code is licensed under [Apache License 2.0](https://github.com/misofm/music-protocol/blob/main/LICENSE).
 
 ```text
 Composition<CompositionShare>          written work
