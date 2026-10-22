@@ -11,6 +11,17 @@ In the [overview's example](/protocol/overview/), Dolly Parton's and Whitney Hou
 
 The core `Recording<RecordingShare>` contains its own object ID and an immutable `composition_id`. Once published, a recording cannot be redirected to another composition. Integrations reading that recording agree on which underlying work it references.
 
+That relationship is visible in the complete object definition:
+
+```move
+public struct Recording<phantom RecordingShare> has key {
+    id: UID,
+    composition_id: ID,
+}
+```
+
+`RecordingShare` identifies this master's share type; `composition_id` points to the separate composition object. The two relationships serve different purposes.
+
 The relationship is stored on the recording rather than maintained as a mutable list on the composition. Adding a recording therefore does not require changing the composition or obtaining its admin capability. The core is permissionless: an application that needs recording authorization must check a recognized [recording license](/packages/recording-license/) or another agreement.
 
 ## Independent ownership and administration
@@ -29,6 +40,16 @@ Each release needs the recording admin's consent for its exact identity. Consent
 
 The core recording does not contain audio, artist credits, a version name, or license terms. [Extension packages](/packages/#metadata-extensions) attach those details under the recording admin's authority. They can evolve without changing the master object's identity or its composition relationship.
 
-Publication emits the recording, composition, and admin capability IDs together, giving indexers a direct record of the core relationship. Metadata and economic packages provide their own state and events.
+Publication emits the recording, composition, and admin capability IDs together, giving indexers a direct record of the core relationship.
+
+```move
+public struct RecordingPublishedEvent<phantom RecordingShare> has copy, drop {
+    recording_id: ID,
+    composition_id: ID,
+    admin_cap_id: ID,
+}
+```
+
+Metadata and economic packages provide their own state and events.
 
 Source: [recording module](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/recording.move) and [protocol design](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/README.md).

@@ -13,15 +13,47 @@ A published `Release` holds an ordered list of **1 to 1,000 distinct recording I
 
 Order is part of the commitment. A release containing tracks A then B has a different target identity from one containing B then A. Changing the salt also changes the identity. Once published, a release's track list is fixed.
 
+The core object stores that order directly:
+
+```move
+public struct Release has key {
+    id: UID,
+    state: ReleaseState,
+    recording_ids: vector<ID>,
+}
+```
+
+`state` tracks the transition from initialization to publication. `recording_ids` holds references to existing masters, so a release does not duplicate their audio, shares, or composition links.
+
 The identity can be calculated before the release exists. That is what makes it possible for recording admins to approve a specific proposed release in advance.
 
 ## Release Consent
 
 Each recording admin grants a `ReleaseConsent` for a particular recording and target release ID. Because the target ID commits to the ordered track list and salt, the approval is bound to that exact proposal.
 
+```move
+public struct ReleaseConsent has drop, store {
+    release_id: ID,
+    recording_id: ID,
+}
+```
+
+The consent stores only the target release and recording IDs. Its `store` ability allows another contract to hold it, while the absence of `copy` prevents duplicating the approval.
+
 Consider a compilation containing recordings A and B. Both admins approve the same target release ID. Swapping the track order or adding a third recording changes the target ID, so those approvals cannot authorize the revised proposal. The release must gather consent for its new identity.
 
-During assembly, the protocol consumes the consents, rejects duplicate recordings, and checks that every approval targets the release being created. A consent cannot be copied, but an extension can hold it for an offer or escrow workflow. This allows recording admins and a release organizer to coordinate without requiring the same party to control every recording.
+During assembly, the protocol consumes the consents, rejects duplicate recordings, and checks that every approval targets the release being created. An extension can hold these approvals for an offer or escrow workflow, allowing recording admins and a release organizer to coordinate without requiring the same party to control every recording.
+
+Inside the release constructor, this check ties every collected approval to the actual release ID:
+
+```move
+let release_id = object::id(&release);
+consented_release_ids.do!(|consented| {
+    assert!(consented == release_id, EUnauthorizedAssignment)
+});
+```
+
+A mismatched approval aborts the transaction instead of producing a release with a different track list.
 
 ## What consent covers
 

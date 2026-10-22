@@ -13,6 +13,17 @@ Each work uses a fresh copy of the relevant share template. Composition shares u
 
 The protocol ties that share type to one work and validates its currency when the work is created. It requires the canonical metadata, zero prior supply, and an unregulated currency, then consumes the minting authority and fixes the full supply. The resulting work object therefore establishes that its share currency passed those checks. Later allocations divide the existing supply rather than creating more shares.
 
+The composition contract fixes its currency conventions in constants:
+
+```move
+const SHARE_DECIMALS: u8 = 6;
+const SHARE_SYMBOL: vector<u8> = b"CSHARE";
+const SHARE_NAME: vector<u8> = b"Composition Share";
+const SHARE_SUPPLY: u64 = 100_000_000_000_000;
+```
+
+The recording contract uses the same decimals and supply with `RSHARE` and `Recording Share`. At six decimals, `100_000_000_000_000` base units represent 100 million shares; the supply is defined by the protocol rather than by each application.
+
 This keeps the core independent of any particular allocation agreement. The creator receives the initial balance; extensions and applications decide how it is split, held, or staked.
 
 ## From shares to payments
@@ -25,4 +36,4 @@ A composition's share holders do not automatically receive a cut of all recordin
 
 The `CompositionAdminCap` and `RecordingAdminCap` are separate bearer objects. They authorize extension writes but are not share coins. A holder can own shares without administrative control, or hold a cap without owning shares.
 
-Source: [music-protocol share coin design](https://github.com/misofm/music-protocol/blob/main/README.md#share-coins), [share package](https://github.com/misofm/share), and [royalty-pool package](https://github.com/misofm/royalty-pool).
+Source: [composition constants](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/composition.move), [recording constants](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/recording.move), [music-protocol share coin design](https://github.com/misofm/music-protocol/blob/main/README.md#share-coins), [share package](https://github.com/misofm/share), and [royalty-pool package](https://github.com/misofm/royalty-pool).
