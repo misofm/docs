@@ -1,9 +1,13 @@
 ---
 title: Overview
-description: Composition, recording, release, and their deliberately small on-chain relationships.
+description: Why the protocol separates songs, masters, and releases, and how they relate on-chain.
 ---
 
-The [Miso Music Protocol](https://github.com/misofm/music-protocol), published as the `miso_music` Move package, defines three shared music objects and the authorization needed to create a release. It records identity and relationships; it does not decide how music is titled, licensed, sold, or paid.
+One thing the music industry got right is separating the underlying song from any particular recording of it. The **composition** is the music and, where present, lyrics: the work associated with publishing. A **recording** is a particular fixed performance and production of that work: the master. The two can have different contributors, owners, and licenses. A studio version, a live take, and a cover can all record the same composition while remaining distinct masters. [U.S. copyright guidance](https://www.copyright.gov/engage/musicians/) likewise treats musical works and sound recordings as separate works.
+
+A **release** answers a different question: which recordings are assembled and distributed together? A single, EP, album, or compilation gives recordings an ordered place in a catalog. The same recording can appear on more than one release. The release is a distribution grouping, rather than a third class of song or master rights.
+
+The [Miso Music Protocol](https://github.com/misofm/music-protocol) models these familiar distinctions in Sui Move, so concepts such as publishing, masters, and releases carry over for builders. Published as the `miso_music` package, its core fixes the identities and relationships among these objects. Separate packages define licensing, payments, credits, artwork, and other details.
 
 ```text
 Composition<CompositionShare>          written work
