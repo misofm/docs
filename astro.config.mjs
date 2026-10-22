@@ -8,8 +8,6 @@ export default defineConfig({
     starlight({
       title: 'Miso Docs',
       description: 'Build on the Miso music protocol on Sui.',
-      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/misofm/docs' }],
-      editLink: { baseUrl: 'https://github.com/misofm/docs/edit/main/' },
       sidebar: [
         {
           label: 'Music protocol',
@@ -28,6 +26,7 @@ export default defineConfig({
             { label: 'Recording licenses', slug: 'packages/recording-license' },
           ],
         },
+        { label: 'Licensing', slug: 'licensing' },
       ],
     }),
   ],

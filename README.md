@@ -1,6 +1,6 @@
 # Miso Docs
 
-The [Miso documentation site](https://docs.miso.fm/) for Sui Move developers. Built with [Astro Starlight](https://starlight.astro.build/).
+The [Miso documentation site](https://docs.miso.fm/) for Sui Move developers. Built with [Astro Starlight](https://starlight.astro.build/). The source repository is private while the first guides are developed; the website is public.
 
 ## Develop
 
