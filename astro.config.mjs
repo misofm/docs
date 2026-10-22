@@ -1,9 +1,11 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://docs.miso.fm',
+  vite: { plugins: [tailwindcss()] },
   redirects: {
     '/protocol/releases': '/protocol/release/#release-consent',
   },
@@ -37,6 +39,7 @@ export default defineConfig({
             { label: 'Release', slug: 'protocol/release' },
           ],
         },
+        { label: 'Move Integration', slug: 'protocol/integrating' },
         {
           label: 'Miso Packages',
           items: [

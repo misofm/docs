@@ -13,6 +13,8 @@ The [core repository's templates](https://github.com/misofm/music-protocol/tree/
 
 Both currencies use 6 decimals. Composition shares use `CSHARE`; recording shares use `RSHARE`. The shared names and symbols do not make the coins interchangeable: their package addresses, and therefore their type identities, differ.
 
+The constructor rejects a share currency unless its module and type name match the relevant template, its name and symbol are exactly `Composition Share`/`CSHARE` or `Recording Share`/`RSHARE`, and its description and icon URL are empty. It also requires locked metadata, an unregulated currency, zero prior supply, and the matching treasury cap. The [constructor tests](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/tests/production_constructor_tests.move) cover these failure cases.
+
 ## From shares to payments
 
 A share coin represents a claim **only when a revenue path pays a corresponding pool and the holder registers a stake there**. In [`royalty_pool`](https://github.com/misofm/royalty-pool), `RoyaltyPool<Share, Currency>` receives a payout `Currency` for holders of that `Share` type. A composition or recording can have one canonical pool per payout currency. Holders wrap share balances in `Stake<Share>`, register them, and claim accrued royalties. The pool distributes among **registered** shares; unstaked shares do not accrue there.

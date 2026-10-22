@@ -8,19 +8,19 @@ Read the overview first, then the object and shares pages, then Move Integration
 
 ## Start Here
 
-- [Overview](https://docs.miso.fm/protocol/overview/index.md): The song/master/release model, industry identifier lookups and access, shared on-chain relationships, the limits of canonical state, and Miso Link's SuiNS bridge.
-- [Move Integration](https://docs.miso.fm/protocol/integrating/index.md): Dependency pinning, core creation and publication flow, release consent, read APIs, and version checks for Sui Move builders.
+- [Overview](https://docs.miso.fm/protocol/overview/index.md): The song/master/release model, industry identifier lookups and access, Music's Shared Ledger, the limits of canonical state, and Miso Link's SuiNS bridge.
+- [Move Integration](https://docs.miso.fm/protocol/integrating/index.md): Reproducible local test at pinned core commit `3bd54d1`, Move dependency setup, links to source-verified constructor examples, and the checks needed before network integration. No deployment IDs are claimed.
 
 ## Core Protocol
 
-- [Shares](https://docs.miso.fm/protocol/shares/index.md): Per-work share coin types, fixed supply, admin capabilities, stakes, and the conditions for royalties.
-- [Composition](https://docs.miso.fm/protocol/composition/index.md): Written-work identity, creation, publication, admin control, and extension surface.
-- [Recording](https://docs.miso.fm/protocol/recording/index.md): Master identity, immutable composition relationship, shares, and the distinction between a link and a license.
-- [Release](https://docs.miso.fm/protocol/release/index.md): Ordered track list, deterministic identity, per-recording Release Consent, and the limits of that consent.
+- [Shares](https://docs.miso.fm/protocol/shares/index.md): Per-work share coin types, fixed supply, constructor validation requirements, admin capabilities, stakes, and the conditions for royalties.
+- [Composition](https://docs.miso.fm/protocol/composition/index.md): Written-work identity, source-verified Move creation example, share and admin-cap returns, and extension surface.
+- [Recording](https://docs.miso.fm/protocol/recording/index.md): Master identity, source-verified Move creation example, immutable composition relationship, and the distinction between a link and a license.
+- [Release](https://docs.miso.fm/protocol/release/index.md): Ordered track list, deterministic identity, single-track Move consent example, and the limits of Release Consent.
 
 ## Extensions and Payments
 
-- [Package Map](https://docs.miso.fm/packages/index.md): Metadata extensions and Miso packages for share issuance, identity, administration, royalties, licensing, commerce, streaming, and identifier resolution.
+- [Package Map](https://docs.miso.fm/packages/index.md): Task-based entry points and the Miso packages for metadata, share issuance, identity, administration, royalties, licensing, commerce, streaming, and identifier resolution.
 - [Royalty Pools](https://docs.miso.fm/packages/royalty-pool/index.md): Pool creation, stake registration, deposits, settlement, claims, and payout trust boundaries.
 - [Recording Licenses](https://docs.miso.fm/packages/recording-license/index.md): Optional standing composition policy, recording-share cut, and revenue sweep into a composition pool.
 

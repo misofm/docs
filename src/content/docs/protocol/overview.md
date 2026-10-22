@@ -29,7 +29,7 @@ Manual lookup and software access differ. The [ISWC public portal](https://www.i
 
 Records still need reconciliation as data moves between parties. [The MLC's Matching Tool](https://help.themlc.com/en/support/what-is-the-matching-tool) illustrates this: a reported recording use may need to be matched to its underlying musical work.
 
-## Shared On-Chain Relationships
+## Music's Shared Ledger
 
 The [Miso Music Protocol](https://github.com/misofm/music-protocol) gives builders shared, strongly typed `Composition`, `Recording`, and `Release` objects in Sui Move. Published as the `miso_music` package, its core fixes each object's identity and its relationships to the others. A published object ID resolves to on-chain core state. A recording keeps an immutable composition ID. A release keeps an ordered list of recording IDs authorized by the recording admins. Two integrations reading the same objects see the same core links and can verify the publication transaction.
 

@@ -7,9 +7,33 @@ A recording represents a particular fixed performance and production of a [compo
 
 ## Create and publish
 
-Each recording uses its own `RecordingShare` coin type. After publishing and initializing that type, call `recording::new` with the shared `RecordingRegistry`, its currency and treasury cap, and an immutable reference to the composition. It returns the recording, a `RecordingAdminCap`, and the full initial share balance. Publish the recording in the same transaction with `recording::publish`.
+Each recording uses its own [recording share coin](/protocol/shares/#create-a-works-coin). Once its currency is initialized, a Move module can create a recording from an immutable composition reference:
 
-The recording ID derives from the registry and its share type. `recording::derive_address<RecordingShare>` calculates it in advance. `recording::composition_id` reads the stored relationship, and `RecordingPublishedEvent` includes the recording, composition, and admin capability IDs.
+```move
+use sui::coin::{Self, Coin, TreasuryCap};
+use sui::coin_registry::Currency;
+use miso_music::composition::Composition;
+use miso_music::recording::{Self, RecordingAdminCap, RecordingRegistry};
+
+public fun create_recording<RecordingShare: key, CompositionShare>(
+    registry: &mut RecordingRegistry,
+    currency: &mut Currency<RecordingShare>,
+    treasury_cap: TreasuryCap<RecordingShare>,
+    composition: &Composition<CompositionShare>,
+    ctx: &mut TxContext,
+): (RecordingAdminCap<RecordingShare>, Coin<RecordingShare>) {
+    let (recording, admin_cap, shares) =
+        recording::new(registry, currency, treasury_cap, composition);
+    assert!(recording.composition_id() == object::id(composition), 0);
+
+    recording.publish(&admin_cap);
+    (admin_cap, coin::from_balance(shares, ctx))
+}
+```
+
+The composition is only borrowed, so creating another recording does not mutate it. The function returns the recording admin capability and the full fixed-supply share coin for the caller to route. `recording::derive_address<RecordingShare>` predicts the recording ID from the registry and share type, while `recording::composition_id` reads the immutable relationship. Publishing emits `RecordingPublishedEvent` with the recording, composition, and admin capability IDs.
+
+If `new` aborts, check the recording template's exact type and metadata, locked metadata, zero prior supply, and matching treasury cap. It enforces the same [share coin requirements](/protocol/shares/#create-a-works-coin) as composition creation.
 
 ## Rights and release participation
 
@@ -17,4 +41,4 @@ The composition reference fixes a relationship, not a license. The core lets a c
 
 The recording admin capability controls extension writes and can issue [Release Consent](/protocol/release/#release-consent) for a particular release. It is separate from [recording shares](/protocol/shares/), which express fractional economic ownership through the packages that receive and distribute revenue. A [release](/protocol/release/) can include the recording only with consent for its exact release ID.
 
-Source: [recording module](https://github.com/misofm/music-protocol/blob/main/sources/recording.move).
+Source: pinned [recording module](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/recording.move) and [production constructor test](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/tests/production_constructor_tests.move).

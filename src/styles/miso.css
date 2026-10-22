@@ -1,9 +1,7 @@
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
 :root {
-  --miso-jet: #0b0b0a;
-  --miso-jet-2: #161614;
-  --miso-bone: #eeebe3;
-  --miso-bone-2: #e2ded3;
-  --miso-ash: #9a978f;
   --miso-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --sl-font: var(--sl-font-system);
@@ -11,28 +9,28 @@
   --sl-content-width: 48rem;
   --sl-sidebar-width: 18.5rem;
   --sl-nav-height: 4rem;
-  --sl-color-white: var(--miso-bone);
-  --sl-color-gray-1: #e2ded3;
-  --sl-color-gray-2: #d2cec4;
-  --sl-color-gray-3: #a9a69e;
-  --sl-color-gray-4: #77746e;
-  --sl-color-gray-5: #383733;
-  --sl-color-gray-6: #1b1b19;
-  --sl-color-black: var(--miso-jet);
-  --sl-color-accent-low: #33322e;
-  --sl-color-accent: var(--miso-bone-2);
-  --sl-color-accent-high: var(--miso-bone);
+  --sl-color-white: var(--color-stone-100);
+  --sl-color-gray-1: var(--color-stone-200);
+  --sl-color-gray-2: var(--color-stone-300);
+  --sl-color-gray-3: var(--color-stone-400);
+  --sl-color-gray-4: var(--color-stone-500);
+  --sl-color-gray-5: var(--color-stone-700);
+  --sl-color-gray-6: var(--color-stone-900);
+  --sl-color-black: var(--color-stone-950);
+  --sl-color-accent-low: var(--color-stone-800);
+  --sl-color-accent: var(--color-stone-200);
+  --sl-color-accent-high: var(--color-stone-100);
   --sl-color-text: var(--sl-color-gray-2);
-  --sl-color-text-accent: var(--miso-bone);
-  --sl-color-text-invert: var(--miso-jet);
-  --sl-color-bg: var(--miso-jet);
-  --sl-color-bg-nav: var(--miso-jet);
-  --sl-color-bg-sidebar: var(--miso-jet-2);
-  --sl-color-bg-inline-code: #292824;
-  --sl-color-bg-accent: var(--miso-bone);
-  --sl-color-hairline: #383733;
-  --sl-color-hairline-light: #383733;
-  --sl-color-hairline-shade: #383733;
+  --sl-color-text-accent: var(--color-stone-100);
+  --sl-color-text-invert: var(--color-stone-950);
+  --sl-color-bg: var(--color-stone-950);
+  --sl-color-bg-nav: var(--color-stone-950);
+  --sl-color-bg-sidebar: var(--color-stone-900);
+  --sl-color-bg-inline-code: var(--color-stone-800);
+  --sl-color-bg-accent: var(--color-stone-100);
+  --sl-color-hairline: var(--color-stone-800);
+  --sl-color-hairline-light: var(--color-stone-800);
+  --sl-color-hairline-shade: var(--color-stone-800);
 }
 
 body {
@@ -41,8 +39,8 @@ body {
 }
 
 ::selection {
-  background: var(--miso-ash);
-  color: var(--miso-jet);
+  background: var(--color-stone-400);
+  color: var(--color-stone-950);
 }
 
 :focus-visible {
@@ -50,24 +48,22 @@ body {
   outline-offset: 3px;
 }
 
-/* The site masthead uses the Miso palette. */
+/* Starlight's header controls receive the same Tailwind stone scale. */
 .page > header.header {
-  --sl-color-white: var(--miso-bone);
-  --sl-color-gray-1: var(--miso-bone-2);
-  --sl-color-gray-2: #d2cec4;
-  --sl-color-gray-5: #77746e;
-  --sl-color-gray-6: #292824;
-  --sl-color-black: var(--miso-jet);
-  --sl-color-text-accent: var(--miso-bone);
-  --sl-color-bg-nav: var(--miso-jet);
-  background: var(--miso-jet);
-  color: var(--miso-bone);
-  border-bottom: 0;
+  @apply border-b border-stone-800 bg-stone-950 text-stone-100;
+  --sl-color-white: var(--color-stone-100);
+  --sl-color-gray-1: var(--color-stone-200);
+  --sl-color-gray-2: var(--color-stone-300);
+  --sl-color-gray-5: var(--color-stone-500);
+  --sl-color-gray-6: var(--color-stone-800);
+  --sl-color-black: var(--color-stone-950);
+  --sl-color-text-accent: var(--color-stone-100);
+  --sl-color-bg-nav: var(--color-stone-950);
 }
 
 .site-title {
   gap: 0.55rem;
-  color: var(--miso-bone);
+  color: var(--color-stone-100);
   font-size: 1.18rem;
   font-weight: 700;
   letter-spacing: -0.035em;
@@ -76,6 +72,10 @@ body {
 
 .site-title img {
   height: 1.55rem;
+}
+
+.header .social-icons::after {
+  display: none;
 }
 
 site-search button[data-open-modal] {
@@ -87,14 +87,14 @@ site-search button[data-open-modal] {
 
 @media (min-width: 50rem) {
   site-search button[data-open-modal] {
-    border: 1px solid #77746e;
-    background: var(--miso-jet-2);
+    border: 1px solid var(--color-stone-500);
+    background: var(--color-stone-900);
   }
 }
 
 site-search button[data-open-modal] > kbd {
   border-radius: 0;
-  background: #292824;
+  background: var(--color-stone-800);
 }
 
 .sidebar-pane {
@@ -216,8 +216,8 @@ main h1#_top {
 }
 
 .sl-markdown-content th {
-  background: var(--miso-jet-2);
-  color: var(--miso-bone);
+  background: var(--color-stone-900);
+  color: var(--color-stone-100);
   font-family: var(--sl-font-system);
   font-size: 0.875rem;
   font-weight: 700;
@@ -226,7 +226,7 @@ main h1#_top {
 }
 
 .sl-markdown-content tbody tr:nth-child(even) {
-  background: #121210;
+  background: var(--color-stone-900);
 }
 
 .sl-markdown-content td:first-child {
@@ -247,8 +247,8 @@ main h1#_top {
   overflow: hidden;
   min-height: 28rem;
   padding: clamp(2rem, 5vw, 4.5rem);
-  background: var(--miso-jet);
-  color: var(--miso-bone);
+  background: var(--color-stone-950);
+  color: var(--color-stone-100);
 }
 
 :root[data-has-hero] .hero::before {
@@ -261,7 +261,7 @@ main h1#_top {
   aspect-ratio: 1;
   transform: translateY(-50%);
   border-radius: 50%;
-  background: repeating-radial-gradient(circle, transparent 0 13px, #77746e 14px 15px);
+  background: repeating-radial-gradient(circle, transparent 0 13px, var(--color-stone-500) 14px 15px);
   opacity: 0.42;
   mask-image: linear-gradient(to right, transparent, black 38%);
   pointer-events: none;
@@ -277,12 +277,12 @@ main h1#_top {
   font-family: var(--miso-mono);
   font-size: 0.73rem;
   letter-spacing: 0.11em;
-  color: var(--miso-bone-2);
+  color: var(--color-stone-200);
 }
 
 :root[data-has-hero] .hero h1 {
   max-width: 13ch;
-  color: var(--miso-bone);
+  color: var(--color-stone-100);
   font-size: clamp(3.1rem, 5.4vw, 5.2rem);
   font-weight: 750;
   line-height: 1.02;
@@ -291,7 +291,7 @@ main h1#_top {
 
 :root[data-has-hero] .hero .tagline {
   max-width: 34rem;
-  color: var(--miso-bone);
+  color: var(--color-stone-100);
   font-size: clamp(1.1rem, 1.6vw, 1.35rem);
   line-height: 1.4;
 }
@@ -310,25 +310,25 @@ main h1#_top {
 }
 
 :root[data-has-hero] .hero .sl-link-button.primary {
-  background: var(--miso-bone);
-  border-color: var(--miso-bone);
-  color: var(--miso-jet);
+  background: var(--color-stone-100);
+  border-color: var(--color-stone-100);
+  color: var(--color-stone-950);
 }
 
 :root[data-has-hero] .hero .sl-link-button.primary:hover {
   background: transparent;
-  color: var(--miso-bone);
+  color: var(--color-stone-100);
 }
 
 :root[data-has-hero] .hero .sl-link-button.secondary {
   background: transparent;
-  border-color: var(--miso-bone);
-  color: var(--miso-bone);
+  border-color: var(--color-stone-100);
+  color: var(--color-stone-100);
 }
 
 :root[data-has-hero] .hero .sl-link-button.secondary:hover {
-  background: var(--miso-bone);
-  color: var(--miso-jet);
+  background: var(--color-stone-100);
+  color: var(--color-stone-950);
 }
 
 :root[data-has-hero] .card-grid {

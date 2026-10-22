@@ -5,6 +5,14 @@ description: Core, metadata, royalty, licensing, and commerce packages for Move 
 
 The Miso Music Protocol and its extensions are split into small Sui Move packages. Start with [`misofm/music-protocol`](https://github.com/misofm/music-protocol) for composition, recording, release, share types, and release consent. Add only the packages your product needs. Each repository has its own `Move.toml`, source revision, license, and published package IDs.
 
+## Choose by task
+
+- **Create a work or a release:** Start with [Move Integration](/protocol/integrating/), then the relevant [Composition](/protocol/composition/), [Recording](/protocol/recording/), or [Release](/protocol/release/) example.
+- **Add titles, credits, or artwork:** Use the [metadata extensions](#metadata-extensions) for the core object you want to describe.
+- **Distribute revenue to shareholders:** Read [Royalty Pools](/packages/royalty-pool/) and check which payment package deposits into the pool.
+- **Express standing recording terms:** Read [Recording Licenses](/packages/recording-license/); a recording's composition link alone does not grant permission.
+- **Resolve an industry code:** Use [Miso Link](#identifier-resolution), then validate the resolved object's type and the namespace's authority.
+
 ## Metadata extensions
 
 [`music-protocol-extensions`](https://github.com/misofm/music-protocol-extensions) contains independently versioned packages. They attach typed dynamic fields to a core object's UID. Writes require the corresponding admin capability; the extension defines its own read and update API. A title or classification can change after core publication.
