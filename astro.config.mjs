@@ -11,6 +11,15 @@ export default defineConfig({
     starlight({
       title: 'Miso Docs',
       description: 'Build on the Miso Music Protocol on Sui.',
+      favicon: '/favicon.svg',
+      logo: {
+        src: './src/assets/miso-mark.svg',
+        alt: 'Miso',
+      },
+      customCss: ['./src/styles/miso.css'],
+      social: [
+        { icon: 'github', label: 'Miso Music Protocol on GitHub', href: 'https://github.com/misofm/music-protocol' },
+      ],
       sidebar: [
         {
           label: 'Miso Music Protocol',

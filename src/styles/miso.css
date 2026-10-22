@@ -1,0 +1,376 @@
+:root {
+  --miso-jet: #0b0b0a;
+  --miso-jet-2: #161614;
+  --miso-bone: #eeebe3;
+  --miso-bone-2: #e2ded3;
+  --miso-ash: #9a978f;
+  --miso-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --sl-font: var(--sl-font-system);
+  --sl-font-mono: var(--miso-mono);
+  --sl-content-width: 48rem;
+  --sl-sidebar-width: 18.5rem;
+  --sl-nav-height: 4rem;
+  --sl-color-white: var(--miso-bone);
+  --sl-color-gray-1: #e2ded3;
+  --sl-color-gray-2: #d2cec4;
+  --sl-color-gray-3: #a9a69e;
+  --sl-color-gray-4: #77746e;
+  --sl-color-gray-5: #383733;
+  --sl-color-gray-6: #1b1b19;
+  --sl-color-black: var(--miso-jet);
+  --sl-color-accent-low: #33322e;
+  --sl-color-accent: var(--miso-bone-2);
+  --sl-color-accent-high: var(--miso-bone);
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-text-accent: var(--miso-bone);
+  --sl-color-text-invert: var(--miso-jet);
+  --sl-color-bg: var(--miso-jet);
+  --sl-color-bg-nav: var(--miso-jet);
+  --sl-color-bg-sidebar: var(--miso-jet-2);
+  --sl-color-bg-inline-code: #292824;
+  --sl-color-bg-accent: var(--miso-bone);
+  --sl-color-hairline: #383733;
+  --sl-color-hairline-light: #383733;
+  --sl-color-hairline-shade: #383733;
+}
+
+:root[data-theme='light'] {
+  --sl-color-white: var(--miso-jet);
+  --sl-color-gray-1: var(--miso-jet-2);
+  --sl-color-gray-2: #34332f;
+  --sl-color-gray-3: #5e5c57;
+  --sl-color-gray-4: #8f8b82;
+  --sl-color-gray-5: #c6c1b6;
+  --sl-color-gray-6: var(--miso-bone-2);
+  --sl-color-gray-7: #e9e5dc;
+  --sl-color-black: var(--miso-bone);
+  --sl-color-accent-high: var(--miso-jet);
+  --sl-color-accent: var(--miso-jet);
+  --sl-color-accent-low: var(--miso-bone-2);
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-text-accent: var(--miso-jet);
+  --sl-color-text-invert: var(--miso-bone);
+  --sl-color-bg: var(--miso-bone);
+  --sl-color-bg-nav: var(--miso-jet);
+  --sl-color-bg-sidebar: #e9e5dc;
+  --sl-color-bg-inline-code: var(--miso-bone-2);
+  --sl-color-bg-accent: var(--miso-jet);
+  --sl-color-hairline: #c6c1b6;
+  --sl-color-hairline-light: #c6c1b6;
+  --sl-color-hairline-shade: #c6c1b6;
+}
+
+body {
+  font-family: var(--sl-font-system);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--miso-ash);
+  color: var(--miso-jet);
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* The site masthead stays jet and bone in either reading theme. */
+.page > header.header {
+  --sl-color-white: var(--miso-bone);
+  --sl-color-gray-1: var(--miso-bone-2);
+  --sl-color-gray-2: #d2cec4;
+  --sl-color-gray-5: #77746e;
+  --sl-color-gray-6: #292824;
+  --sl-color-black: var(--miso-jet);
+  --sl-color-text-accent: var(--miso-bone);
+  --sl-color-bg-nav: var(--miso-jet);
+  background: var(--miso-jet);
+  color: var(--miso-bone);
+  border-bottom: 2px solid var(--miso-bone);
+}
+
+.site-title {
+  gap: 0.55rem;
+  color: var(--miso-bone);
+  font-size: 1.18rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  text-transform: lowercase;
+}
+
+.site-title img {
+  height: 1.55rem;
+}
+
+site-search button[data-open-modal] {
+  border-radius: 0;
+  font-family: var(--miso-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+@media (min-width: 50rem) {
+  site-search button[data-open-modal] {
+    border: 1px solid #77746e;
+    background: var(--miso-jet-2);
+  }
+}
+
+site-search button[data-open-modal] > kbd {
+  border-radius: 0;
+  background: #292824;
+}
+
+.sidebar-pane {
+  border-inline-end: 1px solid var(--sl-color-hairline);
+}
+
+.sidebar-content .top-level > li + li {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--sl-color-hairline);
+}
+
+.sidebar-content .group-label .large,
+.sidebar-content .top-level > li > a.large {
+  font-family: var(--miso-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.025em;
+  font-weight: 700;
+}
+
+.sidebar-content a {
+  border-radius: 0;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.sidebar-content a[aria-current='page'] {
+  background: var(--sl-color-white);
+  color: var(--sl-color-black);
+}
+
+.sidebar-content a:not([aria-current='page']):hover,
+.sidebar-content a:not([aria-current='page']):focus-visible {
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-white);
+}
+
+.right-sidebar {
+  background: var(--sl-color-bg-sidebar);
+}
+
+.right-sidebar-panel h2 {
+  font-family: var(--miso-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.right-sidebar-panel a[aria-current='true'] {
+  color: var(--sl-color-white);
+  font-weight: 700;
+}
+
+main h1#_top {
+  font-size: clamp(2.6rem, 4vw, 3.6rem);
+  font-weight: 750;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.sl-markdown-content {
+  font-size: 1.04rem;
+  line-height: 1.72;
+}
+
+.sl-markdown-content h2 {
+  font-size: clamp(1.65rem, 2.5vw, 2rem);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+}
+
+.sl-markdown-content h3 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.sl-markdown-content a:not(.sl-link-button) {
+  color: var(--sl-color-white);
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--sl-color-gray-3);
+  text-underline-offset: 0.17em;
+}
+
+.sl-markdown-content a:not(.sl-link-button):hover {
+  text-decoration-thickness: 2px;
+  text-decoration-color: currentColor;
+}
+
+.sl-markdown-content :not(pre) > code {
+  border-radius: 0;
+}
+
+.sl-markdown-content blockquote {
+  border-inline-start: 3px solid var(--sl-color-white);
+}
+
+.sl-markdown-content table {
+  font-variant-numeric: tabular-nums;
+}
+
+.sl-markdown-content th {
+  background: var(--sl-color-white);
+  color: var(--sl-color-black);
+  font-family: var(--miso-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+/* A restrained record-groove motif gives the landing page its own identity. */
+:root[data-has-hero] .hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 28rem;
+  padding: clamp(2rem, 5vw, 4.5rem);
+  background: var(--miso-jet);
+  color: var(--miso-bone);
+  border: 2px solid var(--miso-jet);
+  border-bottom-color: var(--miso-bone);
+}
+
+:root[data-has-hero] .hero::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  right: -9rem;
+  width: min(62vw, 48rem);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, transparent 0 13px, #77746e 14px 15px);
+  opacity: 0.42;
+  mask-image: linear-gradient(to right, transparent, black 38%);
+  pointer-events: none;
+}
+
+:root[data-has-hero] .hero .stack {
+  z-index: 1;
+}
+
+:root[data-has-hero] .hero .copy::before {
+  content: 'MISO / DEVELOPER DOCUMENTATION';
+  align-self: flex-start;
+  font-family: var(--miso-mono);
+  font-size: 0.73rem;
+  letter-spacing: 0.11em;
+  color: var(--miso-bone-2);
+}
+
+:root[data-has-hero] .hero h1 {
+  max-width: 13ch;
+  color: var(--miso-bone);
+  font-size: clamp(3.1rem, 5.4vw, 5.2rem);
+  font-weight: 750;
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+}
+
+:root[data-has-hero] .hero .tagline {
+  max-width: 34rem;
+  color: var(--miso-bone);
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  line-height: 1.4;
+}
+
+:root[data-has-hero] .hero .sl-link-button {
+  min-height: 3.1rem;
+  border-radius: 0;
+  border-width: 2px;
+  padding-inline: 1.15rem;
+  font-family: var(--miso-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+:root[data-has-hero] .hero .sl-link-button.primary {
+  background: var(--miso-bone);
+  border-color: var(--miso-bone);
+  color: var(--miso-jet);
+}
+
+:root[data-has-hero] .hero .sl-link-button.primary:hover {
+  background: transparent;
+  color: var(--miso-bone);
+}
+
+:root[data-has-hero] .hero .sl-link-button.secondary {
+  background: transparent;
+  border-color: var(--miso-bone);
+  color: var(--miso-bone);
+}
+
+:root[data-has-hero] .hero .sl-link-button.secondary:hover {
+  background: var(--miso-bone);
+  color: var(--miso-jet);
+}
+
+:root[data-has-hero] .card-grid {
+  gap: 0;
+}
+
+:root[data-has-hero] .card-grid .card {
+  border: 1px solid var(--sl-color-gray-5);
+  background: var(--sl-color-bg);
+  padding: 1.5rem;
+  transition: background-color 140ms ease;
+}
+
+:root[data-has-hero] .card-grid .card:hover {
+  background: var(--sl-color-bg-sidebar);
+}
+
+:root[data-has-hero] .card-grid .card .title {
+  font-size: 1.15rem;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+:root[data-has-hero] .card-grid .card .icon {
+  border: 1px solid var(--sl-color-white);
+  border-radius: 0;
+  background: transparent;
+  color: var(--sl-color-white);
+}
+
+@media (min-width: 72rem) {
+  :root[data-has-hero] .card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 49.99rem) {
+  :root[data-has-hero] .hero {
+    min-height: 0;
+  }
+
+  :root[data-has-hero] .hero::before {
+    right: -13rem;
+    width: 34rem;
+    opacity: 0.24;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-content a,
+  .hero .sl-link-button,
+  .card-grid .card {
+    transition: none;
+  }
+}
