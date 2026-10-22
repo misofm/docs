@@ -16,11 +16,24 @@ The same recording can appear on more than one release. A release establishes a 
 The [Miso Music Protocol](https://github.com/misofm/music-protocol) models these familiar distinctions in Sui Move, so concepts such as publishing, masters, and releases carry over for builders. Published as the `miso_music` package, its core fixes the identities and relationships among these objects. Separate packages define licensing, payments, credits, artwork, and other details. The protocol code is licensed under [Apache License 2.0](https://github.com/misofm/music-protocol/blob/main/LICENSE).
 
 ```text
-Composition<CompositionShare>          written work
-  ↑ composition_id
-Recording<RecordingShare>             a particular master of that work
-  ↑ recording_id (one or more positions)
-Release                                ordered recording IDs
++------------------------------------+
+| Composition<CompositionShare>      |
+| The underlying song                |
++------------------------------------+
+                 ^
+                 | composition_id
+                 | (one composition)
++------------------------------------+
+| Recording<RecordingShare>          |
+| A particular master                |
++------------------------------------+
+                 ^
+                 | recording_ids
+                 | (ordered, 1-1,000)
++------------------------------------+
+| Release                            |
+| An ordered track list              |
++------------------------------------+
 ```
 
 | Core object | What it fixes | What it deliberately leaves out |
