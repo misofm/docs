@@ -1,6 +1,6 @@
 ---
 title: Overview
-description: Why the protocol separates songs, masters, and releases, and how they relate on-chain.
+description: Why the protocol models songs, masters, and releases as shared on-chain objects.
 ---
 
 The music industry has long used distinct concepts for the underlying song, recordings of it, and the releases that bring those recordings together:
@@ -15,7 +15,15 @@ The composition and each recording can have different contributors, owners, and 
 
 The same recording can appear on more than one release. A release establishes a catalog and distribution grouping; it does not create a third class of song or master rights.
 
-The [Miso Music Protocol](https://github.com/misofm/music-protocol) models these familiar distinctions in Sui Move, so concepts such as publishing, masters, and releases carry over for builders. Published as the `miso_music` package, its core fixes the identities and relationships among these objects. Separate packages define licensing, payments, credits, artwork, and other details. The protocol code is licensed under [Apache License 2.0](https://github.com/misofm/music-protocol/blob/main/LICENSE).
+## Why Shared Objects Matter
+
+The industry already has useful identifiers: an [ISWC](https://www.iswc.org/iswc) identifies a musical work, an [ISRC](https://isrc.ifpi.org/) identifies a recording, and a [UPC/GTIN](https://support.gs1.org/support/solutions/articles/43000734120-what-is-a-gs1-gtin-) identifies a saleable product. These codes identify individual things, but do not themselves define a shared, programmable relationship among the song, master, and release.
+
+Rights holders, distributors, societies, and services maintain records in their own systems and reconcile them as data moves between parties. [The MLC's Matching Tool](https://help.themlc.com/en/support/what-is-the-matching-tool) illustrates the cost: a reported recording use may still need to be matched to its underlying musical work. Even with shared codes, comparing catalogs can feel like comparing contact books with different names and connections for the same person. Someone has to reconcile the entries before they can act on them together.
+
+The [Miso Music Protocol](https://github.com/misofm/music-protocol) gives builders shared, strongly typed `Composition`, `Recording`, and `Release` objects in Sui Move. Published as the `miso_music` package, its core fixes each object's identity and its relationships to the others. A recording keeps an immutable composition ID. A release keeps an ordered list of recording IDs authorized by the recording admins. Two integrations reading the same objects see the same core links and can verify the publication transaction. An integration can map ISWCs and ISRCs to the corresponding objects and associate product codes such as UPC/GTIN with releases.
+
+The on-chain object is a canonical source for its own core state, so integrations using the same IDs avoid mismatches in those relationships. Its publication history does not prove real-world authorship, and optional metadata can still conflict. Separate packages define licensing, payments, credits, artwork, and other details. Applications must apply their trust rules to those claims. The protocol code is licensed under [Apache License 2.0](https://github.com/misofm/music-protocol/blob/main/LICENSE).
 
 ```text
 +------------------------------------+
