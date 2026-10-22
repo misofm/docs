@@ -5,8 +5,8 @@ description: Why the protocol separates songs, masters, and releases, and how th
 
 The music industry has long distinguished the underlying song from any particular recording of it:
 
-- **Composition:** The music and, where present, lyrics: the work associated with publishing.
-- **Recording:** A particular fixed performance and production of that work: the master.
+- **Composition:** The music and, where present, lyrics that form the work associated with publishing.
+- **Recording:** A particular fixed performance and production of that work, known as the master.
 
 The two can have different contributors, owners, and licenses. A studio version, a live take, and a cover can all record the same composition while remaining distinct masters. [U.S. copyright guidance](https://www.copyright.gov/engage/musicians/) likewise treats musical works and sound recordings as separate works.
 
