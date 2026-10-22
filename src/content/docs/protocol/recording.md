@@ -26,7 +26,7 @@ The relationship is stored on the recording rather than maintained as a mutable 
 
 ## Independent ownership and administration
 
-Every recording has its own [fixed-supply share coin](/protocol/shares/). Recording shares and composition shares are distinct types, reflecting the separate economic interests in the master and the underlying work. Recording royalties do not automatically flow to composition share holders simply because the objects are linked.
+Every recording has its own [fixed-supply share type](/protocol/shares/). Recording shares and composition shares are distinct types, reflecting the separate economic interests in the master and the underlying work. Recording royalties do not automatically flow to composition share holders simply because the objects are linked.
 
 The `RecordingAdminCap` is separate from those shares. It authorizes extension writes and can issue [Release Consent](/protocol/release/#release-consent). Share ownership alone does not grant either power.
 

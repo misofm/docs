@@ -9,7 +9,7 @@ In the [overview's example](/protocol/overview/), “I Will Always Love You” i
 
 ## One identity for the work
 
-The core `Composition<CompositionShare>` contains only an object ID. Its type parameter identifies the work's unique [share coin](/protocol/shares/). Titles, writers, and lyrics are deliberately outside this core identity: changing a preferred title or correcting a credit should not create a different underlying work.
+The core `Composition<CompositionShare>` contains only an object ID. Its type parameter identifies the work's unique [share type](/protocol/shares/). Titles, writers, and lyrics are deliberately outside this core identity: changing a preferred title or correcting a credit should not create a different underlying work.
 
 The complete core object definition shows that separation:
 

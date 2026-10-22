@@ -1,6 +1,6 @@
 ---
 title: Royalty Pools
-description: Distribute a payout currency to registered holders of a work's share coin.
+description: Distribute a payout currency to registered holders of shares in a work.
 ---
 
 [`royalty_pool`](https://github.com/misofm/royalty-pool) turns a work's fixed-supply shares into a claim on a particular payout currency. `RoyaltyPool<Share, Currency>` is tied to one composition or recording and one `Currency`. The work's admin cap authorizes pool creation. The pool ID derives from the work and currency, so there is at most one canonical pool for that pair **within the package generation**.

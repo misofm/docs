@@ -59,7 +59,7 @@ A mismatched approval aborts the transaction instead of producing a release with
 
 Consent approves **membership and order**. It does not approve artwork, titles, prices, payment terms, or revenue splits. A sales or distribution package must define and collect approval for its own commercial terms.
 
-The `ReleaseAdminCap` controls the release's extension surface. It does not grant administration over the included recordings or replace their admins' consent. Likewise, a release has no core share coin or automatic release-wide revenue split; payment packages define how release revenue reaches the recordings and their share holders.
+The `ReleaseAdminCap` controls the release's extension surface. It does not grant administration over the included recordings or replace their admins' consent. Likewise, a release has no core share type or automatic release-wide revenue split; payment packages define how release revenue reaches the recordings and their share holders.
 
 ## Fixed relationships, extensible presentation
 

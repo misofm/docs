@@ -45,7 +45,7 @@ release_title = { git = "https://github.com/misofm/music-protocol-extensions.git
 
 | Package | Role |
 | --- | --- |
-| [`share`](https://github.com/misofm/share) | Validates and fixes each work's canonical share coin supply. Called by core work constructors. |
+| [`share`](https://github.com/misofm/share) | Validates each work's canonical share type and fixes its supply. Called by core work constructors. |
 | [`recording-license`](https://github.com/misofm/recording-license) | Optional standing policy and a recording-share stake representing the composition's agreed cut. [Read the guide](/packages/recording-license/). |
 | [`royalty-pool`](https://github.com/misofm/royalty-pool) | One derived pool per work and payout currency; registered share stakes receive royalties. [Read the guide](/packages/royalty-pool/). |
 | [`release-revenue-forwarder`](https://github.com/misofm/release-revenue-forwarder) | Release-to-recording payout forwarding. Check its pinned core version and split policy before use. |

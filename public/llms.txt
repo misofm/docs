@@ -2,9 +2,9 @@
 
 > Developer documentation for the Miso Music Protocol, a small set of Sui Move primitives for identifying musical compositions, recordings, and releases and connecting them to optional rights, metadata, and payment packages.
 
-The core Move package is `miso_music`. A `Composition` is the written work, a `Recording` is a particular master with an immutable composition ID, and a `Release` is an ordered list of recording IDs. Each composition and recording has its own fixed-supply share coin type. Admin capabilities control extension writes and release consent; owning shares alone does not grant those powers.
+The core Move package is `miso_music`. A `Composition` is the written work, a `Recording` is a particular master with an immutable composition ID, and a `Release` is an ordered list of recording IDs. Each composition and recording has its own fixed-supply share type. Admin capabilities control extension writes and release consent; owning shares alone does not grant those powers.
 
-Read the overview first, then Shares, Composition, Recording, and Release. These pages explain the protocol design with inline excerpts from the actual Move contracts; use the supplemental Move source guide only when inspecting the implementation. Add only the extensions needed for the product. A core object link is not proof of real-world authorship or a license, and a share coin pays nothing by itself: payment depends on a funded royalty pool and registered stakes. Pin compatible source revisions and verify published package IDs before constructing transactions against a network.
+Read the overview first, then Shares, Composition, Recording, and Release. These pages explain the protocol design with inline excerpts from the actual Move contracts; use the supplemental Move source guide only when inspecting the implementation. Add only the extensions needed for the product. A core object link is not proof of real-world authorship or a license, and holding shares pays nothing by itself: payment depends on a funded royalty pool and registered stakes. Pin compatible source revisions and verify published package IDs before constructing transactions against a network.
 
 ## Start Here
 

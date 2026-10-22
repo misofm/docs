@@ -4,6 +4,8 @@ Whenever documentation content changes, update `public/llms.txt` in the same cha
 
 ## Documentation Guidelines
 
+- Standardize on “share type” for a work's `CompositionShare` or `RecordingShare` type, and “shares” for quantities held or transferred. Use `Coin<T>` and `Balance<T>` when referring to concrete Move values.
+
 - Start each page with its reader and outcome. Keep concept pages, step-by-step tasks, and API references distinct, with links at the point where a reader needs the next one.
 - Lead with a concrete example when a concept is abstract. Carry the same composition, recording, and release relationships through related pages rather than inventing a new mental model each time.
 - Make integration guides reproducible: state prerequisites and pinned source/tool versions, show exact commands and Move code, give the expected result, and say whether a step is local or requires a particular network deployment. Never invent package or registry IDs.

@@ -31,7 +31,7 @@ The core source also pins its `share` dependency. If you add an extension, inspe
 
 ## Follow the creation flow
 
-The core constructors expect an initialized share currency and its treasury cap. The [production constructor test](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/tests/production_constructor_tests.move) shows the template initialization and constructor calls in context. The [Shares](/protocol/shares/#one-share-type-per-work) page explains why each work has its own coin type.
+The core constructors expect an initialized share currency and its treasury cap. The [production constructor test](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/tests/production_constructor_tests.move) shows the template initialization and constructor calls in context. The [Shares](/protocol/shares/#one-share-type-per-work) page explains why each work has its own share type.
 
 For a release, derive its target ID from the ordered recording IDs and 32-byte salt, collect one consent from each recording admin, then call `release::new` and `publish`. [Release Consent](/protocol/release/#release-consent) explains the design and scope of that approval. A core relationship does not grant a recording license or activate a royalty pool.
 

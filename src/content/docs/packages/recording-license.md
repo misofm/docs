@@ -3,7 +3,7 @@ title: Recording Licenses
 description: A composition's optional standing policy for licensing recordings and routing its share of revenue.
 ---
 
-The core `Recording` points to a `Composition`, but that link alone grants no license. [`recording_license`](https://github.com/misofm/recording-license) provides an optional standing policy: the composition admin publishes a `RecordingLicensePolicy` with a rate in basis points, and a recording admin may accept it by paying the exact cut in that recording's share coin.
+The core `Recording` points to a `Composition`, but that link alone grants no license. [`recording_license`](https://github.com/misofm/recording-license) provides an optional standing policy: the composition admin publishes a `RecordingLicensePolicy` with a rate in basis points, and a recording admin may accept it by transferring the exact required amount of recording shares.
 
 The rate can range from 0 to 10,000 BPS in the current source. `issue` checks the supplied cut against the recording currency's fixed supply and the policy's current rate. A rate change affects future licenses; an already issued license retains its terms. The license holds a `Stake<RecordingShare>` for the composition's cut and records the licensed recording on the policy. A composition without a policy has not opted in, although the core still permits a recording to reference it.
 
