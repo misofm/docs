@@ -1,0 +1,9 @@
+---
+const { head, entry } = Astro.locals.starlightRoute;
+const hasMarkdownPage = entry.id !== 'index' && entry.id !== '404';
+const markdownPath = `${Astro.url.pathname.replace(/\/?$/, '/')}index.md`;
+---
+
+{head.map(({ tag: Tag, attrs, content }) => <Tag {...attrs} set:html={content} />)}
+<link rel="describedby" href="/llms.txt" />
+{hasMarkdownPage && <link rel="alternate" type="text/markdown" href={markdownPath} />}

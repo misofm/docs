@@ -15,23 +15,25 @@ The composition and each recording can have different contributors, owners, and 
 
 The same recording can appear on more than one release. A release establishes a catalog and distribution grouping; it does not create a third class of song or master rights.
 
-## Why Shared Objects Matter
+<span id="why-shared-objects-matter"></span>
 
-The industry already has useful identifiers: an [ISWC](https://www.iswc.org/iswc) identifies a musical work, an [ISRC](https://isrc.ifpi.org/) identifies a recording, and a [UPC/GTIN](https://support.gs1.org/support/solutions/articles/43000734120-what-is-a-gs1-gtin-) identifies a saleable product. These are shared keys, but labels, publishers, societies, distributors, and services still maintain their own records under those keys. An identifier alone does not yield one authoritative record of a work's rights, licenses, shares, and relationships to other works.
+## Industry Identifiers
 
-There is a [central ISWC registry](https://www.iswc.org/get-iswc) with a public lookup for titles and creators, but [ISWC does not indicate ownership shares](https://www.iswc.org/iswc). ISRC records are more distributed: the [International ISRC Database is one of several searchable sources](https://isrc.ifpi.org/faqs), and it may not contain a valid ISRC if the recording was not submitted to SoundExchange. [ISRC also does not establish rights status](https://isrc.ifpi.org/why-use-isrc/ownership). A [GTIN lookup](https://support.gs1.org/support/solutions/articles/43000734115-how-can-i-know-which-company-assigned-a-gs1-gtin-to-a-product-) identifies the assigning party and may return product details. None of these lookups supplies a shared, programmable relationship among the song, master, and release.
+The industry already has useful identifiers: an [ISWC](https://www.iswc.org/iswc) identifies a musical work, an [ISRC](https://isrc.ifpi.org/) identifies a recording, and a [UPC/GTIN](https://support.gs1.org/support/solutions/articles/43000734120-what-is-a-gs1-gtin-) identifies a saleable product. Labels, publishers, societies, distributors, and services keep their own records under those shared keys. The codes alone do not provide one rights record or a programmable link between the song, master, and release.
 
-Access also differs between manual search and software integration. The [ISWC public portal](https://www.iswc.org/sites/iswc/files/files/2024-08/Specification%20-%203rd%20Party%20access.pdf) supports individual searches, while [CISAC's third-party API](https://www.iswc.org/third-parties) requires onboarding, signed terms, a subscription key, and fees. The [International ISRC Database](https://isrc.ifpi.org/get-isrc/assign-isrc-online) can be searched for free, while [SoundExchange's ISRC search API](https://www.soundexchange.com/service-provider/licensing-101/) requires a request for access. [Verified by GS1](https://www.gs1.org/docs/verified-by-gs1/public-verified-by-gs1-tou.pdf) offers 30 free GTIN searches per day; [advanced API access](https://support.gs1.org/support/solutions/articles/43000734077-what-is-verified-by-gs1-) is arranged through a local GS1 member organization. These public lookup tools do not amount to unrestricted, complete rights-data APIs.
+The [central ISWC registry](https://www.iswc.org/get-iswc) offers a public title and creator lookup, but [ISWC does not indicate ownership shares](https://www.iswc.org/iswc). The [International ISRC Database](https://isrc.ifpi.org/faqs) is one of several recording lookups and may lack valid codes that were not submitted to SoundExchange; [ISRC does not establish rights status](https://isrc.ifpi.org/why-use-isrc/ownership). A [GTIN lookup](https://support.gs1.org/support/solutions/articles/43000734115-how-can-i-know-which-company-assigned-a-gs1-gtin-to-a-product-) identifies the assigning party and may return product details. None is a complete shared record of rights and relationships.
 
-Those records must be reconciled as data moves between parties. [The MLC's Matching Tool](https://help.themlc.com/en/support/what-is-the-matching-tool) illustrates the cost: a reported recording use may still need to be matched to its underlying musical work. Even with shared codes, comparing catalogs can feel like comparing contact books with different names and connections for the same person. Someone has to reconcile the entries before they can act on them together.
+## Access and Reconciliation
+
+Manual lookup and software access differ. The [ISWC public portal](https://www.iswc.org/sites/iswc/files/files/2024-08/Specification%20-%203rd%20Party%20access.pdf) supports individual searches; [CISAC's API](https://www.iswc.org/third-parties) requires onboarding, signed terms, a subscription key, and fees. The [International ISRC Database](https://isrc.ifpi.org/get-isrc/assign-isrc-online) can be searched for free, while [SoundExchange's ISRC API](https://www.soundexchange.com/service-provider/licensing-101/) requires an access request. [Verified by GS1](https://www.gs1.org/docs/verified-by-gs1/public-verified-by-gs1-tou.pdf) offers 30 free GTIN searches per day; [advanced API access](https://support.gs1.org/support/solutions/articles/43000734077-what-is-verified-by-gs1-) goes through a local GS1 member organization.
+
+Records still need reconciliation as data moves between parties. [The MLC's Matching Tool](https://help.themlc.com/en/support/what-is-the-matching-tool) illustrates this: a reported recording use may need to be matched to its underlying musical work.
+
+## Shared On-Chain Relationships
 
 The [Miso Music Protocol](https://github.com/misofm/music-protocol) gives builders shared, strongly typed `Composition`, `Recording`, and `Release` objects in Sui Move. Published as the `miso_music` package, its core fixes each object's identity and its relationships to the others. A published object ID resolves to on-chain core state. A recording keeps an immutable composition ID. A release keeps an ordered list of recording IDs authorized by the recording admins. Two integrations reading the same objects see the same core links and can verify the publication transaction.
 
 The on-chain object is a canonical source for its own core state, so integrations using the same IDs avoid mismatches in those relationships. The core does not contain a complete rights or license record. Its publication history does not prove real-world authorship, and optional metadata can still conflict. Separate packages define licensing, payments, credits, artwork, and other details. Applications must apply their trust rules to those claims. The protocol code is licensed under [Apache License 2.0](https://github.com/misofm/music-protocol/blob/main/LICENSE).
-
-[Miso Link](https://github.com/misofm/link) connects these on-chain objects to existing industry codes through SuiNS. It normalizes an ISWC, ISRC, or UPC/GTIN into a leaf subname under a configured namespace and points that name to a Sui address. An ISWC can point to a `Composition`, an ISRC to a `Recording`, and a UPC/GTIN to a `Release`. Apps that trust the same namespace can resolve a code to the same on-chain object and inspect its core relationships and publication history, reducing the need to infer those links from separate metadata records. A rights holder who controls a namespace can use this bridge to direct others to the object it treats as its canonical on-chain work.
-
-A Miso Link mapping is an assertion by the SuiNS namespace controller, not a registration with CISAC, IFPI, or GS1. The link can be reassigned or expire with its parent domain, and resolving it returns an address without checking the target's object type or rights claims. Readers should validate the target and the authority behind any claim before relying on it.
 
 ```text
 +------------------------------------+
@@ -54,14 +56,20 @@ A Miso Link mapping is an assertion by the SuiNS namespace controller, not a reg
 +------------------------------------+
 ```
 
-| Core object | What it fixes | What it deliberately leaves out |
+| Core object | What it fixes | What it leaves out |
 | --- | --- | --- |
-| [`Composition<CompositionShare>`](/protocol/composition/) | The written work's identity and canonical share type | Title, writers, lyrics, recording commission |
-| [`Recording<RecordingShare>`](/protocol/recording/) | Its identity, share type, and immutable composition ID | Master audio, artist credits, version name, license terms |
-| [`Release`](/protocol/release/) | Its identity and ordered, distinct recording IDs | Title, cover art, price, release-wide revenue split |
-| [`ReleaseConsent`](/protocol/release/#release-consent) | One recording admin's permission for their recording to appear in a specific release | Payment terms and presentation metadata |
+| [Composition](/protocol/composition/) | Written-work identity and its unique share type | Title, writers, lyrics, recording commission |
+| [Recording](/protocol/recording/) | Master identity, its share type, and immutable composition ID | Master audio, artist credits, version name, license terms |
+| [Release](/protocol/release/) | Identity and ordered, distinct recording IDs | Title, cover art, price, release-wide revenue split |
+| [Release Consent](/protocol/release/#release-consent) | One recording admin's approval for a specific release | Payment terms and presentation metadata |
 
 A recording's composition ID is a **relationship**, not proof of a license. The current core lets anyone create a recording that points to a composition. Apps that require permission to distribute the recording should check a recognized [recording license](/packages/recording-license/) or another agreement. A release is similarly a catalog relationship; a sales package determines its own commercial terms.
+
+## Miso Link
+
+[Miso Link](https://github.com/misofm/link) connects these on-chain objects to existing industry codes through SuiNS. It normalizes an ISWC, ISRC, or UPC/GTIN into a leaf subname under a configured namespace and points that name to a Sui address. An ISWC can point to a `Composition`, an ISRC to a `Recording`, and a UPC/GTIN to a `Release`. Apps that trust the same namespace can resolve a code to the same on-chain object and inspect its core relationships and publication history. A rights holder who controls a namespace can use this bridge to direct others to the object it treats as its canonical on-chain work.
+
+A Miso Link mapping is an assertion by the SuiNS namespace controller, not a registration with CISAC, IFPI, or GS1. The link can be reassigned or expire with its parent domain, and resolving it returns an address without checking the target's object type or rights claims. Readers should validate the target and the authority behind any claim before relying on it.
 
 ## Immutable core, optional extensions
 

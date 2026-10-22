@@ -35,32 +35,6 @@
   --sl-color-hairline-shade: #383733;
 }
 
-:root[data-theme='light'] {
-  --sl-color-white: var(--miso-jet);
-  --sl-color-gray-1: var(--miso-jet-2);
-  --sl-color-gray-2: #34332f;
-  --sl-color-gray-3: #5e5c57;
-  --sl-color-gray-4: #8f8b82;
-  --sl-color-gray-5: #c6c1b6;
-  --sl-color-gray-6: var(--miso-bone-2);
-  --sl-color-gray-7: #e9e5dc;
-  --sl-color-black: var(--miso-bone);
-  --sl-color-accent-high: var(--miso-jet);
-  --sl-color-accent: var(--miso-jet);
-  --sl-color-accent-low: var(--miso-bone-2);
-  --sl-color-text: var(--sl-color-gray-2);
-  --sl-color-text-accent: var(--miso-jet);
-  --sl-color-text-invert: var(--miso-bone);
-  --sl-color-bg: var(--miso-bone);
-  --sl-color-bg-nav: var(--miso-jet);
-  --sl-color-bg-sidebar: #e9e5dc;
-  --sl-color-bg-inline-code: var(--miso-bone-2);
-  --sl-color-bg-accent: var(--miso-jet);
-  --sl-color-hairline: #c6c1b6;
-  --sl-color-hairline-light: #c6c1b6;
-  --sl-color-hairline-shade: #c6c1b6;
-}
-
 body {
   font-family: var(--sl-font-system);
   -webkit-font-smoothing: antialiased;
@@ -76,7 +50,7 @@ body {
   outline-offset: 3px;
 }
 
-/* The site masthead stays jet and bone in either reading theme. */
+/* The site masthead uses the Miso palette. */
 .page > header.header {
   --sl-color-white: var(--miso-bone);
   --sl-color-gray-1: var(--miso-bone-2);
@@ -88,7 +62,7 @@ body {
   --sl-color-bg-nav: var(--miso-jet);
   background: var(--miso-jet);
   color: var(--miso-bone);
-  border-bottom: 2px solid var(--miso-bone);
+  border-bottom: 0;
 }
 
 .site-title {
@@ -135,9 +109,9 @@ site-search button[data-open-modal] > kbd {
 
 .sidebar-content .group-label .large,
 .sidebar-content .top-level > li > a.large {
-  font-family: var(--miso-mono);
-  font-size: 0.76rem;
-  letter-spacing: 0.025em;
+  font-family: var(--sl-font-system);
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
   font-weight: 700;
 }
 
@@ -162,9 +136,15 @@ site-search button[data-open-modal] > kbd {
 }
 
 .right-sidebar-panel h2 {
-  font-family: var(--miso-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
+  font-family: var(--sl-font-system);
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
+}
+
+.pagination-links a {
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .right-sidebar-panel a[aria-current='true'] {
@@ -218,14 +198,46 @@ main h1#_top {
 
 .sl-markdown-content table {
   font-variant-numeric: tabular-nums;
+  width: 100%;
+  border: 1px solid var(--sl-color-gray-5);
+}
+
+.sl-markdown-content :is(th, td) {
+  padding: 0.85rem 1rem;
+  vertical-align: top;
+}
+
+.sl-markdown-content :is(th:first-child, td:first-child) {
+  padding-inline-start: 1rem;
+}
+
+.sl-markdown-content :is(th:last-child, td:last-child) {
+  padding-inline-end: 1rem;
 }
 
 .sl-markdown-content th {
-  background: var(--sl-color-white);
-  color: var(--sl-color-black);
-  font-family: var(--miso-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
+  background: var(--miso-jet-2);
+  color: var(--miso-bone);
+  font-family: var(--sl-font-system);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.sl-markdown-content tbody tr:nth-child(even) {
+  background: #121210;
+}
+
+.sl-markdown-content td:first-child {
+  font-weight: 650;
+}
+
+.sl-markdown-content table code {
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 /* A restrained record-groove motif gives the landing page its own identity. */
@@ -237,8 +249,6 @@ main h1#_top {
   padding: clamp(2rem, 5vw, 4.5rem);
   background: var(--miso-jet);
   color: var(--miso-bone);
-  border: 2px solid var(--miso-jet);
-  border-bottom-color: var(--miso-bone);
 }
 
 :root[data-has-hero] .hero::before {
@@ -356,6 +366,18 @@ main h1#_top {
 }
 
 @media (max-width: 49.99rem) {
+  .sl-markdown-content table :is(th, td):first-child {
+    min-width: 10rem;
+  }
+
+  .sl-markdown-content table :is(th, td):nth-child(2) {
+    min-width: 15rem;
+  }
+
+  .sl-markdown-content table :is(th, td):nth-child(3) {
+    min-width: 16rem;
+  }
+
   :root[data-has-hero] .hero {
     min-height: 0;
   }

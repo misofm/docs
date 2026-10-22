@@ -60,7 +60,7 @@ release_title = { git = "https://github.com/misofm/music-protocol-extensions.git
 
 ## Identifier resolution
 
-[`@misofm/link`](https://github.com/misofm/link) is a TypeScript Sui client extension, not a Move package. It uses SuiNS leaf subnames to map ISWC codes to composition IDs, ISRC codes to recording IDs, and UPC/GTIN codes to release IDs. It also supports IPI and ISNI codes for party identities. The namespace controller can register, reassign, or remove a link; `resolve` returns the target address without fetching or type-checking the object. See [Why Shared Objects Matter](/protocol/overview/#why-shared-objects-matter) for the trust boundary.
+[`@misofm/link`](https://github.com/misofm/link) is a TypeScript Sui client extension, not a Move package. It uses SuiNS leaf subnames to map ISWC codes to composition IDs, ISRC codes to recording IDs, and UPC/GTIN codes to release IDs. It also supports IPI and ISNI codes for party identities. The namespace controller can register, reassign, or remove a link; `resolve` returns the target address without fetching or type-checking the object. See [Miso Link](/protocol/overview/#miso-link) for the trust boundary.
 
 This is a source map, not a claim that each `main` branch or deployed generation is mutually compatible. Read each dependency pin and the relevant `Published.toml` before building a multi-package transaction. Package license terms also differ: the core is Apache-2.0, while several extensions use FSL-1.1-ALv2; follow each repository's own license.
 

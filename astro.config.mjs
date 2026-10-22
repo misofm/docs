@@ -9,7 +9,7 @@ export default defineConfig({
   },
   integrations: [
     starlight({
-      title: 'Miso Docs',
+      title: 'Miso',
       description: 'Build on the Miso Music Protocol on Sui.',
       favicon: '/favicon.svg',
       logo: {
@@ -17,8 +17,14 @@ export default defineConfig({
         alt: 'Miso',
       },
       customCss: ['./src/styles/miso.css'],
+      components: {
+        Head: './src/components/Head.astro',
+        ThemeProvider: './src/components/ThemeProvider.astro',
+        ThemeSelect: './src/components/ThemeSelect.astro',
+      },
       social: [
         { icon: 'github', label: 'Miso Music Protocol on GitHub', href: 'https://github.com/misofm/music-protocol' },
+        { icon: 'x.com', label: 'Miso on X', href: 'https://x.com/_misofm' },
       ],
       sidebar: [
         {

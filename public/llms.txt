@@ -1,0 +1,35 @@
+# Miso Music Protocol
+
+> Developer documentation for the Miso Music Protocol, a small set of Sui Move primitives for identifying musical compositions, recordings, and releases and connecting them to optional rights, metadata, and payment packages.
+
+The core Move package is `miso_music`. A `Composition` is the written work, a `Recording` is a particular master with an immutable composition ID, and a `Release` is an ordered list of recording IDs. Each composition and recording has its own fixed-supply share coin type. Admin capabilities control extension writes and release consent; owning shares alone does not grant those powers.
+
+Read the overview first, then the object and shares pages, then Move Integration. Add only the extensions needed for the product. A core object link is not proof of real-world authorship or a license, and a share coin pays nothing by itself: payment depends on a funded royalty pool and registered stakes. Pin compatible source revisions and verify published package IDs before constructing transactions against a network.
+
+## Start Here
+
+- [Overview](https://docs.miso.fm/protocol/overview/index.md): The song/master/release model, industry identifier lookups and access, shared on-chain relationships, the limits of canonical state, and Miso Link's SuiNS bridge.
+- [Move Integration](https://docs.miso.fm/protocol/integrating/index.md): Dependency pinning, core creation and publication flow, release consent, read APIs, and version checks for Sui Move builders.
+
+## Core Protocol
+
+- [Shares](https://docs.miso.fm/protocol/shares/index.md): Per-work share coin types, fixed supply, admin capabilities, stakes, and the conditions for royalties.
+- [Composition](https://docs.miso.fm/protocol/composition/index.md): Written-work identity, creation, publication, admin control, and extension surface.
+- [Recording](https://docs.miso.fm/protocol/recording/index.md): Master identity, immutable composition relationship, shares, and the distinction between a link and a license.
+- [Release](https://docs.miso.fm/protocol/release/index.md): Ordered track list, deterministic identity, per-recording Release Consent, and the limits of that consent.
+
+## Extensions and Payments
+
+- [Package Map](https://docs.miso.fm/packages/index.md): Metadata extensions and Miso packages for share issuance, identity, administration, royalties, licensing, commerce, streaming, and identifier resolution.
+- [Royalty Pools](https://docs.miso.fm/packages/royalty-pool/index.md): Pool creation, stake registration, deposits, settlement, claims, and payout trust boundaries.
+- [Recording Licenses](https://docs.miso.fm/packages/recording-license/index.md): Optional standing composition policy, recording-share cut, and revenue sweep into a composition pool.
+
+## Complete Text and Terms
+
+- [Complete Documentation](https://docs.miso.fm/llms-full.txt): All substantive docs pages in one text file, generated from the same Markdown sources as this site.
+- [Documentation Licensing](https://docs.miso.fm/licensing/index.md): CC BY 4.0 for original docs prose and diagrams, Apache 2.0 for original code examples and site software; linked Move packages have their own licenses.
+
+## Source Repositories
+
+- [Miso Music Protocol](https://github.com/misofm/music-protocol): Core Move package, templates, source modules, and Apache 2.0 license.
+- [Miso Link](https://github.com/misofm/link): SuiNS-based mapping of legacy industry identifiers to on-chain object addresses. A mapping is an assertion by its namespace controller, not an official registry record or rights verification.
