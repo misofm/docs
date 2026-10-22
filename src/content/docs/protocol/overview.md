@@ -9,7 +9,9 @@ The music industry has long used distinct concepts for the underlying song, reco
 - **Recording:** A particular fixed performance and production of that work, known as the master.
 - **Release:** An ordered collection of recordings presented and distributed together, such as a single, EP, or album.
 
-Compositions and recordings can have different contributors, owners, and licenses. A studio version, a live take, and a cover can all record the same composition while remaining distinct masters. [U.S. copyright guidance](https://www.copyright.gov/engage/musicians/) likewise treats musical works and sound recordings as separate works.
+For example, Dolly Parton wrote and recorded “I Will Always Love You” for [*Jolene*](https://www.dollyparton.com/news/i-will-always-love-you-duet-lulu-roman). Whitney Houston later recorded [her own version for *The Bodyguard* soundtrack](https://www.whitneyhouston.com/track/i-will-always-love-you/). In Miso terms, the song would be one `Composition`. Parton's and Houston's masters would be separate `Recording` objects pointing to it. *Jolene* and *The Bodyguard* soundtrack would be separate `Release` objects listing their respective recording IDs.
+
+The composition and each recording can have different contributors, owners, and licenses. [U.S. copyright guidance](https://www.copyright.gov/engage/musicians/) likewise treats musical works and sound recordings as separate works.
 
 The same recording can appear on more than one release. A release establishes a catalog and distribution grouping; it does not create a third class of song or master rights.
 
