@@ -7,7 +7,7 @@ The Miso Music Protocol and its extensions are split into small Sui Move package
 
 ## Choose by task
 
-- **Create a work or a release:** Start with [Move Integration](/protocol/integrating/), then the relevant [Composition](/protocol/composition/), [Recording](/protocol/recording/), or [Release](/protocol/release/) example.
+- **Understand the core model:** Read how [Composition](/protocol/composition/), [Recording](/protocol/recording/), and [Release](/protocol/release/) divide identity, ownership, and consent.
 - **Add titles, credits, or artwork:** Use the [metadata extensions](#metadata-extensions) for the core object you want to describe.
 - **Distribute revenue to shareholders:** Read [Royalty Pools](/packages/royalty-pool/) and check which payment package deposits into the pool.
 - **Express standing recording terms:** Read [Recording Licenses](/packages/recording-license/); a recording's composition link alone does not grant permission.

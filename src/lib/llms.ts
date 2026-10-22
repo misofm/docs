@@ -7,10 +7,10 @@ export const docIds = [
   'protocol/composition',
   'protocol/recording',
   'protocol/release',
-  'protocol/integrating',
   'packages',
   'packages/royalty-pool',
   'packages/recording-license',
+  'protocol/integrating',
   'licensing',
 ] as const;
 

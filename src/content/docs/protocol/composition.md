@@ -1,43 +1,32 @@
 ---
 title: Composition
-description: The written work, its on-chain identity, shares, and extension surface.
+description: Why the underlying song has its own identity, shares, and administration.
 ---
 
-A composition represents the underlying music and, where present, lyrics. It is the work associated with publishing, separate from any particular [recording](/protocol/recording/) of it. The core `Composition<CompositionShare>` object is deliberately small: it contains an ID and is parameterized by that work's unique share coin type. Titles, writers, lyrics, and other descriptive details live in extension packages.
+A composition represents the underlying music and, where present, lyrics: the work associated with publishing. It gives that work an identity independent of any particular [recording](/protocol/recording/).
 
-## Create and publish
+In the [overview's example](/protocol/overview/), “I Will Always Love You” is one composition. Dolly Parton's original recording and Whitney Houston's cover are separate masters of that work. They can refer to the same composition without sharing recording ownership, credits, or commercial terms.
 
-First publish a fresh [composition share template](/protocol/shares/#create-a-works-coin) and initialize its currency. With its shared `Currency<CompositionShare>`, owned `TreasuryCap<CompositionShare>`, and the shared `CompositionRegistry`, a calling Move module can create and publish the work:
+## One identity for the work
 
-```move
-use sui::coin::{Self, Coin, TreasuryCap};
-use sui::coin_registry::Currency;
-use miso_music::composition::{Self, CompositionAdminCap, CompositionRegistry};
+The core `Composition<CompositionShare>` contains only an object ID. Its type parameter identifies the work's unique [share coin](/protocol/shares/). Titles, writers, and lyrics are deliberately outside this core identity: changing a preferred title or correcting a credit should not create a different underlying work.
 
-public fun create_composition<CompositionShare: key>(
-    registry: &mut CompositionRegistry,
-    currency: &mut Currency<CompositionShare>,
-    treasury_cap: TreasuryCap<CompositionShare>,
-    ctx: &mut TxContext,
-): (CompositionAdminCap<CompositionShare>, Coin<CompositionShare>) {
-    let predicted_id = composition::derive_address<CompositionShare>(registry);
-    let (composition, admin_cap, shares) =
-        composition::new(registry, currency, treasury_cap);
-    assert!(object::id(&composition).to_address() == predicted_id, 0);
+Within a protocol package's registry, a composition's ID is derived from its share type. This gives the work and its shares a stable, programmatically verifiable association. A derived address predicts where the object belongs; the published object and its history establish whether it exists.
 
-    composition.publish(&admin_cap);
-    (admin_cap, coin::from_balance(shares, ctx))
-}
-```
+## One composition, many recordings
 
-This function is an excerpt for a module that already depends on `miso_music`; the template publication and currency initialization happen earlier. `new` validates the share currency, mints and fixes its supply, and returns the full balance. The function returns both assets so the caller can transfer, allocate, or custody them. `publish` shares the composition and emits `CompositionPublishedEvent` with the composition and admin capability IDs. The derived address can be calculated before creation; it does not prove the work already exists.
+A composition does not maintain a list of every recording made from it. Each recording stores the composition's ID instead. This lets new studio versions, live performances, and covers refer to the work without changing the composition object.
 
-If `new` aborts, check that the currency has the template's exact type and metadata, locked metadata, zero prior supply, and its matching treasury cap. The [share coin requirements](/protocol/shares/#create-a-works-coin) list those checks.
+That reference describes which work was recorded. Permission to record it, and any agreed payment to its rights holders, belongs to a [recording license](/packages/recording-license/) or another agreement. The core relationship alone does not impose a commission.
 
-## Control and extensions
+## Administration and shares
 
-The admin capability authorizes `composition::uid_mut`, which extension packages use to attach dynamic fields. Holding composition [shares](/protocol/shares/) does not grant that capability. The core does not assign writers, set publishing terms, or open a royalty pool; an integration must use the relevant extension and payment packages for those behaviors.
+The `CompositionAdminCap` controls the composition's extension surface. An administrator can use supported extensions to attach or update titles, credits, lyrics, and other data. The capability is a transferable bearer object, so its custody determines who can exercise that authority.
 
-One composition can have multiple recordings. A recording stores the composition ID when it is created, but that relationship alone does not prove permission to record or distribute the work. See [Recording](/protocol/recording/) and [Recording Licenses](/packages/recording-license/).
+Composition shares are separate from this administrative control. Holding shares does not grant the admin capability, and holding the capability does not imply ownership of the shares. [Royalty pools](/packages/royalty-pool/) and other economic packages define how share holders participate in payments.
 
-Source: pinned [composition module](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/composition.move) and [production constructor test](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/tests/production_constructor_tests.move).
+## A small core, richer extensions
+
+Publication makes the composition a shared on-chain object. Its identity and share type remain fixed, while authorized [extensions](/packages/#metadata-extensions) can maintain descriptive and economic data around it. Applications reading the same composition ID agree on the core identity while applying the relevant extension's rules to its metadata and rights claims.
+
+Source: [composition module](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/composition.move) and [protocol design](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/README.md).

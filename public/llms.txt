@@ -4,25 +4,28 @@
 
 The core Move package is `miso_music`. A `Composition` is the written work, a `Recording` is a particular master with an immutable composition ID, and a `Release` is an ordered list of recording IDs. Each composition and recording has its own fixed-supply share coin type. Admin capabilities control extension writes and release consent; owning shares alone does not grant those powers.
 
-Read the overview first, then the object and shares pages, then Move Integration. Add only the extensions needed for the product. A core object link is not proof of real-world authorship or a license, and a share coin pays nothing by itself: payment depends on a funded royalty pool and registered stakes. Pin compatible source revisions and verify published package IDs before constructing transactions against a network.
+Read the overview first, then Shares, Composition, Recording, and Release. These pages explain the protocol design; use the supplemental Move source guide only when inspecting the implementation. Add only the extensions needed for the product. A core object link is not proof of real-world authorship or a license, and a share coin pays nothing by itself: payment depends on a funded royalty pool and registered stakes. Pin compatible source revisions and verify published package IDs before constructing transactions against a network.
 
 ## Start Here
 
 - [Overview](https://docs.miso.fm/protocol/overview/index.md): The song/master/release model, industry identifier lookups and access, Music's Shared Ledger, the limits of canonical state, and Miso Link's SuiNS bridge.
-- [Move Integration](https://docs.miso.fm/protocol/integrating/index.md): Reproducible local test at pinned core commit `3bd54d1`, Move dependency setup, links to source-verified constructor examples, and the checks needed before network integration. No deployment IDs are claimed.
 
 ## Core Protocol
 
-- [Shares](https://docs.miso.fm/protocol/shares/index.md): Per-work share coin types, fixed supply, constructor validation requirements, admin capabilities, stakes, and the conditions for royalties.
-- [Composition](https://docs.miso.fm/protocol/composition/index.md): Written-work identity, source-verified Move creation example, share and admin-cap returns, and extension surface.
-- [Recording](https://docs.miso.fm/protocol/recording/index.md): Master identity, source-verified Move creation example, immutable composition relationship, and the distinction between a link and a license.
-- [Release](https://docs.miso.fm/protocol/release/index.md): Ordered track list, deterministic identity, single-track Move consent example, and the limits of Release Consent.
+- [Shares](https://docs.miso.fm/protocol/shares/index.md): Why each work has a distinct share type and fixed supply, how initial allocation differs from minting, and how shares, administration, and royalty participation differ.
+- [Composition](https://docs.miso.fm/protocol/composition/index.md): Why the written work has an identity independent of recordings, its unique share type, separate administration, and optional extensions.
+- [Recording](https://docs.miso.fm/protocol/recording/index.md): Why a master has independent identity and shares, an immutable composition relationship, and separate consent for each release.
+- [Release](https://docs.miso.fm/protocol/release/index.md): Ordered track lists, identity committed to order and salt, per-recording consent, release administration, and the separation of presentation and commercial terms.
 
 ## Extensions and Payments
 
 - [Package Map](https://docs.miso.fm/packages/index.md): Task-based entry points and the Miso packages for metadata, share issuance, identity, administration, royalties, licensing, commerce, streaming, and identifier resolution.
 - [Royalty Pools](https://docs.miso.fm/packages/royalty-pool/index.md): Pool creation, stake registration, deposits, settlement, claims, and payout trust boundaries.
 - [Recording Licenses](https://docs.miso.fm/packages/recording-license/index.md): Optional standing composition policy, recording-share cut, and revenue sweep into a composition pool.
+
+## Optional
+
+- [Move Source Guide](https://docs.miso.fm/protocol/integrating/index.md): Supplemental implementation material: reproduce the pinned core tests, inspect dependencies and constructor tests, and distinguish source revisions from network deployments.
 
 ## Complete Text and Terms
 

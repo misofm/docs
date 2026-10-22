@@ -1,48 +1,38 @@
 ---
 title: Release
-description: An ordered grouping of recordings, with consent tied to its exact identity.
+description: Why recordings are grouped into ordered releases and how recording admins consent to that grouping.
 ---
 
-A release groups [recordings](/protocol/recording/) into an ordered track list, such as a single, EP, album, or compilation. The same recording may appear on multiple releases. In the core, `Release` stores its ID and ordered recording IDs; titles, artwork, prices, and revenue splits belong to extensions.
+A release groups [recordings](/protocol/recording/) into an ordered track list, such as a single, EP, album, or compilation. The same recording may appear on multiple releases. A release establishes a catalog and distribution grouping; it does not create another class of composition or master rights.
 
-## Identity
+For example, a single and an album can both include the same master. Each release has its own identity, while the recording and its connection to the underlying composition remain the same.
 
-A release contains **1 to 1,000 distinct recordings**. Its ID derives from the shared `ReleaseRegistry`, the ordered recording IDs, and a **32-byte salt**. `release::derive_address` lets an integration calculate the ID before creation. Changing the order or salt produces a different target identity. The identity digest uses `blake2b256(bcs(recording_ids) || bcs(salt))`, whose derived address under the registry becomes the release ID.
+## Identity includes the track order
+
+A published `Release` holds an ordered list of **1 to 1,000 distinct recording IDs**. Its identity derives from that list and a **32-byte salt** under the protocol's release registry. The salt allows separate releases to use the same track list without sharing an identity.
+
+Order is part of the commitment. A release containing tracks A then B has a different target identity from one containing B then A. Changing the salt also changes the identity. Once published, a release's track list is fixed.
+
+The identity can be calculated before the release exists. That is what makes it possible for recording admins to approve a specific proposed release in advance.
 
 ## Release Consent
 
-Before assembling a release, obtain consent from the admin of every recording in its exact track list and order:
+Each recording admin grants a `ReleaseConsent` for a particular recording and target release ID. Because the target ID commits to the ordered track list and salt, the approval is bound to that exact proposal.
 
-1. Choose the ordered recording IDs and a 32-byte salt.
-2. Call `release::derive_address` with the registry, IDs, and salt to predict the release ID.
-3. Each recording admin calls `release::consent(&recording, &recording_cap, release_id)` and supplies the resulting `ReleaseConsent` to the assembly transaction.
-4. Call `release::new(&mut registry, consents, salt)`, then `release.publish(&release_cap)` in the same transaction.
+Consider a compilation containing recordings A and B. Both admins approve the same target release ID. Swapping the track order or adding a third recording changes the target ID, so those approvals cannot authorize the revised proposal. The release must gather consent for its new identity.
 
-For a **single-track release** where the caller has that recording's admin cap, the Move calls look like this:
+During assembly, the protocol consumes the consents, rejects duplicate recordings, and checks that every approval targets the release being created. A consent cannot be copied, but an extension can hold it for an offer or escrow workflow. This allows recording admins and a release organizer to coordinate without requiring the same party to control every recording.
 
-```move
-use miso_music::recording::{Recording, RecordingAdminCap};
-use miso_music::release::{Self, ReleaseAdminCap, ReleaseRegistry};
+## What consent covers
 
-public fun publish_single<RecordingShare>(
-    registry: &mut ReleaseRegistry,
-    recording: &Recording<RecordingShare>,
-    recording_cap: &RecordingAdminCap<RecordingShare>,
-    salt: vector<u8>,
-): ReleaseAdminCap {
-    let recording_ids = vector[object::id(recording)];
-    let target = release::derive_address(registry, recording_ids, copy salt).to_id();
-    let consent = release::consent(recording, recording_cap, target);
-    let (release, release_cap) = release::new(registry, vector[consent], salt);
-    release.publish(&release_cap);
-    release_cap
-}
-```
+Consent approves **membership and order**. It does not approve artwork, titles, prices, payment terms, or revenue splits. A sales or distribution package must define and collect approval for its own commercial terms.
 
-Supply exactly 32 salt bytes. This example keeps derivation, consent, and publication in one call; a multi-admin release must collect the separate `ReleaseConsent` values before assembly. The returned release cap needs to be transferred or held by the calling application.
+The `ReleaseAdminCap` controls the release's extension surface. It does not grant administration over the included recordings or replace their admins' consent. Likewise, a release has no core share coin or automatic release-wide revenue split; payment packages define how release revenue reaches the recordings and their share holders.
 
-The constructor consumes the consents, rejects duplicate recordings, and checks that every consent targets the derived release ID. A consent has `store` and `drop`, so an extension can wrap it for offers or escrow; it has no `copy`. Publication emits `ReleasePublishedEvent` with the release ID, admin capability ID, ordered recording IDs, and salt. Join each recording ID to its `RecordingPublishedEvent` to find the composition.
+## Fixed relationships, extensible presentation
 
-Consent covers **membership and order**. It does not approve track revenue splits, artwork, titles, or sale terms. A sales or distribution package must gather approval for its own terms. The `ReleaseAdminCap` authorizes extension writes through `release::uid_mut`; it does not replace consent from recording admins.
+Titles, artwork, credits, and other presentation data belong to [extensions](/packages/#metadata-extensions). They can be managed around the fixed track list without expanding the core release model.
 
-Source: pinned [release module](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/release.move), [end-to-end test](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/tests/release_e2e_tests.move), and [protocol README](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/README.md#release-consent).
+Publication records the release ID, admin capability ID, ordered recording IDs, and salt in `ReleasePublishedEvent`. Readers can verify the release's identity from those values and follow each recording to its composition.
+
+Source: [release module](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/release.move) and [release consent design](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/README.md#release-consent).

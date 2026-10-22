@@ -1,44 +1,34 @@
 ---
 title: Recording
-description: A particular master, its composition relationship, shares, and permissions.
+description: How a master has its own identity and ownership while remaining linked to its composition.
 ---
 
-A recording represents a particular fixed performance and production of a [composition](/protocol/composition/): a master. A studio version, live take, or cover can each be a separate recording of the same composition. The core `Recording<RecordingShare>` stores its own ID and an immutable `composition_id`. It does not contain audio, credits, version metadata, or license terms; those belong to extensions.
+A recording represents a particular fixed performance and production of a [composition](/protocol/composition/): a master. A studio version, a live take, and a cover can each be distinct recordings of the same song.
 
-## Create and publish
+In the [overview's example](/protocol/overview/), Dolly Parton's and Whitney Houston's recordings of “I Will Always Love You” would have separate recording IDs and separate share types. Both would point to the same composition.
 
-Each recording uses its own [recording share coin](/protocol/shares/#create-a-works-coin). Once its currency is initialized, a Move module can create a recording from an immutable composition reference:
+## A permanent composition relationship
 
-```move
-use sui::coin::{Self, Coin, TreasuryCap};
-use sui::coin_registry::Currency;
-use miso_music::composition::Composition;
-use miso_music::recording::{Self, RecordingAdminCap, RecordingRegistry};
+The core `Recording<RecordingShare>` contains its own object ID and an immutable `composition_id`. Once published, a recording cannot be redirected to another composition. Integrations reading that recording agree on which underlying work it references.
 
-public fun create_recording<RecordingShare: key, CompositionShare>(
-    registry: &mut RecordingRegistry,
-    currency: &mut Currency<RecordingShare>,
-    treasury_cap: TreasuryCap<RecordingShare>,
-    composition: &Composition<CompositionShare>,
-    ctx: &mut TxContext,
-): (RecordingAdminCap<RecordingShare>, Coin<RecordingShare>) {
-    let (recording, admin_cap, shares) =
-        recording::new(registry, currency, treasury_cap, composition);
-    assert!(recording.composition_id() == object::id(composition), 0);
+The relationship is stored on the recording rather than maintained as a mutable list on the composition. Adding a recording therefore does not require changing the composition or obtaining its admin capability. The core is permissionless: an application that needs recording authorization must check a recognized [recording license](/packages/recording-license/) or another agreement.
 
-    recording.publish(&admin_cap);
-    (admin_cap, coin::from_balance(shares, ctx))
-}
-```
+## Independent ownership and administration
 
-The composition is only borrowed, so creating another recording does not mutate it. The function returns the recording admin capability and the full fixed-supply share coin for the caller to route. `recording::derive_address<RecordingShare>` predicts the recording ID from the registry and share type, while `recording::composition_id` reads the immutable relationship. Publishing emits `RecordingPublishedEvent` with the recording, composition, and admin capability IDs.
+Every recording has its own [fixed-supply share coin](/protocol/shares/). Recording shares and composition shares are distinct types, reflecting the separate economic interests in the master and the underlying work. Recording royalties do not automatically flow to composition share holders simply because the objects are linked.
 
-If `new` aborts, check the recording template's exact type and metadata, locked metadata, zero prior supply, and matching treasury cap. It enforces the same [share coin requirements](/protocol/shares/#create-a-works-coin) as composition creation.
+The `RecordingAdminCap` is separate from those shares. It authorizes extension writes and can issue [Release Consent](/protocol/release/#release-consent). Share ownership alone does not grant either power.
 
-## Rights and release participation
+## One recording, multiple releases
 
-The composition reference fixes a relationship, not a license. The core lets a caller create a recording that points to a composition without checking recording rights. An application that requires authorization should check a recognized [recording license](/packages/recording-license/) or another agreement.
+A recording can appear on a single, an album, and a later compilation while retaining the same recording ID. Those releases refer to the existing master rather than creating copies of it.
 
-The recording admin capability controls extension writes and can issue [Release Consent](/protocol/release/#release-consent) for a particular release. It is separate from [recording shares](/protocol/shares/), which express fractional economic ownership through the packages that receive and distribute revenue. A [release](/protocol/release/) can include the recording only with consent for its exact release ID.
+Each release needs the recording admin's consent for its exact identity. Consent to one release does not authorize a different track list or another release. This preserves the distinction between identifying a master and approving how it is grouped for distribution.
 
-Source: pinned [recording module](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/recording.move) and [production constructor test](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/tests/production_constructor_tests.move).
+## Audio and metadata live in extensions
+
+The core recording does not contain audio, artist credits, a version name, or license terms. [Extension packages](/packages/#metadata-extensions) attach those details under the recording admin's authority. They can evolve without changing the master object's identity or its composition relationship.
+
+Publication emits the recording, composition, and admin capability IDs together, giving indexers a direct record of the core relationship. Metadata and economic packages provide their own state and events.
+
+Source: [recording module](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/recording.move) and [protocol design](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/README.md).

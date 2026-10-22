@@ -79,7 +79,7 @@ The admin capability controls the object's extension surface. [Share tokens](/pr
 
 Core offers one `CompositionRegistry`, one `RecordingRegistry`, and one `ReleaseRegistry` per package publication. Composition and recording IDs derive from the registry and their unique share types. Release IDs derive from the ordered recording list and a 32-byte salt. These registries are shared at package initialization and have no public constructor.
 
-For a dependency entry and a creation flow, see [Move Integration](/protocol/integrating/).
+The following pages explain those design choices in more detail: [Shares](/protocol/shares/), [Composition](/protocol/composition/), [Recording](/protocol/recording/), and [Release](/protocol/release/).
 
 ## Where money flows
 

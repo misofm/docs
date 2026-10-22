@@ -7,19 +7,21 @@ Every composition and recording has its **own Sui coin type**: `CompositionShare
 
 These are ordinary typed `Coin<T>` / `Balance<T>` values, with their currency setup and fixed supply checked by [`misofm/share`](https://github.com/misofm/share). The work's share coin type is a type parameter of its core object, so code cannot accidentally use a recording's share coin as that composition's share coin.
 
-## Create a work's coin
+## One share type per work
 
-The [core repository's templates](https://github.com/misofm/music-protocol/tree/main/templates) contain one small package for composition shares and one for recording shares. Publish unchanged template bytecode for each work, initialize its currency using the one-time ticket, then pass the currency and treasury cap to `composition::new` or `recording::new`. The constructor consumes the treasury cap, validates the canonical metadata, mints the supply, and fixes it. Its returned balance is the initial allocation; the core does not decide who ultimately holds it.
+Each work uses a fresh copy of the relevant share template. Composition shares use the name `Composition Share` and symbol `CSHARE`; recording shares use `Recording Share` and `RSHARE`. The names and symbols are shared conventions, but the package addresses differ, giving each work's coin a distinct type identity.
 
-Both currencies use 6 decimals. Composition shares use `CSHARE`; recording shares use `RSHARE`. The shared names and symbols do not make the coins interchangeable: their package addresses, and therefore their type identities, differ.
+The protocol ties that share type to one work and validates its currency when the work is created. It requires the canonical metadata, zero prior supply, and an unregulated currency, then consumes the minting authority and fixes the full supply. The resulting work object therefore establishes that its share currency passed those checks. Later allocations divide the existing supply rather than creating more shares.
 
-The constructor rejects a share currency unless its module and type name match the relevant template, its name and symbol are exactly `Composition Share`/`CSHARE` or `Recording Share`/`RSHARE`, and its description and icon URL are empty. It also requires locked metadata, an unregulated currency, zero prior supply, and the matching treasury cap. The [constructor tests](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/tests/production_constructor_tests.move) cover these failure cases.
+This keeps the core independent of any particular allocation agreement. The creator receives the initial balance; extensions and applications decide how it is split, held, or staked.
 
 ## From shares to payments
 
 A share coin represents a claim **only when a revenue path pays a corresponding pool and the holder registers a stake there**. In [`royalty_pool`](https://github.com/misofm/royalty-pool), `RoyaltyPool<Share, Currency>` receives a payout `Currency` for holders of that `Share` type. A composition or recording can have one canonical pool per payout currency. Holders wrap share balances in `Stake<Share>`, register them, and claim accrued royalties. The pool distributes among **registered** shares; unstaked shares do not accrue there.
 
 A composition's share holders do not automatically receive a cut of all recordings that reference it. The [recording-license package](/packages/recording-license/) can place an agreed cut of recording shares in a stake owned for the composition, then route that stake's recording royalties to the composition pool. This is an extension policy, not an automatic consequence of the core relationship.
+
+## Ownership and administration
 
 The `CompositionAdminCap` and `RecordingAdminCap` are separate bearer objects. They authorize extension writes but are not share coins. A holder can own shares without administrative control, or hold a cap without owning shares.
 

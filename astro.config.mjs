@@ -39,7 +39,6 @@ export default defineConfig({
             { label: 'Release', slug: 'protocol/release' },
           ],
         },
-        { label: 'Move Integration', slug: 'protocol/integrating' },
         {
           label: 'Miso Packages',
           items: [
