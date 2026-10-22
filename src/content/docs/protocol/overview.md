@@ -3,7 +3,7 @@ title: Overview
 description: Why the protocol separates songs, masters, and releases, and how they relate on-chain.
 ---
 
-One thing the music industry got right is separating the underlying song from any particular recording of it. The **composition** is the music and, where present, lyrics: the work associated with publishing. A **recording** is a particular fixed performance and production of that work: the master. The two can have different contributors, owners, and licenses. A studio version, a live take, and a cover can all record the same composition while remaining distinct masters. [U.S. copyright guidance](https://www.copyright.gov/engage/musicians/) likewise treats musical works and sound recordings as separate works.
+The music industry has long distinguished the underlying song from any particular recording of it. The **composition** is the music and, where present, lyrics: the work associated with publishing. A **recording** is a particular fixed performance and production of that work: the master. The two can have different contributors, owners, and licenses. A studio version, a live take, and a cover can all record the same composition while remaining distinct masters. [U.S. copyright guidance](https://www.copyright.gov/engage/musicians/) likewise treats musical works and sound recordings as separate works.
 
 A **release** answers a different question: which recordings are assembled and distributed together? A single, EP, album, or compilation gives recordings an ordered place in a catalog. The same recording can appear on more than one release. The release is a distribution grouping, rather than a third class of song or master rights.
 
