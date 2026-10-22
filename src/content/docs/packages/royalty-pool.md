@@ -1,5 +1,5 @@
 ---
-title: Royalty pools
+title: Royalty Pools
 description: Distribute a payout currency to registered holders of a work's share coin.
 ---
 

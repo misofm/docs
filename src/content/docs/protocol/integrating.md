@@ -1,9 +1,9 @@
 ---
-title: Move integration
+title: Move Integration
 description: Start a Sui Move integration against the current protocol generation.
 ---
 
-Start from the [`music-protocol` repository](https://github.com/misofm/music-protocol) and pin a **40-character commit** in `Move.toml`. Use the Move package name `miso_music`. A schematic dependency entry is:
+Start from the [Miso Music Protocol repository](https://github.com/misofm/music-protocol) and pin a **40-character commit** in `Move.toml`. Use the Move package name `miso_music`. A schematic dependency entry is:
 
 ```toml
 [dependencies]

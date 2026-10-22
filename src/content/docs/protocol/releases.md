@@ -1,5 +1,5 @@
 ---
-title: Release consent
+title: Release Consent
 description: How recording admins authorize an exact release membership and order.
 ---
 

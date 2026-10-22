@@ -1,9 +1,9 @@
 ---
-title: Miso package map
+title: Package Map
 description: Core, metadata, royalty, licensing, and commerce packages for Move integrations.
 ---
 
-Miso's music contracts are split into small Sui Move packages. Start with [`misofm/music-protocol`](https://github.com/misofm/music-protocol) for composition, recording, release, share types, and release consent. Add only the packages your product needs. Each repository has its own `Move.toml`, source revision, license, and published package IDs.
+The Miso Music Protocol and its extensions are split into small Sui Move packages. Start with [`misofm/music-protocol`](https://github.com/misofm/music-protocol) for composition, recording, release, share types, and release consent. Add only the packages your product needs. Each repository has its own `Move.toml`, source revision, license, and published package IDs.
 
 ## Metadata extensions
 

@@ -1,5 +1,5 @@
 ---
-title: Recording licenses
+title: Recording Licenses
 description: A composition's optional standing policy for licensing recordings and routing its share of revenue.
 ---
 

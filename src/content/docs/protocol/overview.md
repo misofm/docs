@@ -1,9 +1,9 @@
 ---
-title: Core model
+title: Overview
 description: Composition, recording, release, and their deliberately small on-chain relationships.
 ---
 
-The [`miso_music` Move package](https://github.com/misofm/music-protocol) defines three shared music objects and the authorization needed to create a release. It records identity and relationships; it does not decide how music is titled, licensed, sold, or paid.
+The [Miso Music Protocol](https://github.com/misofm/music-protocol), published as the `miso_music` Move package, defines three shared music objects and the authorization needed to create a release. It records identity and relationships; it does not decide how music is titled, licensed, sold, or paid.
 
 ```text
 Composition<CompositionShare>          written work

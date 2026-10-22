@@ -7,23 +7,23 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Miso Docs',
-      description: 'Build on the Miso music protocol on Sui.',
+      description: 'Build on the Miso Music Protocol on Sui.',
       sidebar: [
         {
-          label: 'Music protocol',
+          label: 'Miso Music Protocol',
           items: [
-            { label: 'Core model', slug: 'protocol/overview' },
-            { label: 'Share tokens', slug: 'protocol/shares' },
-            { label: 'Release consent', slug: 'protocol/releases' },
-            { label: 'Move integration', slug: 'protocol/integrating' },
+            { label: 'Overview', slug: 'protocol/overview' },
+            { label: 'Share Tokens', slug: 'protocol/shares' },
+            { label: 'Release Consent', slug: 'protocol/releases' },
+            { label: 'Move Integration', slug: 'protocol/integrating' },
           ],
         },
         {
-          label: 'Miso packages',
+          label: 'Miso Packages',
           items: [
-            { label: 'Package map', slug: 'packages' },
-            { label: 'Royalty pools', slug: 'packages/royalty-pool' },
-            { label: 'Recording licenses', slug: 'packages/recording-license' },
+            { label: 'Package Map', slug: 'packages' },
+            { label: 'Royalty Pools', slug: 'packages/royalty-pool' },
+            { label: 'Recording Licenses', slug: 'packages/recording-license' },
           ],
         },
         { label: 'Licensing', slug: 'licensing' },
