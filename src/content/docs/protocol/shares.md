@@ -36,4 +36,6 @@ A composition's share holders do not automatically receive a cut of all recordin
 
 The `CompositionAdminCap` and `RecordingAdminCap` are separate bearer objects. They authorize extension writes and are separate from shares. A holder can own shares without administrative control, or hold a cap without owning shares.
 
+Contract excerpts © Miso Labs, Inc., licensed under [Apache-2.0](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/LICENSE).
+
 Source: [composition constants](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/composition.move), [recording constants](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/recording.move), [music-protocol share type design](https://github.com/misofm/music-protocol/blob/main/README.md#share-coins), [share package](https://github.com/misofm/share), and [royalty-pool package](https://github.com/misofm/royalty-pool).

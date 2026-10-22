@@ -19,4 +19,4 @@ When documenting contracts, use a specific source revision and distinguish it fr
 
 ## License
 
-The documentation prose and diagrams are [CC BY 4.0](LICENSE-CONTENT.md). The site code, configuration, and original code examples are [Apache-2.0](LICENSE), matching the Miso Music Protocol's software license.
+The documentation prose and diagrams are [CC BY 4.0](LICENSE-CONTENT.md). The site code, configuration, and independently written code examples are [Apache-2.0](LICENSE). Copied or adapted package excerpts retain their source license, including FSL where applicable; inclusion in these docs does not grant an additional Apache license to those excerpts.

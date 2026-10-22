@@ -30,7 +30,7 @@ Read the overview first, then Shares, Composition, Recording, and Release. These
 ## Complete Text and Terms
 
 - [Complete Documentation](https://docs.miso.fm/llms-full.txt): All substantive docs pages in one text file, generated from the same Markdown sources as this site.
-- [Documentation Licensing](https://docs.miso.fm/licensing/index.md): CC BY 4.0 for original docs prose and diagrams, Apache 2.0 for original code examples and site software; linked Move packages have their own licenses.
+- [Documentation Licensing](https://docs.miso.fm/licensing/index.md): CC BY 4.0 for original prose and diagrams; Apache 2.0 for independently written examples and site software. Copied or adapted package excerpts retain their source licenses, including FSL-1.1-ALv2 where applicable. Inclusion in the docs does not relicense FSL excerpts; the FSL future Apache grant applies separately to each version after two years.
 
 ## Source Repositories
 

@@ -5,6 +5,7 @@ Whenever documentation content changes, update `public/llms.txt` in the same cha
 ## Documentation Guidelines
 
 - Standardize on “share type” for a work's `CompositionShare` or `RecordingShare` type, and “shares” for quantities held or transferred. Use `Coin<T>` and `Balance<T>` when referring to concrete Move values.
+- Copied or adapted contract excerpts retain their source license, including FSL where applicable. Identify the repository, immutable revision, copyright notice, and license with each excerpt or a clearly scoped page-level notice. Never describe an FSL excerpt as Apache-2.0 merely because it appears in these docs; the docs' Apache grant covers independently written examples and site software.
 
 - Start each page with its reader and outcome. Keep concept pages, step-by-step tasks, and API references distinct, with links at the point where a reader needs the next one.
 - Lead with a concrete example when a concept is abstract. Carry the same composition, recording, and release relationships through related pages rather than inventing a new mental model each time.
