@@ -15,6 +15,6 @@ The recording ID derives from the registry and its share type. `recording::deriv
 
 The composition reference fixes a relationship, not a license. The core lets a caller create a recording that points to a composition without checking recording rights. An application that requires authorization should check a recognized [recording license](/packages/recording-license/) or another agreement.
 
-The recording admin capability controls extension writes and can issue [Release Consent](/protocol/releases/) for a particular release. It is separate from [recording shares](/protocol/shares/), which express fractional economic ownership through the packages that receive and distribute revenue. A [release](/protocol/release/) can include the recording only with consent for its exact release ID.
+The recording admin capability controls extension writes and can issue [Release Consent](/protocol/release/#release-consent) for a particular release. It is separate from [recording shares](/protocol/shares/), which express fractional economic ownership through the packages that receive and distribute revenue. A [release](/protocol/release/) can include the recording only with consent for its exact release ID.
 
 Source: [recording module](https://github.com/misofm/music-protocol/blob/main/sources/recording.move).

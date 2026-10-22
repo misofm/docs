@@ -29,7 +29,7 @@ recording.publish(&recording_cap);
 
 This is a flow sketch, not a standalone module: your transaction must create the two currencies and handle every returned value. Recording creation needs only an immutable composition reference. For existing works, fetch the shared composition and registry objects for the same published generation.
 
-To publish a release, derive its target ID from the ordered recording IDs and salt, collect a `ReleaseConsent` from each recording admin, then call `release::new` and `publish`. See [Release consent](/protocol/releases/) for the scope of that approval.
+To publish a release, derive its target ID from the ordered recording IDs and salt, collect a `ReleaseConsent` from each recording admin, then call `release::new` and `publish`. See [Release Consent](/protocol/release/#release-consent) for the scope of that approval.
 
 ## Read and extend
 

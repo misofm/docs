@@ -4,6 +4,9 @@ import starlight from '@astrojs/starlight';
 
 export default defineConfig({
   site: 'https://docs.miso.fm',
+  redirects: {
+    '/protocol/releases': '/protocol/release/#release-consent',
+  },
   integrations: [
     starlight({
       title: 'Miso Docs',
@@ -16,13 +19,7 @@ export default defineConfig({
             { label: 'Shares', slug: 'protocol/shares' },
             { label: 'Composition', slug: 'protocol/composition' },
             { label: 'Recording', slug: 'protocol/recording' },
-            {
-              label: 'Release',
-              items: [
-                { label: 'Overview', slug: 'protocol/release' },
-                { label: 'Release Consent', slug: 'protocol/releases' },
-              ],
-            },
+            { label: 'Release', slug: 'protocol/release' },
           ],
         },
         {

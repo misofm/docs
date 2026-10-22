@@ -3,14 +3,15 @@ title: Overview
 description: Why the protocol separates songs, masters, and releases, and how they relate on-chain.
 ---
 
-The music industry has long distinguished the underlying song from any particular recording of it:
+The music industry has long used distinct concepts for the underlying song, recordings of it, and the releases that bring those recordings together:
 
 - **Composition:** The music and, where present, lyrics that form the work associated with publishing.
 - **Recording:** A particular fixed performance and production of that work, known as the master.
+- **Release:** An ordered collection of recordings presented and distributed together, such as a single, EP, or album.
 
-The two can have different contributors, owners, and licenses. A studio version, a live take, and a cover can all record the same composition while remaining distinct masters. [U.S. copyright guidance](https://www.copyright.gov/engage/musicians/) likewise treats musical works and sound recordings as separate works.
+Compositions and recordings can have different contributors, owners, and licenses. A studio version, a live take, and a cover can all record the same composition while remaining distinct masters. [U.S. copyright guidance](https://www.copyright.gov/engage/musicians/) likewise treats musical works and sound recordings as separate works.
 
-A **release** answers a different question: which recordings are assembled and distributed together? A single, EP, album, or compilation gives recordings an ordered place in a catalog. The same recording can appear on more than one release. The release is a distribution grouping, rather than a third class of song or master rights.
+The same recording can appear on more than one release. A release establishes a catalog and distribution grouping; it does not create a third class of song or master rights.
 
 The [Miso Music Protocol](https://github.com/misofm/music-protocol) models these familiar distinctions in Sui Move, so concepts such as publishing, masters, and releases carry over for builders. Published as the `miso_music` package, its core fixes the identities and relationships among these objects. Separate packages define licensing, payments, credits, artwork, and other details. The protocol code is licensed under [Apache License 2.0](https://github.com/misofm/music-protocol/blob/main/LICENSE).
 
@@ -27,7 +28,7 @@ Release                                ordered recording IDs
 | [`Composition<CompositionShare>`](/protocol/composition/) | The written work's identity and canonical share type | Title, writers, lyrics, recording commission |
 | [`Recording<RecordingShare>`](/protocol/recording/) | Its identity, share type, and immutable composition ID | Master audio, artist credits, version name, license terms |
 | [`Release`](/protocol/release/) | Its identity and ordered, distinct recording IDs | Title, cover art, price, release-wide revenue split |
-| [`ReleaseConsent`](/protocol/releases/) | One recording admin's permission for their recording to appear in a specific release | Payment terms and presentation metadata |
+| [`ReleaseConsent`](/protocol/release/#release-consent) | One recording admin's permission for their recording to appear in a specific release | Payment terms and presentation metadata |
 
 A recording's composition ID is a **relationship**, not proof of a license. The current core lets anyone create a recording that points to a composition. Apps that require permission to distribute the recording should check a recognized [recording license](/packages/recording-license/) or another agreement. A release is similarly a catalog relationship; a sales package determines its own commercial terms.
 
