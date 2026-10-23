@@ -35,20 +35,25 @@ export default defineConfig({
           items: [
             { label: 'Overview', slug: 'packages' },
             {
-              label: 'Protocol',
+              label: 'Party Protocol',
+              items: [
+                { label: 'Overview', slug: 'protocol/party' },
+                { label: 'Extensions', slug: 'packages/protocol-extensions/party' },
+              ],
+            },
+            {
+              label: 'Music Protocol',
               items: [
                 { label: 'Overview', slug: 'protocol/overview' },
-                { label: 'Party', slug: 'protocol/party' },
                 { label: 'Composition', slug: 'protocol/composition' },
                 { label: 'Recording', slug: 'protocol/recording' },
                 { label: 'Release', slug: 'protocol/release' },
               ],
             },
             {
-              label: 'Protocol Extensions',
+              label: 'Music Protocol Extensions',
               items: [
                 { label: 'Overview', slug: 'packages/protocol-extensions' },
-                { label: 'Party', slug: 'packages/protocol-extensions/party' },
                 { label: 'Composition', slug: 'packages/protocol-extensions/composition' },
                 { label: 'Recording', slug: 'packages/protocol-extensions/recording' },
                 { label: 'Release', slug: 'packages/protocol-extensions/release' },
