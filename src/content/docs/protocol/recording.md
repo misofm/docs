@@ -38,7 +38,7 @@ Each release needs the recording admin's consent for its exact identity. Consent
 
 ## Audio and metadata live in extensions
 
-The core recording does not contain audio, artist credits, a version name, or license terms. [Extension packages](/packages/#metadata-extensions) attach those details under the recording admin's authority. They can evolve without changing the master object's identity or its composition relationship.
+The core recording does not contain audio, artist credits, a version name, or license terms. [Extension packages](/packages/protocol-extensions/) attach those details under the recording admin's authority. They can evolve without changing the master object's identity or its composition relationship.
 
 Publication emits the recording, composition, and admin capability IDs together, giving indexers a direct record of the core relationship.
 

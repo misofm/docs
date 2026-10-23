@@ -42,9 +42,16 @@ export default defineConfig({
         {
           label: 'Miso Packages',
           items: [
-            { label: 'Package Map', slug: 'packages' },
-            { label: 'Royalty Pools', slug: 'packages/royalty-pool' },
-            { label: 'Recording Licenses', slug: 'packages/recording-license' },
+            { label: 'Overview', slug: 'packages' },
+            { label: 'Protocol Extensions', slug: 'packages/protocol-extensions' },
+            {
+              label: 'Framework',
+              items: [
+                { label: 'Overview', slug: 'packages/framework' },
+                { label: 'Royalty Pools', slug: 'packages/royalty-pool' },
+                { label: 'Recording Licenses', slug: 'packages/recording-license' },
+              ],
+            },
           ],
         },
         { label: 'Licensing', slug: 'licensing' },

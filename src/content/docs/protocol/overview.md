@@ -73,7 +73,7 @@ A Miso Link mapping is an assertion by the SuiNS namespace controller, not a reg
 
 ## Immutable core, optional extensions
 
-Each object is created and published in one transaction. Publication shares it and freezes the embedded relationships. An admin capability still grants `uid_mut` access to attach or change dynamic fields after publication. This is how [metadata extensions](/packages/#metadata-extensions) add titles, credits, lyrics, artwork, and classifications without expanding or upgrading the core object.
+Each object is created and published in one transaction. Publication shares it and freezes the embedded relationships. An admin capability still grants `uid_mut` access to attach or change dynamic fields after publication. This is how [metadata extensions](/packages/protocol-extensions/) add titles, credits, lyrics, artwork, and classifications without expanding or upgrading the core object.
 
 The admin capability controls the object's extension surface. [Share tokens](/protocol/shares/) express fractional economic ownership; owning shares does not grant the admin capability. Treat an extension value as a statement made under that capability and apply the extension's own trust rules.
 

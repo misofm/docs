@@ -11,4 +11,4 @@ Code copied or adapted from a smart contract package retains that source's appli
 
 For example, [royalty-pool](https://github.com/misofm/royalty-pool/blob/main/LICENSE.md) and [recording-license](https://github.com/misofm/recording-license/blob/main/LICENSE.md) use **FSL-1.1-ALv2**. It permits use and redistribution for its defined Permitted Purposes, restricts Competing Use, and requires a license copy or link and retention of copyright notices when redistributing copies or derivatives. Each version becomes additionally available under Apache 2.0 on the second anniversary of when that version was made available. Follow the license for the specific source revision being reused.
 
-Third-party material, trademarks, dependencies, and linked package source remain subject to their own terms. [The package map](/packages/) links to the individual Miso package repositories.
+Third-party material, trademarks, dependencies, and linked package source remain subject to their own terms. [The packages overview](/packages/) links to the individual Miso package repositories.

@@ -8,6 +8,8 @@ export const docIds = [
   'protocol/recording',
   'protocol/release',
   'packages',
+  'packages/protocol-extensions',
+  'packages/framework',
   'packages/royalty-pool',
   'packages/recording-license',
   'protocol/integrating',

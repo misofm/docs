@@ -17,9 +17,11 @@ Read the overview first, then Shares, Composition, Recording, and Release. These
 - [Recording](https://docs.miso.fm/protocol/recording/index.md): Why a master has independent identity and shares, an immutable composition relationship, its Move object and publication event definitions, and separate consent for each release.
 - [Release](https://docs.miso.fm/protocol/release/index.md): Ordered track lists, identity committed to order and salt, inline object and consent definitions, the contract's consent-target check, release administration, and the separation of presentation and commercial terms.
 
-## Extensions and Payments
+## Packages, Protocol Extensions, and Framework
 
-- [Package Map](https://docs.miso.fm/packages/index.md): Task-based entry points and the Miso packages for metadata, share issuance, identity, administration, royalties, licensing, commerce, streaming, and identifier resolution.
+- [Packages Overview](https://docs.miso.fm/packages/index.md): How core identities, data-model extensions, and business-logic framework packages fit together; core share validation, identifier resolution, compatibility, and licensing.
+- [Protocol Extensions](https://docs.miso.fm/packages/protocol-extensions/index.md): The music-protocol-extensions repository and its typed data additions for compositions, recordings, and releases; admin-gated writes, permissionless reads, and the complete extension inventory.
+- [Framework](https://docs.miso.fm/packages/framework/index.md): Reusable business-logic packages for licensing, royalties, payments, custody, workflows, streaming, and commerce, plus supporting utilities.
 - [Royalty Pools](https://docs.miso.fm/packages/royalty-pool/index.md): Pool creation, stake registration, deposits, settlement, claims, and payout trust boundaries.
 - [Recording Licenses](https://docs.miso.fm/packages/recording-license/index.md): Optional standing composition policy, recording-share cut, and revenue sweep into a composition pool.
 

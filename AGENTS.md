@@ -4,6 +4,8 @@ Whenever documentation content changes, update `public/llms.txt` in the same cha
 
 ## Documentation Guidelines
 
+- Organize Miso Packages as Overview, Protocol Extensions, and Framework. Protocol Extensions means data-model additions from `music-protocol-extensions` for Composition, Recording, and Release; Framework means business-logic contracts and supporting packages. Reserve Platform for the broader SDK and services documentation.
+
 - Standardize on “share type” for a work's `CompositionShare` or `RecordingShare` type, and “shares” for quantities held or transferred. Use `Coin<T>` and `Balance<T>` when referring to concrete Move values.
 - Copied or adapted contract excerpts retain their source license, including FSL where applicable. Identify the repository, immutable revision, copyright notice, and license with each excerpt or a clearly scoped page-level notice. Never describe an FSL excerpt as Apache-2.0 merely because it appears in these docs; the docs' Apache grant covers independently written examples and site software.
 
