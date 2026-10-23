@@ -31,7 +31,7 @@ export default defineConfig({
       ],
       sidebar: [
         {
-          label: 'Miso Packages',
+          label: 'Move Packages',
           items: [
             { label: 'Overview', slug: 'packages' },
             {
