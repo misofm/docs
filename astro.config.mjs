@@ -6,12 +6,25 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://docs.miso.fm',
   vite: { plugins: [tailwindcss()] },
+  // Old /packages and /protocol URLs, kept working after the move to /move.
   redirects: {
-    '/packages/protocol-extensions/release': '/packages/protocol-extensions/#release',
-    '/packages/protocol-extensions/recording': '/packages/protocol-extensions/#recording',
-    '/packages/protocol-extensions/composition': '/packages/protocol-extensions/#composition',
-    '/protocol/releases': '/protocol/release/#release-consent',
-    '/protocol/shares': '/protocol/overview/#share-types',
+    '/packages': '/move/',
+    '/packages/framework': '/move/framework/',
+    '/packages/royalty-pool': '/move/framework/royalty-pool/',
+    '/packages/recording-license': '/move/framework/recording-license/',
+    '/packages/protocol-extensions': '/move/music-protocol/extensions/',
+    '/packages/protocol-extensions/party': '/move/party-protocol/extensions/',
+    '/packages/protocol-extensions/release': '/move/music-protocol/extensions/#release',
+    '/packages/protocol-extensions/recording': '/move/music-protocol/extensions/#recording',
+    '/packages/protocol-extensions/composition': '/move/music-protocol/extensions/#composition',
+    '/protocol/overview': '/move/music-protocol/',
+    '/protocol/composition': '/move/music-protocol/composition/',
+    '/protocol/recording': '/move/music-protocol/recording/',
+    '/protocol/release': '/move/music-protocol/release/',
+    '/protocol/integrating': '/move/music-protocol/integrating/',
+    '/protocol/party': '/move/party-protocol/',
+    '/protocol/releases': '/move/music-protocol/release/#release-consent',
+    '/protocol/shares': '/move/music-protocol/#share-types',
   },
   integrations: [
     starlight({
@@ -36,30 +49,30 @@ export default defineConfig({
         {
           label: 'Move Packages',
           items: [
-            { label: 'Overview', slug: 'packages' },
+            { label: 'Overview', slug: 'move' },
             {
               label: 'Party Protocol',
               items: [
-                { label: 'Overview', slug: 'protocol/party' },
-                { label: 'Extensions', slug: 'packages/protocol-extensions/party' },
+                { label: 'Overview', slug: 'move/party-protocol' },
+                { label: 'Extensions', slug: 'move/party-protocol/extensions' },
               ],
             },
             {
               label: 'Music Protocol',
               items: [
-                { label: 'Overview', slug: 'protocol/overview' },
-                { label: 'Composition', slug: 'protocol/composition' },
-                { label: 'Recording', slug: 'protocol/recording' },
-                { label: 'Release', slug: 'protocol/release' },
-                { label: 'Extensions', slug: 'packages/protocol-extensions' },
+                { label: 'Overview', slug: 'move/music-protocol' },
+                { label: 'Composition', slug: 'move/music-protocol/composition' },
+                { label: 'Recording', slug: 'move/music-protocol/recording' },
+                { label: 'Release', slug: 'move/music-protocol/release' },
+                { label: 'Extensions', slug: 'move/music-protocol/extensions' },
               ],
             },
             {
               label: 'Framework',
               items: [
-                { label: 'Overview', slug: 'packages/framework' },
-                { label: 'Royalty Pools', slug: 'packages/royalty-pool' },
-                { label: 'Recording Licenses', slug: 'packages/recording-license' },
+                { label: 'Overview', slug: 'move/framework' },
+                { label: 'Royalty Pools', slug: 'move/framework/royalty-pool' },
+                { label: 'Recording Licenses', slug: 'move/framework/recording-license' },
               ],
             },
           ],

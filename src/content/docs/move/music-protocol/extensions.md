@@ -5,13 +5,13 @@ description: All music protocol extensions for compositions, recordings, and rel
 
 Music Protocol Extensions add optional typed data to compositions, recordings, and releases. The core keeps each object's identity and relationships; extensions add titles, credits, lyrics, and other descriptive fields without expanding that core.
 
-Each package lives in [`music-protocol-extensions`](https://github.com/misofm/music-protocol-extensions). Choose the data your application needs. Identity profiles and membership are covered separately in [Party Extensions](/packages/protocol-extensions/party/).
+Each package lives in [`music-protocol-extensions`](https://github.com/misofm/music-protocol-extensions). Choose the data your application needs. Identity profiles and membership are covered separately in [Party Extensions](/move/party-protocol/extensions/).
 
 ## How Extensions Fit the Core
 
 State-attaching extensions write typed dynamic fields through the object's admin-gated `uid_mut` surface. Reads are permissionless. Each extension owns its field keys, validation, and update rules. Owning shares alone does not authorize extension writes.
 
-Extensions describe objects. [Framework packages](/packages/framework/) define policies and workflows such as recording licenses, royalty distribution, and capability custody. A descriptive field alone does not establish an economic agreement or verify a real-world claim.
+Extensions describe objects. [Framework packages](/move/framework/) define policies and workflows such as recording licenses, royalty distribution, and capability custody. A descriptive field alone does not establish an economic agreement or verify a real-world claim.
 
 <span id="extension-inventory"></span>
 

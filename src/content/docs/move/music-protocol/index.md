@@ -58,18 +58,18 @@ The on-chain object is a canonical source for its own core state, so integration
 
 | Core object | What it fixes | What it leaves out |
 | --- | --- | --- |
-| [Composition](/protocol/composition/) | Written-work identity and its unique share type | Title, writers, lyrics, recording commission |
-| [Recording](/protocol/recording/) | Master identity, its share type, and immutable composition ID | Master audio, artist credits, version name, license terms |
-| [Release](/protocol/release/) | Identity and ordered, distinct recording IDs | Title, cover art, price, release-wide revenue split |
-| [Release Consent](/protocol/release/#release-consent) | One recording admin's approval for a specific release | Payment terms and presentation metadata |
+| [Composition](/move/music-protocol/composition/) | Written-work identity and its unique share type | Title, writers, lyrics, recording commission |
+| [Recording](/move/music-protocol/recording/) | Master identity, its share type, and immutable composition ID | Master audio, artist credits, version name, license terms |
+| [Release](/move/music-protocol/release/) | Identity and ordered, distinct recording IDs | Title, cover art, price, release-wide revenue split |
+| [Release Consent](/move/music-protocol/release/#release-consent) | One recording admin's approval for a specific release | Payment terms and presentation metadata |
 
-A recording's composition ID is a **relationship**, not proof of a license. The current core lets anyone create a recording that points to a composition. Apps that require permission to distribute the recording should check a recognized [recording license](/packages/recording-license/) or another agreement. A release is similarly a catalog relationship; a sales package determines its own commercial terms.
+A recording's composition ID is a **relationship**, not proof of a license. The current core lets anyone create a recording that points to a composition. Apps that require permission to distribute the recording should check a recognized [recording license](/move/framework/recording-license/) or another agreement. A release is similarly a catalog relationship; a sales package determines its own commercial terms.
 
 ## Share Types
 
 Each composition and recording has its own **share type**, tying shares to that particular work. Core fixes the supply at **100,000,000 shares with six decimals**. The work's identity and share type stay associated as those shares are allocated, transferred, or staked.
 
-Shares express fractional economic ownership. Administrative capabilities separately control extension writes and release consent. Holding shares alone does not activate royalties: payment packages must route revenue into funded pools, and holders must register stakes. See [Composition Shares](/protocol/composition/#composition-shares), [Recording Shares](/protocol/recording/#recording-shares), and [Royalty Pools](/packages/royalty-pool/) for the details.
+Shares express fractional economic ownership. Administrative capabilities separately control extension writes and release consent. Holding shares alone does not activate royalties: payment packages must route revenue into funded pools, and holders must register stakes. See [Composition Shares](/move/music-protocol/composition/#composition-shares), [Recording Shares](/move/music-protocol/recording/#recording-shares), and [Royalty Pools](/move/framework/royalty-pool/) for the details.
 
 ## Miso Link
 
@@ -79,20 +79,20 @@ A Miso Link mapping is an assertion by the SuiNS namespace controller, not a reg
 
 ## Immutable core, optional extensions
 
-Each object is created and published in one transaction. Publication shares it and freezes the embedded relationships. An admin capability still grants `uid_mut` access to attach or change dynamic fields after publication. This is how [metadata extensions](/packages/protocol-extensions/) add titles, credits, lyrics, artwork, and classifications without expanding or upgrading the core object.
+Each object is created and published in one transaction. Publication shares it and freezes the embedded relationships. An admin capability still grants `uid_mut` access to attach or change dynamic fields after publication. This is how [metadata extensions](/move/music-protocol/extensions/) add titles, credits, lyrics, artwork, and classifications without expanding or upgrading the core object.
 
 The admin capability controls the object's extension surface. [Shares](#share-types) express fractional economic ownership; owning shares does not grant the admin capability. Treat an extension value as a statement made under that capability and apply the extension's own trust rules.
 
 Core offers one `CompositionRegistry`, one `RecordingRegistry`, and one `ReleaseRegistry` per package publication. Composition and recording IDs derive from the registry and their unique share types. Release IDs derive from the ordered recording list and a 32-byte salt. These registries are shared at package initialization and have no public constructor.
 
-The following pages explain those design choices in more detail: [Party](/protocol/party/), [Composition](/protocol/composition/), [Recording](/protocol/recording/), and [Release](/protocol/release/).
+The following pages explain those design choices in more detail: [Party](/move/party-protocol/), [Composition](/move/music-protocol/composition/), [Recording](/move/music-protocol/recording/), and [Release](/move/music-protocol/release/).
 
 ## Parties and Attribution
 
-The separate [Party protocol](/protocol/party/) represents the people and groups credited on works. Music credit extensions reference Party IDs, while Party profile extensions add biographies, roles, imagery, and links. A Party identity complements the composition, recording, and release model; it is not a fourth music-object type in `miso_music`.
+The separate [Party protocol](/move/party-protocol/) represents the people and groups credited on works. Music credit extensions reference Party IDs, while Party profile extensions add biographies, roles, imagery, and links. A Party identity complements the composition, recording, and release model; it is not a fourth music-object type in `miso_music`.
 
 ## Where money flows
 
-Core contains no royalty ledger, payout balance, composition commission rate, or release split. The [royalty-pool](/packages/royalty-pool/) package stakes a work's shares and distributes a payout currency to registered stakes. The [recording-license](/packages/recording-license/) package can express a composition's standing recording terms and hold its cut of recording shares. A sales or streaming package routes revenue into the appropriate pools. Read the specific package's terms before assuming a revenue path is active.
+Core contains no royalty ledger, payout balance, composition commission rate, or release split. The [royalty-pool](/move/framework/royalty-pool/) package stakes a work's shares and distributes a payout currency to registered stakes. The [recording-license](/move/framework/recording-license/) package can express a composition's standing recording terms and hold its cut of recording shares. A sales or streaming package routes revenue into the appropriate pools. Read the specific package's terms before assuming a revenue path is active.
 
 Source: [music-protocol README](https://github.com/misofm/music-protocol/blob/main/README.md) and its [`composition`](https://github.com/misofm/music-protocol/blob/main/sources/composition.move), [`recording`](https://github.com/misofm/music-protocol/blob/main/sources/recording.move), and [`release`](https://github.com/misofm/music-protocol/blob/main/sources/release.move) modules.

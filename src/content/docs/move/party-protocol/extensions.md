@@ -3,7 +3,7 @@ title: Party
 description: Optional group relations, profiles, roles, media, and links around a Party identity.
 ---
 
-[Party](/protocol/party/) provides a stable identity, a name, and capability-controlled administration. [`party-protocol-extensions`](https://github.com/misofm/party-protocol-extensions) adds optional group relations, profile data, and presentation around that identity. Updating a biography or image does not create a new Party ID or change existing credits to that Party.
+[Party](/move/party-protocol/) provides a stable identity, a name, and capability-controlled administration. [`party-protocol-extensions`](https://github.com/misofm/party-protocol-extensions) adds optional group relations, profile data, and presentation around that identity. Updating a biography or image does not create a new Party ID or change existing credits to that Party.
 
 ## Group Relations
 
@@ -61,7 +61,7 @@ A stored handle or link is an administrator-supplied claim, not proof that the P
 
 ## Data and Workflows
 
-Group relations and profile extensions add optional data-model policies around a Party. Operational workflows and capability custody belong to [Framework](/packages/framework/) packages such as Party Actions and Vault. Each extension has its own pinned dependencies and immutable package identity; check those revisions when combining packages.
+Group relations and profile extensions add optional data-model policies around a Party. Operational workflows and capability custody belong to [Framework](/move/framework/) packages such as Party Actions and Vault. Each extension has its own pinned dependencies and immutable package identity; check those revisions when combining packages.
 
 The Group and Profile excerpts above are © Miso Labs, Inc. and remain licensed under [FSL-1.1-ALv2](https://github.com/misofm/party-protocol-extensions/blob/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/LICENSE.md). The docs' Apache license for independently written examples does not relicense them.
 

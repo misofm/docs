@@ -3,9 +3,9 @@ title: Recording
 description: How a master has its own identity and ownership while remaining linked to its composition.
 ---
 
-A recording represents a particular fixed performance and production of a [composition](/protocol/composition/): a master. A studio version, a live take, and a cover can each be distinct recordings of the same song.
+A recording represents a particular fixed performance and production of a [composition](/move/music-protocol/composition/): a master. A studio version, a live take, and a cover can each be distinct recordings of the same song.
 
-In the [overview's example](/protocol/overview/), Dolly Parton's and Whitney Houston's recordings of “I Will Always Love You” would have separate recording IDs and separate share types. Both would point to the same composition.
+In the [overview's example](/move/music-protocol/), Dolly Parton's and Whitney Houston's recordings of “I Will Always Love You” would have separate recording IDs and separate share types. Both would point to the same composition.
 
 ## A permanent composition relationship
 
@@ -22,7 +22,7 @@ public struct Recording<phantom RecordingShare> has key {
 
 `RecordingShare` identifies this master's share type; `composition_id` points to the separate composition object. The two relationships serve different purposes.
 
-The relationship is stored on the recording rather than maintained as a mutable list on the composition. Adding a recording therefore does not require changing the composition or obtaining its admin capability. The core is permissionless: an application that needs recording authorization must check a recognized [recording license](/packages/recording-license/) or another agreement.
+The relationship is stored on the recording rather than maintained as a mutable list on the composition. Adding a recording therefore does not require changing the composition or obtaining its admin capability. The core is permissionless: an application that needs recording authorization must check a recognized [recording license](/move/framework/recording-license/) or another agreement.
 
 ## Recording Shares
 
@@ -37,13 +37,13 @@ const SHARE_NAME: vector<u8> = b"Recording Share";
 const SHARE_SUPPLY: u64 = 100_000_000_000_000;
 ```
 
-Core validates the currency and fixes its full supply when the recording is created. The creator receives the initial balance, while applications and extensions determine allocations. Holding shares alone pays no royalties: a revenue source must fund the relevant [royalty pool](/packages/royalty-pool/), and the holder must register a stake there.
+Core validates the currency and fixes its full supply when the recording is created. The creator receives the initial balance, while applications and extensions determine allocations. Holding shares alone pays no royalties: a revenue source must fund the relevant [royalty pool](/move/framework/royalty-pool/), and the holder must register a stake there.
 
 ## Independent ownership and administration
 
 Every recording has its own [fixed-supply share type](#recording-shares). Recording shares and composition shares are distinct types, reflecting the separate economic interests in the master and the underlying work. Recording royalties do not automatically flow to composition share holders simply because the objects are linked.
 
-The `RecordingAdminCap` is separate from those shares. It authorizes extension writes and can issue [Release Consent](/protocol/release/#release-consent). Share ownership alone does not grant either power.
+The `RecordingAdminCap` is separate from those shares. It authorizes extension writes and can issue [Release Consent](/move/music-protocol/release/#release-consent). Share ownership alone does not grant either power.
 
 ## One recording, multiple releases
 
@@ -53,7 +53,7 @@ Each release needs the recording admin's consent for its exact identity. Consent
 
 ## Audio and metadata live in extensions
 
-The core recording does not contain audio, artist credits, a version name, or license terms. [Extension packages](/packages/protocol-extensions/#recording) attach those details under the recording admin's authority. They can evolve without changing the master object's identity or its composition relationship.
+The core recording does not contain audio, artist credits, a version name, or license terms. [Extension packages](/move/music-protocol/extensions/#recording) attach those details under the recording admin's authority. They can evolve without changing the master object's identity or its composition relationship.
 
 Publication emits the recording, composition, and admin capability IDs together, giving indexers a direct record of the core relationship.
 

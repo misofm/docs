@@ -3,7 +3,7 @@ title: Release
 description: Why recordings are grouped into ordered releases and how recording admins consent to that grouping.
 ---
 
-A release groups [recordings](/protocol/recording/) into an ordered track list, such as a single, EP, album, or compilation. The same recording may appear on multiple releases. A release establishes a catalog and distribution grouping; it does not create another class of composition or master rights.
+A release groups [recordings](/move/music-protocol/recording/) into an ordered track list, such as a single, EP, album, or compilation. The same recording may appear on multiple releases. A release establishes a catalog and distribution grouping; it does not create another class of composition or master rights.
 
 For example, a single and an album can both include the same master. Each release has its own identity, while the recording and its connection to the underlying composition remain the same.
 
@@ -63,7 +63,7 @@ The `ReleaseAdminCap` controls the release's extension surface. It does not gran
 
 ## Fixed relationships, extensible presentation
 
-Titles, artwork, credits, and other presentation data belong to [extensions](/packages/protocol-extensions/#release). They can be managed around the fixed track list without expanding the core release model.
+Titles, artwork, credits, and other presentation data belong to [extensions](/move/music-protocol/extensions/#release). They can be managed around the fixed track list without expanding the core release model.
 
 Publication records the release ID, admin capability ID, ordered recording IDs, and salt in `ReleasePublishedEvent`. Readers can verify the release's identity from those values and follow each recording to its composition.
 

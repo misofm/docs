@@ -5,7 +5,7 @@ description: Reusable Move packages for business rules, payments, administration
 
 The Miso Framework is the collection of reusable Move packages that define business logic around the music protocol: how recording terms are agreed, royalties are distributed, capabilities are held, and music is sold or streamed.
 
-The [protocol](/protocol/overview/) supplies stable identities and relationships. [Protocol Extensions](/packages/protocol-extensions/) enrich their data model. Framework packages use those objects to define particular policies and workflows. Products choose the packages they need; a core relationship alone does not activate an economic arrangement.
+The [protocol](/move/music-protocol/) supplies stable identities and relationships. [Protocol Extensions](/move/music-protocol/extensions/) enrich their data model. Framework packages use those objects to define particular policies and workflows. Products choose the packages they need; a core relationship alone does not activate an economic arrangement.
 
 For example, a recording can point to a composition in core, carry artist credits through an extension, and participate in a licensing and royalty arrangement through framework packages. Those are separate responsibilities even when a product combines them in one user flow.
 
@@ -13,8 +13,8 @@ For example, a recording can point to a composition in core, carry artist credit
 
 | Package | Role |
 | --- | --- |
-| [`recording-license`](https://github.com/misofm/recording-license) | Optional standing policy and a recording-share stake representing the composition's agreed cut. [Read the guide](/packages/recording-license/). |
-| [`royalty-pool`](https://github.com/misofm/royalty-pool) | One derived pool per work and payout currency; registered share stakes receive royalties. [Read the guide](/packages/royalty-pool/). |
+| [`recording-license`](https://github.com/misofm/recording-license) | Optional standing policy and a recording-share stake representing the composition's agreed cut. [Read the guide](/move/framework/recording-license/). |
+| [`royalty-pool`](https://github.com/misofm/royalty-pool) | One derived pool per work and payout currency; registered share stakes receive royalties. [Read the guide](/move/framework/royalty-pool/). |
 | [`release-revenue-forwarder`](https://github.com/misofm/release-revenue-forwarder) | Release-to-recording payout forwarding. Check its pinned core version and split policy before use. |
 | [`pay`](https://github.com/misofm/pay) | Typed payments to compositions, recordings, or releases with receipt events. |
 | [`crank`](https://github.com/misofm/crank) | Processes record-sale revenue into claimable royalties. |
@@ -22,7 +22,7 @@ For example, a recording can point to a composition in core, carry artist credit
 
 ## Administration, Commerce, and Supporting Types
 
-[Party identities](/protocol/party/) and their [profile extensions](/packages/protocol-extensions/party/) belong to the Protocol and Protocol Extensions sections. The framework builds workflows around those identities.
+[Party identities](/move/party-protocol/) and their [profile extensions](/move/party-protocol/extensions/) belong to the Protocol and Protocol Extensions sections. The framework builds workflows around those identities.
 
 | Package | Role |
 | --- | --- |

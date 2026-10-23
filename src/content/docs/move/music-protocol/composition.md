@@ -3,9 +3,9 @@ title: Composition
 description: Why the underlying song has its own identity, shares, and administration.
 ---
 
-A composition represents the underlying music and, where present, lyrics: the work associated with publishing. It gives that work an identity independent of any particular [recording](/protocol/recording/).
+A composition represents the underlying music and, where present, lyrics: the work associated with publishing. It gives that work an identity independent of any particular [recording](/move/music-protocol/recording/).
 
-In the [overview's example](/protocol/overview/), “I Will Always Love You” is one composition. Dolly Parton's original recording and Whitney Houston's cover are separate masters of that work. They can refer to the same composition without sharing recording ownership, credits, or commercial terms.
+In the [overview's example](/move/music-protocol/), “I Will Always Love You” is one composition. Dolly Parton's original recording and Whitney Houston's cover are separate masters of that work. They can refer to the same composition without sharing recording ownership, credits, or commercial terms.
 
 ## One identity for the work
 
@@ -38,13 +38,13 @@ const SHARE_SUPPLY: u64 = 100_000_000_000_000;
 
 When the work is created, core validates the currency, mints the full supply, and consumes the minting authority. The creator receives the initial balance; subsequent allocations divide that supply rather than creating more shares. Core leaves allocation agreements and custody to applications and extensions.
 
-Composition shares can participate in a funded [royalty pool](/packages/royalty-pool/) through registered stakes. A recording's link to the composition does not automatically route recording royalties to these holders; a [recording license](/packages/recording-license/) or another economic agreement defines that route.
+Composition shares can participate in a funded [royalty pool](/move/framework/royalty-pool/) through registered stakes. A recording's link to the composition does not automatically route recording royalties to these holders; a [recording license](/move/framework/recording-license/) or another economic agreement defines that route.
 
 ## One composition, many recordings
 
 A composition does not maintain a list of every recording made from it. Each recording stores the composition's ID instead. This lets new studio versions, live performances, and covers refer to the work without changing the composition object.
 
-That reference describes which work was recorded. Permission to record it, and any agreed payment to its rights holders, belongs to a [recording license](/packages/recording-license/) or another agreement. The core relationship alone does not impose a commission.
+That reference describes which work was recorded. Permission to record it, and any agreed payment to its rights holders, belongs to a [recording license](/move/framework/recording-license/) or another agreement. The core relationship alone does not impose a commission.
 
 ## Administration and shares
 
@@ -63,11 +63,11 @@ public fun uid_mut<CompositionShare>(
 
 Here the capability's type supplies the authorization: there is one composition per share type within the registry. Extensions use this UID to attach their own typed dynamic fields.
 
-Composition shares are separate from this administrative control. Holding shares does not grant the admin capability, and holding the capability does not imply ownership of the shares. [Royalty pools](/packages/royalty-pool/) and other economic packages define how share holders participate in payments.
+Composition shares are separate from this administrative control. Holding shares does not grant the admin capability, and holding the capability does not imply ownership of the shares. [Royalty pools](/move/framework/royalty-pool/) and other economic packages define how share holders participate in payments.
 
 ## A small core, richer extensions
 
-Publication makes the composition a shared on-chain object. Its identity and share type remain fixed, while authorized [extensions](/packages/protocol-extensions/#composition) can maintain descriptive and economic data around it. Applications reading the same composition ID agree on the core identity while applying the relevant extension's rules to its metadata and rights claims.
+Publication makes the composition a shared on-chain object. Its identity and share type remain fixed, while authorized [extensions](/move/music-protocol/extensions/#composition) can maintain descriptive and economic data around it. Applications reading the same composition ID agree on the core identity while applying the relevant extension's rules to its metadata and rights claims.
 
 Contract excerpts © Miso Labs, Inc., licensed under [Apache-2.0](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/LICENSE).
 

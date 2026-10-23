@@ -2,18 +2,18 @@ import type { CollectionEntry } from 'astro:content';
 
 /** The reading order used by the complete Markdown export. */
 export const docIds = [
-  'protocol/overview',
-  'protocol/party',
-  'protocol/composition',
-  'protocol/recording',
-  'protocol/release',
-  'packages',
-  'packages/protocol-extensions',
-  'packages/protocol-extensions/party',
-  'packages/framework',
-  'packages/royalty-pool',
-  'packages/recording-license',
-  'protocol/integrating',
+  'move/music-protocol',
+  'move/party-protocol',
+  'move/music-protocol/composition',
+  'move/music-protocol/recording',
+  'move/music-protocol/release',
+  'move',
+  'move/music-protocol/extensions',
+  'move/party-protocol/extensions',
+  'move/framework',
+  'move/framework/royalty-pool',
+  'move/framework/recording-license',
+  'move/music-protocol/integrating',
   'licensing',
 ] as const;
 

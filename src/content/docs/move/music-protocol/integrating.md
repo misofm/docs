@@ -3,7 +3,7 @@ title: Move Integration
 description: Verify the core package locally, pin its Move API, and build against the right deployment.
 ---
 
-This supplemental guide is for developers inspecting the Move implementation. For the protocol design, start with the [Overview](/protocol/overview/). It uses [core commit `3bd54d1`](https://github.com/misofm/music-protocol/tree/3bd54d135058324ce3e326e027eb300e0ceca2d8) as a concrete API reference. The checks below run **locally**; they do not publish a package or create on-chain works.
+This supplemental guide is for developers inspecting the Move implementation. For the protocol design, start with the [Overview](/move/music-protocol/). It uses [core commit `3bd54d1`](https://github.com/misofm/music-protocol/tree/3bd54d135058324ce3e326e027eb300e0ceca2d8) as a concrete API reference. The checks below run **locally**; they do not publish a package or create on-chain works.
 
 ## Verify the source locally
 
@@ -31,9 +31,9 @@ The core source also pins its `share` dependency. If you add an extension, inspe
 
 ## Follow the creation flow
 
-The core constructors expect an initialized share currency and its treasury cap. The [production constructor test](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/tests/production_constructor_tests.move) shows the template initialization and constructor calls in context. The [Share Types](/protocol/overview/#share-types) page explains why each work has its own share type.
+The core constructors expect an initialized share currency and its treasury cap. The [production constructor test](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/tests/production_constructor_tests.move) shows the template initialization and constructor calls in context. The [Share Types](/move/music-protocol/#share-types) page explains why each work has its own share type.
 
-For a release, derive its target ID from the ordered recording IDs and 32-byte salt, collect one consent from each recording admin, then call `release::new` and `publish`. [Release Consent](/protocol/release/#release-consent) explains the design and scope of that approval. A core relationship does not grant a recording license or activate a royalty pool.
+For a release, derive its target ID from the ordered recording IDs and 32-byte salt, collect one consent from each recording admin, then call `release::new` and `publish`. [Release Consent](/move/music-protocol/release/#release-consent) explains the design and scope of that approval. A core relationship does not grant a recording license or activate a royalty pool.
 
 ## Read and extend
 
@@ -42,6 +42,6 @@ For a release, derive its target ID from the ordered recording IDs and 32-byte s
 - `composition::uid_mut`, `recording::uid_mut`, and `release::uid_mut` expose the typed dynamic-field extension surface to callers with the matching admin cap.
 - `CompositionPublishedEvent`, `RecordingPublishedEvent`, and `ReleasePublishedEvent` carry core identities and relationships. Optional metadata and economic state belong to extension packages and their events.
 
-For paid flows, choose the [relevant packages](/packages/), then read [Royalty Pools](/packages/royalty-pool/) and [Recording Licenses](/packages/recording-license/) as needed. Creating a core object alone neither opens a pool nor licenses a recording.
+For paid flows, choose the [relevant packages](/move/), then read [Royalty Pools](/move/framework/royalty-pool/) and [Recording Licenses](/move/framework/recording-license/) as needed. Creating a core object alone neither opens a pool nor licenses a recording.
 
 Source: pinned [core README](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/README.md), [Move.toml](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/Move.toml), and [source modules](https://github.com/misofm/music-protocol/tree/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources).

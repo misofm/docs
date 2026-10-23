@@ -34,15 +34,15 @@ Crediting a Party does not itself transfer shares, grant a music object's admin 
 
 ## Optional Group Relations
 
-A band can use the optional [`party_group` extension](/packages/protocol-extensions/party/#group-relations) to maintain consent-based membership. Another application can use a different relationship model around the same Party identity. Neither requires a group field or `PartyKind` in core.
+A band can use the optional [`party_group` extension](/move/party-protocol/extensions/#group-relations) to maintain consent-based membership. Another application can use a different relationship model around the same Party identity. Neither requires a group field or `PartyKind` in core.
 
 The group extension owns its storage, limits, invitations, acceptance, exit, and removal rules. Its Group object is separate from the Party. Choosing that extension commits an application to its specific direct-membership policy; core remains independent of that choice.
 
 ## Profiles and Attribution
 
-[Party extensions](/packages/protocol-extensions/party/) add biographies, roles, genres, images, and external links. Music credit extensions refer to Party IDs so attribution can follow the same identity across a catalog.
+[Party extensions](/move/party-protocol/extensions/) add biographies, roles, genres, images, and external links. Music credit extensions refer to Party IDs so attribution can follow the same identity across a catalog.
 
-Profiles and credit records are claims by the relevant administrators. Applications choose which identities and assertions they trust. Capability custody and operational workflows belong to [Framework](/packages/framework/) packages.
+Profiles and credit records are claims by the relevant administrators. Applications choose which identities and assertions they trust. Capability custody and operational workflows belong to [Framework](/move/framework/) packages.
 
 ## Source Generation
 

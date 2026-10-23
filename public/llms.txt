@@ -8,31 +8,31 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 
 ## Start Here
 
-- [Overview](https://docs.miso.fm/protocol/overview/index.md): The song/master/release model, industry identifier lookups and access, Music's Shared Ledger, share types and fixed supply, the limits of canonical state, and Miso Link's SuiNS bridge.
+- [Overview](https://docs.miso.fm/move/music-protocol/index.md): The song/master/release model, industry identifier lookups and access, Music's Shared Ledger, share types and fixed supply, the limits of canonical state, and Miso Link's SuiNS bridge.
 
 ## Party Protocol
 
-- [Party](https://docs.miso.fm/protocol/party/index.md): The identity-only `miso_party` source generation: stable entity IDs, names, public object-bound capability authorization, attribution, and unverified identity claims. Group storage and membership are optional extension features; historical deployments retain their old layout.
-- [Party Extensions](https://docs.miso.fm/packages/protocol-extensions/party/index.md): Optional party_group relations with extension-owned shared state, consent and direct membership, profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. Both inline Group and Profile excerpts retain FSL-1.1-ALv2.
+- [Party](https://docs.miso.fm/move/party-protocol/index.md): The identity-only `miso_party` source generation: stable entity IDs, names, public object-bound capability authorization, attribution, and unverified identity claims. Group storage and membership are optional extension features; historical deployments retain their old layout.
+- [Party Extensions](https://docs.miso.fm/move/party-protocol/extensions/index.md): Optional party_group relations with extension-owned shared state, consent and direct membership, profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. Both inline Group and Profile excerpts retain FSL-1.1-ALv2.
 
 ## Music Protocol
 
-- [Composition](https://docs.miso.fm/protocol/composition/index.md): Why the written work has an identity independent of recordings, its unique share type, fixed supply, allocation and royalty participation, its minimal Move definition, capability-gated extension access, and optional extensions.
-- [Recording](https://docs.miso.fm/protocol/recording/index.md): Why a master has independent identity and shares, its share-type constants, fixed supply and royalty participation, an immutable composition relationship, its Move object and publication event definitions, and separate consent for each release.
-- [Release](https://docs.miso.fm/protocol/release/index.md): Ordered track lists, identity committed to order and salt, inline object and consent definitions, the contract's consent-target check, release administration, and the separation of presentation and commercial terms.
+- [Composition](https://docs.miso.fm/move/music-protocol/composition/index.md): Why the written work has an identity independent of recordings, its unique share type, fixed supply, allocation and royalty participation, its minimal Move definition, capability-gated extension access, and optional extensions.
+- [Recording](https://docs.miso.fm/move/music-protocol/recording/index.md): Why a master has independent identity and shares, its share-type constants, fixed supply and royalty participation, an immutable composition relationship, its Move object and publication event definitions, and separate consent for each release.
+- [Release](https://docs.miso.fm/move/music-protocol/release/index.md): Ordered track lists, identity committed to order and salt, inline object and consent definitions, the contract's consent-target check, release administration, and the separation of presentation and commercial terms.
 
 
 ## Packages, Protocol Extensions, and Framework
 
-- [Packages Overview](https://docs.miso.fm/packages/index.md): How core identities, data-model extensions, and business-logic framework packages fit together; core share validation, identifier resolution, compatibility, and licensing.
-- [Music Protocol Extensions](https://docs.miso.fm/packages/protocol-extensions/index.md): Complete package inventory for compositions, recordings, and releases, with cap-gated writes, permissionless reads, compatibility, and licensing.
-- [Framework](https://docs.miso.fm/packages/framework/index.md): Reusable business-logic packages for licensing, royalties, payments, custody, workflows, streaming, and commerce, plus supporting utilities.
-- [Royalty Pools](https://docs.miso.fm/packages/royalty-pool/index.md): Pool creation, stake registration, deposits, settlement, claims, and payout trust boundaries.
-- [Recording Licenses](https://docs.miso.fm/packages/recording-license/index.md): Optional standing composition policy, recording-share cut, and revenue sweep into a composition pool.
+- [Packages Overview](https://docs.miso.fm/move/index.md): How core identities, data-model extensions, and business-logic framework packages fit together; core share validation, identifier resolution, compatibility, and licensing.
+- [Music Protocol Extensions](https://docs.miso.fm/move/music-protocol/extensions/index.md): Complete package inventory for compositions, recordings, and releases, with cap-gated writes, permissionless reads, compatibility, and licensing.
+- [Framework](https://docs.miso.fm/move/framework/index.md): Reusable business-logic packages for licensing, royalties, payments, custody, workflows, streaming, and commerce, plus supporting utilities.
+- [Royalty Pools](https://docs.miso.fm/move/framework/royalty-pool/index.md): Pool creation, stake registration, deposits, settlement, claims, and payout trust boundaries.
+- [Recording Licenses](https://docs.miso.fm/move/framework/recording-license/index.md): Optional standing composition policy, recording-share cut, and revenue sweep into a composition pool.
 
 ## Optional
 
-- [Move Source Guide](https://docs.miso.fm/protocol/integrating/index.md): Supplemental implementation material: reproduce the pinned core tests, inspect dependencies and constructor tests, and distinguish source revisions from network deployments.
+- [Move Source Guide](https://docs.miso.fm/move/music-protocol/integrating/index.md): Supplemental implementation material: reproduce the pinned core tests, inspect dependencies and constructor tests, and distinguish source revisions from network deployments.
 
 ## Complete Text and Terms
 
@@ -43,5 +43,5 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 
 - [Miso Music Protocol](https://github.com/misofm/music-protocol): Core Move package, templates, source modules, and Apache 2.0 license.
 - [Party Protocol](https://github.com/misofm/party-protocol): Apache-2.0 identity primitive in `miso_party`, separate from the music core.
-- [Party Extensions](https://docs.miso.fm/packages/protocol-extensions/party/index.md): Optional party_group relations with extension-owned shared state, consent and direct membership, profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. Both inline Group and Profile excerpts retain FSL-1.1-ALv2.
+- [Party Extensions](https://docs.miso.fm/move/party-protocol/extensions/index.md): Optional party_group relations with extension-owned shared state, consent and direct membership, profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. Both inline Group and Profile excerpts retain FSL-1.1-ALv2.
 - [Miso Link](https://github.com/misofm/link): SuiNS-based mapping of legacy industry identifiers to on-chain object addresses. A mapping is an assertion by its namespace controller, not an official registry record or rights verification.
