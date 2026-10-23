@@ -12,8 +12,8 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 
 ## Party Protocol
 
-- [Party](https://docs.miso.fm/protocol/party/index.md): The separate `miso_party` identity protocol for individuals and groups, mutable names, object-bound admin capabilities, consent-based membership, attribution, and unverified identity claims.
-- [Party Extensions](https://docs.miso.fm/packages/protocol-extensions/party/index.md): Profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. The inline profile excerpt retains FSL-1.1-ALv2.
+- [Party](https://docs.miso.fm/protocol/party/index.md): The identity-only `miso_party` source generation: stable entity IDs, names, public object-bound capability authorization, attribution, and unverified identity claims. Group storage and membership are optional extension features; historical deployments retain their old layout.
+- [Party Extensions](https://docs.miso.fm/packages/protocol-extensions/party/index.md): Optional party_group relations with extension-owned shared state, consent and direct membership, profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. Both inline Group and Profile excerpts retain FSL-1.1-ALv2.
 
 ## Music Protocol
 
@@ -43,5 +43,5 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 
 - [Miso Music Protocol](https://github.com/misofm/music-protocol): Core Move package, templates, source modules, and Apache 2.0 license.
 - [Party Protocol](https://github.com/misofm/party-protocol): Apache-2.0 identity primitive in `miso_party`, separate from the music core.
-- [Party Extensions](https://github.com/misofm/party-protocol-extensions): FSL-1.1-ALv2 profile extensions and typed link-payload packages.
+- [Party Extensions](https://docs.miso.fm/packages/protocol-extensions/party/index.md): Optional party_group relations with extension-owned shared state, consent and direct membership, profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. Both inline Group and Profile excerpts retain FSL-1.1-ALv2.
 - [Miso Link](https://github.com/misofm/link): SuiNS-based mapping of legacy industry identifiers to on-chain object addresses. A mapping is an assertion by its namespace controller, not an official registry record or rights verification.
