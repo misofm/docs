@@ -211,6 +211,14 @@ main h1#_top {
   border: 1px solid var(--sl-color-gray-5);
 }
 
+/* Starlight makes tables display:block so they can scroll, which shrinks the
+   inner table to its content. Restore a real table box where nothing scrolls. */
+@media (min-width: 50rem) {
+  .sl-markdown-content table {
+    display: table;
+  }
+}
+
 .sl-markdown-content :is(th, td) {
   padding: 0.85rem 1rem;
   vertical-align: top;
