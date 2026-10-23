@@ -1,57 +1,53 @@
 ---
 title: Party
-description: A reusable identity for people and groups, with capability-controlled administration and consent-based membership.
+description: A reusable identity with a stable ID, a name, and capability-controlled administration.
 ---
 
-A Party identifies a person or group that can be credited across works. A songwriter, performer, band, or label can have a Party ID reused in composition, recording, and release credits. The music objects identify the works; the Party identifies who is being credited.
+A Party identifies an entity that can be credited across works: a person, band, label, or organization. A songwriter's Party ID can be reused in composition, recording, and release credits. Music objects identify works; the Party identifies who is being credited.
 
-Party lives in the separate [`miso_party` package](https://github.com/misofm/party-protocol). It complements the music protocol's Composition, Recording, and Release objects.
+Party lives in the separate [`miso_party` package](https://github.com/misofm/party-protocol). Core does not classify it as an individual or a group, prescribe a member collection, or impose a membership policy.
 
 ## Identity and Administration
 
-The core object holds an ID, a kind, and a name:
+The complete core object is small:
 
 ```move
 public struct Party has key {
     id: UID,
-    kind: PartyKind,
     name: String,
 }
 ```
 
-Names can change under the Party's administrator without changing the ID used by credits. A name is a claim made under that administrator's authority; the protocol does not verify a real-world identity or guarantee that two parties with the same name represent the same person.
+An administrator can change the name without changing the ID used by credits. Names are unverified claims. The protocol does not establish a real-world identity or guarantee that two Parties with the same name represent the same entity.
 
-`PartyAdminCap` is a transferable bearer capability tied to a specific Party ID. Core mutations and extension writes require that matching capability. The internal authorization check makes the binding explicit:
+`PartyAdminCap` is a transferable bearer capability tied to a specific Party ID. The public authorization check lets extensions verify that capability with immutable references:
 
 ```move
-fun authorize(self: &Party, cap: &PartyAdminCap) {
+public fun authorize(self: &Party, cap: &PartyAdminCap) {
     assert!(cap.party_id == object::id(self), EUnauthorized);
 }
 ```
 
+Extensions that attach data to the Party use `party::uid_mut(cap)`, which runs the same check before exposing mutable UID access. An extension that owns a separate object can use `authorize` without mutating the Party.
+
 Crediting a Party does not itself transfer shares, grant a music object's admin capability, or prove a rights agreement. Those relationships have their own rules.
 
-## Individuals and Groups
+## Optional Group Relations
 
-The kind distinguishes an individual from a group of Party IDs:
+A band can use the optional [`party_group` extension](/packages/protocol-extensions/party/#group-relations) to maintain consent-based membership. Another application can use a different relationship model around the same Party identity. Neither requires a group field or `PartyKind` in core.
 
-```move
-public enum PartyKind has drop, store {
-    Individual,
-    Group(VecSet<ID>),
-}
-```
-
-A band can be represented by a group, with its individual members represented by their own Parties. In this source revision, group membership is limited to individual Parties and a group can have at most 200 members.
-
-Membership requires consent from both sides: a group administrator invites an individual, and that individual's administrator accepts. The individual can decline an invitation or leave a group; the group administrator can revoke a pending invitation or remove a member. Merely writing another Party's ID into unrelated metadata cannot create protocol membership.
+The group extension owns its storage, limits, invitations, acceptance, exit, and removal rules. Its Group object is separate from the Party. Choosing that extension commits an application to its specific direct-membership policy; core remains independent of that choice.
 
 ## Profiles and Attribution
 
-[Party extensions](/packages/protocol-extensions/party/) add biographies, roles, genres, images, and external links around the stable identity. Composition, recording, and release credit extensions refer to Party IDs so that attribution can follow the same identity across a catalog.
+[Party extensions](/packages/protocol-extensions/party/) add biographies, roles, genres, images, and external links. Music credit extensions refer to Party IDs so attribution can follow the same identity across a catalog.
 
-Those profiles and credit records are claims by the relevant administrators. Applications choose which identities and assertions they trust. Administrative workflows and capability custody belong to [Framework](/packages/framework/) packages.
+Profiles and credit records are claims by the relevant administrators. Applications choose which identities and assertions they trust. Capability custody and operational workflows belong to [Framework](/packages/framework/) packages.
 
-Contract excerpts © Miso Labs, Inc., licensed under [Apache-2.0](https://github.com/misofm/party-protocol/blob/342fcce18e02ad006e2a334e7e66fae421745434/LICENSE).
+## Source Generation
 
-Source: pinned [Party module](https://github.com/misofm/party-protocol/blob/342fcce18e02ad006e2a334e7e66fae421745434/sources/party.move) and [README](https://github.com/misofm/party-protocol/blob/342fcce18e02ad006e2a334e7e66fae421745434/README.md).
+These excerpts describe the identity-only source generation pinned below. It removes the former core kind and membership APIs and changes the constructor and creation event. Published historical generations retain their previous behavior; match package IDs, generated bindings, and event decoding to the generation being used.
+
+Contract excerpts © Miso Labs, Inc., licensed under [Apache-2.0](https://github.com/misofm/party-protocol/blob/c7c457d40bb96db9044cea55fd71532e192ab6b8/LICENSE).
+
+Source: pinned [Party module](https://github.com/misofm/party-protocol/blob/c7c457d40bb96db9044cea55fd71532e192ab6b8/sources/party.move) and [README](https://github.com/misofm/party-protocol/blob/c7c457d40bb96db9044cea55fd71532e192ab6b8/README.md).

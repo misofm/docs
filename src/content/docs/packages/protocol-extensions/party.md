@@ -1,9 +1,28 @@
 ---
 title: Party
-description: Profiles, roles, media, and external links attached to a Party identity.
+description: Optional group relations, profiles, roles, media, and links around a Party identity.
 ---
 
-[Party](/protocol/party/) provides identity, a name, individual or group kind, and consent-based group membership. [`party-protocol-extensions`](https://github.com/misofm/party-protocol-extensions) adds optional profile and presentation data around that identity. Updating a biography or image does not create a new Party ID or change existing credits to that Party.
+[Party](/protocol/party/) provides a stable identity, a name, and capability-controlled administration. [`party-protocol-extensions`](https://github.com/misofm/party-protocol-extensions) adds optional group relations, profile data, and presentation around that identity. Updating a biography or image does not create a new Party ID or change existing credits to that Party.
+
+## Group Relations
+
+`party_group` owns a shared Group derived from the Party identity. The extension keeps the association small and stores direct member and pending-invite sets on its own UID:
+
+```move
+public struct Group has key {
+    id: UID,
+    party_id: ID,
+}
+```
+
+The parent Party records the derived claim. The extension owns both sets through the bounded `typed_set` primitive, so core Party does not prescribe their representation. In this extension generation, each set is limited to 200 IDs.
+
+The Group administrator invites a Party, and that Party's administrator accepts or declines. A member can leave without the Group administrator's capability; the Group administrator can revoke an invitation or remove a member without the member's capability. These operations authorize the relevant Party through `party::authorize(cap)` and mutate the separate Group, rather than a foreign Party's UID.
+
+Membership is direct and nonrecursive. Any Party can be a member except the Group's own owner Party, including a Party with its own Group. Applications must not infer transitive authority from nested groups. Event indexes provide member-side inbox and group discovery; this extension stores no mirrored membership fields on the member Party.
+
+See the [package reference](https://github.com/misofm/party-protocol-extensions/blob/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/party_group/README.md) for the API, events, bounds, and source-generation migration notes.
 
 ## Profile Data
 
@@ -26,13 +45,13 @@ These packages write dynamic fields on a Party and require its matching `PartyAd
 
 | Package | Adds |
 | --- | --- |
-| [`party_profile`](https://github.com/misofm/party-protocol-extensions/tree/625b17935dfe818907f44a2dcb4b109e4d43a9f6/party_profile) | Short and long biographies, country, and languages |
-| [`party_roles`](https://github.com/misofm/party-protocol-extensions/tree/625b17935dfe818907f44a2dcb4b109e4d43a9f6/party_roles) | Roles such as artist, producer, songwriter, band, label, or a custom role |
-| [`party_genre`](https://github.com/misofm/party-protocol-extensions/tree/625b17935dfe818907f44a2dcb4b109e4d43a9f6/party_genre) | Genres checked against the genre vocabulary |
-| [`party_tags`](https://github.com/misofm/party-protocol-extensions/tree/625b17935dfe818907f44a2dcb4b109e4d43a9f6/party_tags) | Free-form descriptive tags |
-| [`party_media`](https://github.com/misofm/party-protocol-extensions/tree/625b17935dfe818907f44a2dcb4b109e4d43a9f6/party_media) | A Walrus quilt blob ID used for profile imagery |
-| [`party_cta`](https://github.com/misofm/party-protocol-extensions/tree/625b17935dfe818907f44a2dcb4b109e4d43a9f6/party_cta) | Ordered external call-to-action links |
-| [`party_platform_link`](https://github.com/misofm/party-protocol-extensions/tree/625b17935dfe818907f44a2dcb4b109e4d43a9f6/party_platform_link) | Typed external-platform links attached to a Party |
+| [`party_profile`](https://github.com/misofm/party-protocol-extensions/tree/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/party_profile) | Short and long biographies, country, and languages |
+| [`party_roles`](https://github.com/misofm/party-protocol-extensions/tree/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/party_roles) | Roles such as artist, producer, songwriter, band, label, or a custom role |
+| [`party_genre`](https://github.com/misofm/party-protocol-extensions/tree/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/party_genre) | Genres checked against the genre vocabulary |
+| [`party_tags`](https://github.com/misofm/party-protocol-extensions/tree/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/party_tags) | Free-form descriptive tags |
+| [`party_media`](https://github.com/misofm/party-protocol-extensions/tree/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/party_media) | A Walrus quilt blob ID used for profile imagery |
+| [`party_cta`](https://github.com/misofm/party-protocol-extensions/tree/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/party_cta) | Ordered external call-to-action links |
+| [`party_platform_link`](https://github.com/misofm/party-protocol-extensions/tree/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/party_platform_link) | Typed external-platform links attached to a Party |
 
 ## Link Payloads and Shared Primitives
 
@@ -42,8 +61,8 @@ A stored handle or link is an administrator-supplied claim, not proof that the P
 
 ## Data and Workflows
 
-Profile extensions describe a Party. Operational workflows and capability custody belong to [Framework](/packages/framework/) packages such as Party Actions and Vault. Each extension has its own pinned dependencies and immutable package identity; check those revisions when combining packages.
+Group relations and profile extensions add optional data-model policies around a Party. Operational workflows and capability custody belong to [Framework](/packages/framework/) packages such as Party Actions and Vault. Each extension has its own pinned dependencies and immutable package identity; check those revisions when combining packages.
 
-The profile excerpt above is © Miso Labs, Inc. and remains licensed under [FSL-1.1-ALv2](https://github.com/misofm/party-protocol-extensions/blob/625b17935dfe818907f44a2dcb4b109e4d43a9f6/LICENSE.md), rather than the docs' Apache license for independently written examples.
+The Group and Profile excerpts above are © Miso Labs, Inc. and remain licensed under [FSL-1.1-ALv2](https://github.com/misofm/party-protocol-extensions/blob/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/LICENSE.md). The docs' Apache license for independently written examples does not relicense them.
 
-Source: pinned [profile module](https://github.com/misofm/party-protocol-extensions/blob/625b17935dfe818907f44a2dcb4b109e4d43a9f6/party_profile/sources/party_profile.move) and [Party Extensions README](https://github.com/misofm/party-protocol-extensions/blob/625b17935dfe818907f44a2dcb4b109e4d43a9f6/README.md).
+Source: pinned [group module](https://github.com/misofm/party-protocol-extensions/blob/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/party_group/sources/party_group.move), [profile module](https://github.com/misofm/party-protocol-extensions/blob/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/party_profile/sources/party_profile.move) and [Party Extensions README](https://github.com/misofm/party-protocol-extensions/blob/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/README.md).

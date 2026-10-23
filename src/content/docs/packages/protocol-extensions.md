@@ -1,9 +1,9 @@
 ---
 title: Overview
-description: Optional typed data for compositions, recordings, releases, and parties.
+description: Optional typed data and relations for compositions, recordings, releases, and parties.
 ---
 
-Protocol Extensions enrich existing protocol objects with optional typed data. The core objects retain their identities and core relationships; extensions add descriptive fields such as lyrics, credits, artwork, or a Party biography.
+Protocol Extensions enrich existing protocol objects with optional typed data. The core objects retain their identities and core relationships; extensions add descriptive fields such as lyrics, credits, artwork, or a Party biography or an optional membership model.
 
 Music-object extensions live in [`music-protocol-extensions`](https://github.com/misofm/music-protocol-extensions). Party profile and presentation packages live in [`party-protocol-extensions`](https://github.com/misofm/party-protocol-extensions).
 
@@ -11,12 +11,14 @@ Music-object extensions live in [`music-protocol-extensions`](https://github.com
 
 | Object | Data Model | Packages |
 | --- | --- | --- |
-| Party | Profiles, roles, genres, tags, imagery, external links | [Party Extensions](/packages/protocol-extensions/party/) |
+| Party | Optional group relations, profiles, roles, genres, tags, imagery, external links | [Party Extensions](/packages/protocol-extensions/party/) |
 | Composition | Titles, songwriting and publishing credits, lyrics | [Composition Extensions](/packages/protocol-extensions/composition/) |
 | Recording | Version labels, performance credits, advisory status, genres, languages | [Recording Extensions](/packages/protocol-extensions/recording/) |
 | Release | Titles, artwork, top-line credits, descriptions, genres, release kind | [Release Extensions](/packages/protocol-extensions/release/) |
 
 ## How Extensions Fit the Core
+
+The Party group extension owns a separate shared Group tied to a Party. Its membership and invitation storage and policies live outside core; relational writes authorize the appropriate Party through the core capability check.
 
 State-attaching extensions write typed dynamic fields through the object's admin-gated `uid_mut` surface. Reads are permissionless. Each extension owns its field keys, validation, and update rules. Changing one descriptive attribute can therefore leave unrelated data and the core object's identity intact.
 
@@ -28,4 +30,4 @@ Extensions describe objects. [Framework packages](/packages/framework/) define p
 
 Each package has its own dependency pins and published identity. Select compatible source and deployed revisions when combining extensions with their protocol objects or framework packages. Both extension repositories use FSL-1.1-ALv2; follow the applicable source license when reusing code, including excerpts.
 
-Sources: [Music Protocol Extensions](https://github.com/misofm/music-protocol-extensions/blob/main/README.md) and [Party Extensions](https://github.com/misofm/party-protocol-extensions/blob/625b17935dfe818907f44a2dcb4b109e4d43a9f6/README.md).
+Sources: [Music Protocol Extensions](https://github.com/misofm/music-protocol-extensions/blob/main/README.md) and [Party Extensions](https://github.com/misofm/party-protocol-extensions/blob/7ab3b38ff74ccc9b99122b8d0fb08d57a99f84ad/README.md).

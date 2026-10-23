@@ -13,7 +13,7 @@ Read the music overview first, then Shares, the separate Party protocol, Composi
 ## Protocol
 
 - [Shares](https://docs.miso.fm/protocol/shares/index.md): Why each work has a distinct share type and fixed supply, the contract's supply constants, how initial allocation differs from minting, and how shares, administration, and royalty participation differ.
-- [Party](https://docs.miso.fm/protocol/party/index.md): The separate `miso_party` identity protocol for individuals and groups, mutable names, object-bound admin capabilities, consent-based membership, attribution, and unverified identity claims.
+- [Party](https://docs.miso.fm/protocol/party/index.md): The identity-only `miso_party` source generation: stable entity IDs, names, public object-bound capability authorization, attribution, and unverified identity claims. Group storage and membership are optional extension features; historical deployments retain their old layout.
 - [Composition](https://docs.miso.fm/protocol/composition/index.md): Why the written work has an identity independent of recordings, its unique share type, its minimal Move definition, capability-gated extension access, and optional extensions.
 - [Recording](https://docs.miso.fm/protocol/recording/index.md): Why a master has independent identity and shares, an immutable composition relationship, its Move object and publication event definitions, and separate consent for each release.
 - [Release](https://docs.miso.fm/protocol/release/index.md): Ordered track lists, identity committed to order and salt, inline object and consent definitions, the contract's consent-target check, release administration, and the separation of presentation and commercial terms.
@@ -23,7 +23,7 @@ Read the music overview first, then Shares, the separate Party protocol, Composi
 
 - [Packages Overview](https://docs.miso.fm/packages/index.md): How core identities, data-model extensions, and business-logic framework packages fit together; core share validation, identifier resolution, compatibility, and licensing.
 - [Protocol Extensions Overview](https://docs.miso.fm/packages/protocol-extensions/index.md): Optional typed data for music objects and parties, with object-specific inventories, cap-gated writes, and permissionless reads.
-- [Party Extensions](https://docs.miso.fm/packages/protocol-extensions/party/index.md): Profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. The inline profile excerpt retains FSL-1.1-ALv2.
+- [Party Extensions](https://docs.miso.fm/packages/protocol-extensions/party/index.md): Optional party_group relations with extension-owned shared state, consent and direct membership, profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. Both inline Group and Profile excerpts retain FSL-1.1-ALv2.
 - [Composition Extensions](https://docs.miso.fm/packages/protocol-extensions/composition/index.md): Titles, songwriting and publishing credits, and lyrics from music-protocol-extensions.
 - [Recording Extensions](https://docs.miso.fm/packages/protocol-extensions/recording/index.md): Version labels, performance credits, advisory status, genres, and languages.
 - [Release Extensions](https://docs.miso.fm/packages/protocol-extensions/release/index.md): Titles, cover art, top-line credits, descriptions, genres, and release kind.
@@ -43,6 +43,6 @@ Read the music overview first, then Shares, the separate Party protocol, Composi
 ## Source Repositories
 
 - [Miso Music Protocol](https://github.com/misofm/music-protocol): Core Move package, templates, source modules, and Apache 2.0 license.
-- [Party Protocol](https://github.com/misofm/party-protocol): Apache-2.0 identity primitive in `miso_party`, separate from the music core.
-- [Party Extensions](https://github.com/misofm/party-protocol-extensions): FSL-1.1-ALv2 profile extensions and typed link-payload packages.
+- [Party Protocol](https://github.com/misofm/party-protocol): Apache-2.0 identity-only source generation in `miso_party`, separate from music core; group policy is not part of the core Party layout.
+- [Party Extensions](https://github.com/misofm/party-protocol-extensions): FSL-1.1-ALv2 optional group relations, profile extensions, and typed link-payload packages.
 - [Miso Link](https://github.com/misofm/link): SuiNS-based mapping of legacy industry identifiers to on-chain object addresses. A mapping is an assertion by its namespace controller, not an official registry record or rights verification.

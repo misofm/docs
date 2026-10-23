@@ -7,7 +7,7 @@ Miso separates music and party identities, optional data, and business rules int
 
 | Layer | Responsibility | Start Here |
 | --- | --- | --- |
-| Protocol: Party | Individual and group identities, names, and consent-based membership | [Party](/protocol/party/) |
+| Protocol: Party | Entity identities, names, and capability-controlled administration | [Party](/protocol/party/) |
 | Protocol: Music | Core identity, share types, composition relationships, and release consent | [Protocol Overview](/protocol/overview/) |
 | Protocol Extensions | Optional data on compositions, recordings, releases, and parties | [Protocol Extensions](/packages/protocol-extensions/) |
 | Framework | Business rules and workflows for royalties, licensing, administration, payments, and commerce | [Framework](/packages/framework/) |
@@ -18,7 +18,7 @@ The core also depends on [`share`](https://github.com/misofm/share) to validate 
 
 <span id="metadata-extensions"></span>
 
-[`music-protocol-extensions`](https://github.com/misofm/music-protocol-extensions) extends Composition, Recording, and Release. [`party-protocol-extensions`](https://github.com/misofm/party-protocol-extensions) enriches Party identities. Each state-attaching extension adds one data concern around its core object. Browse the [extension inventory](/packages/protocol-extensions/#extension-inventory) by object.
+[`music-protocol-extensions`](https://github.com/misofm/music-protocol-extensions) extends Composition, Recording, and Release. [`party-protocol-extensions`](https://github.com/misofm/party-protocol-extensions) adds optional group relations and profile data to Party identities. Each state-attaching extension adds one data concern around its core object. Browse the [extension inventory](/packages/protocol-extensions/#extension-inventory) by object.
 
 ## Framework
 
