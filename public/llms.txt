@@ -4,23 +4,29 @@
 
 The core Move package is `miso_music`. A `Composition` is the written work, a `Recording` is a particular master with an immutable composition ID, and a `Release` is an ordered list of recording IDs. Each composition and recording has its own fixed-supply share type. Admin capabilities control extension writes and release consent; owning shares alone does not grant those powers.
 
-Read the overview first, then Shares, Composition, Recording, and Release. These pages explain the protocol design with inline excerpts from the actual Move contracts; use the supplemental Move source guide only when inspecting the implementation. Add only the extensions needed for the product. A core object link is not proof of real-world authorship or a license, and holding shares pays nothing by itself: payment depends on a funded royalty pool and registered stakes. Pin compatible source revisions and verify published package IDs before constructing transactions against a network.
+Read the music overview first, then Shares, Composition, Recording, Release, and the separate Party protocol. The Miso Packages sidebar groups Protocol, Protocol Extensions, and Framework; both protocol groups include Composition, Recording, Release, and Party. These pages explain the protocol design with inline excerpts from the actual Move contracts; use the supplemental Move source guide only when inspecting the implementation. Add only the extensions needed for the product. A core object link is not proof of real-world authorship or a license, and holding shares pays nothing by itself: payment depends on a funded royalty pool and registered stakes. Pin compatible source revisions and verify published package IDs before constructing transactions against a network.
 
 ## Start Here
 
 - [Overview](https://docs.miso.fm/protocol/overview/index.md): The song/master/release model, industry identifier lookups and access, Music's Shared Ledger, the limits of canonical state, and Miso Link's SuiNS bridge.
 
-## Core Protocol
+## Protocol
 
 - [Shares](https://docs.miso.fm/protocol/shares/index.md): Why each work has a distinct share type and fixed supply, the contract's supply constants, how initial allocation differs from minting, and how shares, administration, and royalty participation differ.
 - [Composition](https://docs.miso.fm/protocol/composition/index.md): Why the written work has an identity independent of recordings, its unique share type, its minimal Move definition, capability-gated extension access, and optional extensions.
 - [Recording](https://docs.miso.fm/protocol/recording/index.md): Why a master has independent identity and shares, an immutable composition relationship, its Move object and publication event definitions, and separate consent for each release.
 - [Release](https://docs.miso.fm/protocol/release/index.md): Ordered track lists, identity committed to order and salt, inline object and consent definitions, the contract's consent-target check, release administration, and the separation of presentation and commercial terms.
 
+- [Party](https://docs.miso.fm/protocol/party/index.md): The separate `miso_party` identity protocol for individuals and groups, mutable names, object-bound admin capabilities, consent-based membership, attribution, and unverified identity claims.
+
 ## Packages, Protocol Extensions, and Framework
 
 - [Packages Overview](https://docs.miso.fm/packages/index.md): How core identities, data-model extensions, and business-logic framework packages fit together; core share validation, identifier resolution, compatibility, and licensing.
-- [Protocol Extensions](https://docs.miso.fm/packages/protocol-extensions/index.md): The music-protocol-extensions repository and its typed data additions for compositions, recordings, and releases; admin-gated writes, permissionless reads, and the complete extension inventory.
+- [Protocol Extensions Overview](https://docs.miso.fm/packages/protocol-extensions/index.md): Optional typed data for music objects and parties, with object-specific inventories, cap-gated writes, and permissionless reads.
+- [Composition Extensions](https://docs.miso.fm/packages/protocol-extensions/composition/index.md): Titles, songwriting and publishing credits, and lyrics from music-protocol-extensions.
+- [Recording Extensions](https://docs.miso.fm/packages/protocol-extensions/recording/index.md): Version labels, performance credits, advisory status, genres, and languages.
+- [Release Extensions](https://docs.miso.fm/packages/protocol-extensions/release/index.md): Titles, cover art, top-line credits, descriptions, genres, and release kind.
+- [Party Extensions](https://docs.miso.fm/packages/protocol-extensions/party/index.md): Profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. The inline profile excerpt retains FSL-1.1-ALv2.
 - [Framework](https://docs.miso.fm/packages/framework/index.md): Reusable business-logic packages for licensing, royalties, payments, custody, workflows, streaming, and commerce, plus supporting utilities.
 - [Royalty Pools](https://docs.miso.fm/packages/royalty-pool/index.md): Pool creation, stake registration, deposits, settlement, claims, and payout trust boundaries.
 - [Recording Licenses](https://docs.miso.fm/packages/recording-license/index.md): Optional standing composition policy, recording-share cut, and revenue sweep into a composition pool.
@@ -37,4 +43,6 @@ Read the overview first, then Shares, Composition, Recording, and Release. These
 ## Source Repositories
 
 - [Miso Music Protocol](https://github.com/misofm/music-protocol): Core Move package, templates, source modules, and Apache 2.0 license.
+- [Party Protocol](https://github.com/misofm/party-protocol): Apache-2.0 identity primitive in `miso_party`, separate from the music core.
+- [Party Extensions](https://github.com/misofm/party-protocol-extensions): FSL-1.1-ALv2 profile extensions and typed link-payload packages.
 - [Miso Link](https://github.com/misofm/link): SuiNS-based mapping of legacy industry identifiers to on-chain object addresses. A mapping is an assertion by its namespace controller, not an official registry record or rights verification.

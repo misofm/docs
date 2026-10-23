@@ -30,20 +30,30 @@ export default defineConfig({
       ],
       sidebar: [
         {
-          label: 'Miso Music Protocol',
-          items: [
-            { label: 'Overview', slug: 'protocol/overview' },
-            { label: 'Shares', slug: 'protocol/shares' },
-            { label: 'Composition', slug: 'protocol/composition' },
-            { label: 'Recording', slug: 'protocol/recording' },
-            { label: 'Release', slug: 'protocol/release' },
-          ],
-        },
-        {
           label: 'Miso Packages',
           items: [
             { label: 'Overview', slug: 'packages' },
-            { label: 'Protocol Extensions', slug: 'packages/protocol-extensions' },
+            {
+              label: 'Protocol',
+              items: [
+                { label: 'Overview', slug: 'protocol/overview' },
+                { label: 'Shares', slug: 'protocol/shares' },
+                { label: 'Composition', slug: 'protocol/composition' },
+                { label: 'Recording', slug: 'protocol/recording' },
+                { label: 'Release', slug: 'protocol/release' },
+                { label: 'Party', slug: 'protocol/party' },
+              ],
+            },
+            {
+              label: 'Protocol Extensions',
+              items: [
+                { label: 'Overview', slug: 'packages/protocol-extensions' },
+                { label: 'Composition', slug: 'packages/protocol-extensions/composition' },
+                { label: 'Recording', slug: 'packages/protocol-extensions/recording' },
+                { label: 'Release', slug: 'packages/protocol-extensions/release' },
+                { label: 'Party', slug: 'packages/protocol-extensions/party' },
+              ],
+            },
             {
               label: 'Framework',
               items: [

@@ -3,12 +3,13 @@ title: Overview
 description: How the core protocol, data-model extensions, and business-logic framework fit together.
 ---
 
-Miso separates the music model, optional data, and business rules into small Sui Move packages. This lets products share the same composition, recording, and release identities while choosing the data and workflows they need.
+Miso separates music and party identities, optional data, and business rules into small Sui Move packages. This lets products share the same composition, recording, release, and party identities while choosing the data and workflows they need.
 
 | Layer | Responsibility | Start Here |
 | --- | --- | --- |
-| Miso Music Protocol | Core identity, share types, composition relationships, and release consent | [Protocol Overview](/protocol/overview/) |
-| Protocol Extensions | Optional data on compositions, recordings, and releases, including titles, credits, lyrics, and artwork | [Protocol Extensions](/packages/protocol-extensions/) |
+| Protocol: Music | Core identity, share types, composition relationships, and release consent | [Protocol Overview](/protocol/overview/) |
+| Protocol: Party | Individual and group identities, names, and consent-based membership | [Party](/protocol/party/) |
+| Protocol Extensions | Optional data on compositions, recordings, releases, and parties | [Protocol Extensions](/packages/protocol-extensions/) |
 | Framework | Business rules and workflows for royalties, licensing, administration, payments, and commerce | [Framework](/packages/framework/) |
 
 The core also depends on [`share`](https://github.com/misofm/share) to validate each work's canonical share type and fix its supply. This supports the core's ownership model.
@@ -17,7 +18,7 @@ The core also depends on [`share`](https://github.com/misofm/share) to validate 
 
 <span id="metadata-extensions"></span>
 
-[`music-protocol-extensions`](https://github.com/misofm/music-protocol-extensions) extends the data model of the three core music objects. Each package adds one concern without expanding the core object. See the [extension inventory](/packages/protocol-extensions/#extension-inventory) for the composition, recording, and release packages.
+[`music-protocol-extensions`](https://github.com/misofm/music-protocol-extensions) extends Composition, Recording, and Release. [`party-protocol-extensions`](https://github.com/misofm/party-protocol-extensions) enriches Party identities. Each state-attaching extension adds one data concern around its core object. Browse the [extension inventory](/packages/protocol-extensions/#extension-inventory) by object.
 
 ## Framework
 

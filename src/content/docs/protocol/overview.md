@@ -81,6 +81,10 @@ Core offers one `CompositionRegistry`, one `RecordingRegistry`, and one `Release
 
 The following pages explain those design choices in more detail: [Shares](/protocol/shares/), [Composition](/protocol/composition/), [Recording](/protocol/recording/), and [Release](/protocol/release/).
 
+## Parties and Attribution
+
+The separate [Party protocol](/protocol/party/) represents the people and groups credited on works. Music credit extensions reference Party IDs, while Party profile extensions add biographies, roles, imagery, and links. A Party identity complements the composition, recording, and release model; it is not a fourth music-object type in `miso_music`.
+
 ## Where money flows
 
 Core contains no royalty ledger, payout balance, composition commission rate, or release split. The [royalty-pool](/packages/royalty-pool/) package stakes a work's shares and distributes a payout currency to registered stakes. The [recording-license](/packages/recording-license/) package can express a composition's standing recording terms and hold its cut of recording shares. A sales or streaming package routes revenue into the appropriate pools. Read the specific package's terms before assuming a revenue path is active.

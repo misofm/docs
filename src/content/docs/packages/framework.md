@@ -20,11 +20,12 @@ For example, a recording can point to a composition in core, carry artist credit
 | [`crank`](https://github.com/misofm/crank) | Processes record-sale revenue into claimable royalties. |
 | [`streaming`](https://github.com/misofm/streaming) | Prepaid streaming and settlement contracts, with an SDK and example app. |
 
-## Identity, administration, and commerce
+## Administration, Commerce, and Supporting Types
+
+[Party identities](/protocol/party/) and their [profile extensions](/packages/protocol-extensions/party/) belong to the Protocol and Protocol Extensions sections. The framework builds workflows around those identities.
 
 | Package | Role |
 | --- | --- |
-| [`party-protocol`](https://github.com/misofm/party-protocol) and [`party-protocol-extensions`](https://github.com/misofm/party-protocol-extensions) | Party identities and optional party data used by credits. |
 | [`credit`](https://github.com/misofm/credit) | Shared credit data type used by attribution extensions. |
 | [`vault`](https://github.com/misofm/vault), [`vault-plugins`](https://github.com/misofm/vault-plugins), and [`party-protocol-actions`](https://github.com/misofm/party-protocol-actions) | Capability custody and composed administrative workflows. |
 | [`record`](https://github.com/misofm/record) and [`record-extensions`](https://github.com/misofm/record-extensions) | Numbered editions and purchased Records, plus first-party extensions. |
