@@ -8,6 +8,7 @@ export default defineConfig({
   vite: { plugins: [tailwindcss()] },
   redirects: {
     '/protocol/releases': '/protocol/release/#release-consent',
+    '/protocol/shares': '/protocol/overview/#share-types',
   },
   integrations: [
     starlight({
@@ -37,7 +38,6 @@ export default defineConfig({
               label: 'Protocol',
               items: [
                 { label: 'Overview', slug: 'protocol/overview' },
-                { label: 'Shares', slug: 'protocol/shares' },
                 { label: 'Party', slug: 'protocol/party' },
                 { label: 'Composition', slug: 'protocol/composition' },
                 { label: 'Recording', slug: 'protocol/recording' },

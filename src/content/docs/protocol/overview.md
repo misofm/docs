@@ -65,6 +65,12 @@ The on-chain object is a canonical source for its own core state, so integration
 
 A recording's composition ID is a **relationship**, not proof of a license. The current core lets anyone create a recording that points to a composition. Apps that require permission to distribute the recording should check a recognized [recording license](/packages/recording-license/) or another agreement. A release is similarly a catalog relationship; a sales package determines its own commercial terms.
 
+## Share Types
+
+Each composition and recording has its own **share type**, tying shares to that particular work. Core fixes the supply at **100,000,000 shares with six decimals**. The work's identity and share type stay associated as those shares are allocated, transferred, or staked.
+
+Shares express fractional economic ownership. Administrative capabilities separately control extension writes and release consent. Holding shares alone does not activate royalties: payment packages must route revenue into funded pools, and holders must register stakes. See [Composition Shares](/protocol/composition/#composition-shares), [Recording Shares](/protocol/recording/#recording-shares), and [Royalty Pools](/packages/royalty-pool/) for the details.
+
 ## Miso Link
 
 [Miso Link](https://github.com/misofm/link) connects these on-chain objects to existing industry codes through SuiNS. It normalizes an ISWC, ISRC, or UPC/GTIN into a leaf subname under a configured namespace and points that name to a Sui address. An ISWC can point to a `Composition`, an ISRC to a `Recording`, and a UPC/GTIN to a `Release`. Apps that trust the same namespace can resolve a code to the same on-chain object and inspect its core relationships and publication history. A rights holder who controls a namespace can use this bridge to direct others to the object it treats as its canonical on-chain work.
@@ -75,11 +81,11 @@ A Miso Link mapping is an assertion by the SuiNS namespace controller, not a reg
 
 Each object is created and published in one transaction. Publication shares it and freezes the embedded relationships. An admin capability still grants `uid_mut` access to attach or change dynamic fields after publication. This is how [metadata extensions](/packages/protocol-extensions/) add titles, credits, lyrics, artwork, and classifications without expanding or upgrading the core object.
 
-The admin capability controls the object's extension surface. [Share tokens](/protocol/shares/) express fractional economic ownership; owning shares does not grant the admin capability. Treat an extension value as a statement made under that capability and apply the extension's own trust rules.
+The admin capability controls the object's extension surface. [Shares](#share-types) express fractional economic ownership; owning shares does not grant the admin capability. Treat an extension value as a statement made under that capability and apply the extension's own trust rules.
 
 Core offers one `CompositionRegistry`, one `RecordingRegistry`, and one `ReleaseRegistry` per package publication. Composition and recording IDs derive from the registry and their unique share types. Release IDs derive from the ordered recording list and a 32-byte salt. These registries are shared at package initialization and have no public constructor.
 
-The following pages explain those design choices in more detail: [Shares](/protocol/shares/), [Composition](/protocol/composition/), [Recording](/protocol/recording/), and [Release](/protocol/release/).
+The following pages explain those design choices in more detail: [Party](/protocol/party/), [Composition](/protocol/composition/), [Recording](/protocol/recording/), and [Release](/protocol/release/).
 
 ## Parties and Attribution
 
