@@ -63,7 +63,7 @@ The `ReleaseAdminCap` controls the release's extension surface. It does not gran
 
 ## Fixed relationships, extensible presentation
 
-Titles, artwork, credits, and other presentation data belong to [extensions](/packages/protocol-extensions/release/). They can be managed around the fixed track list without expanding the core release model.
+Titles, artwork, credits, and other presentation data belong to [extensions](/packages/protocol-extensions/#release). They can be managed around the fixed track list without expanding the core release model.
 
 Publication records the release ID, admin capability ID, ordered recording IDs, and salt in `ReleasePublishedEvent`. Readers can verify the release's identity from those values and follow each recording to its composition.
 

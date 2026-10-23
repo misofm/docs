@@ -7,6 +7,9 @@ export default defineConfig({
   site: 'https://docs.miso.fm',
   vite: { plugins: [tailwindcss()] },
   redirects: {
+    '/packages/protocol-extensions/release': '/packages/protocol-extensions/#release',
+    '/packages/protocol-extensions/recording': '/packages/protocol-extensions/#recording',
+    '/packages/protocol-extensions/composition': '/packages/protocol-extensions/#composition',
     '/protocol/releases': '/protocol/release/#release-consent',
     '/protocol/shares': '/protocol/overview/#share-types',
   },
@@ -48,15 +51,7 @@ export default defineConfig({
                 { label: 'Composition', slug: 'protocol/composition' },
                 { label: 'Recording', slug: 'protocol/recording' },
                 { label: 'Release', slug: 'protocol/release' },
-                {
-                  label: 'Extensions',
-                  items: [
-                    { label: 'Overview', slug: 'packages/protocol-extensions' },
-                    { label: 'Composition', slug: 'packages/protocol-extensions/composition' },
-                    { label: 'Recording', slug: 'packages/protocol-extensions/recording' },
-                    { label: 'Release', slug: 'packages/protocol-extensions/release' },
-                  ],
-                },
+                { label: 'Extensions', slug: 'packages/protocol-extensions' },
               ],
             },
             {

@@ -1,31 +1,65 @@
 ---
-title: Overview
-description: Optional typed data for compositions, recordings, releases, and parties.
+title: Extensions
+description: All music protocol extensions for compositions, recordings, and releases.
 ---
 
-Protocol Extensions enrich existing protocol objects with optional typed data. The core objects retain their identities and core relationships; extensions add descriptive fields such as lyrics, credits, artwork, or a Party biography.
+Music Protocol Extensions add optional typed data to compositions, recordings, and releases. The core keeps each object's identity and relationships; extensions add titles, credits, lyrics, and other descriptive fields without expanding that core.
 
-Music-object extensions live in [`music-protocol-extensions`](https://github.com/misofm/music-protocol-extensions). Party profile and presentation packages live in [`party-protocol-extensions`](https://github.com/misofm/party-protocol-extensions).
-
-## Extension Inventory
-
-| Object | Data Model | Packages |
-| --- | --- | --- |
-| Party | Profiles, roles, genres, tags, imagery, external links | [Party Extensions](/packages/protocol-extensions/party/) |
-| Composition | Titles, songwriting and publishing credits, lyrics | [Composition Extensions](/packages/protocol-extensions/composition/) |
-| Recording | Version labels, performance credits, advisory status, genres, languages | [Recording Extensions](/packages/protocol-extensions/recording/) |
-| Release | Titles, artwork, top-line credits, descriptions, genres, release kind | [Release Extensions](/packages/protocol-extensions/release/) |
+Each package lives in [`music-protocol-extensions`](https://github.com/misofm/music-protocol-extensions). Choose the data your application needs. Identity profiles and membership are covered separately in [Party Extensions](/packages/protocol-extensions/party/).
 
 ## How Extensions Fit the Core
 
-State-attaching extensions write typed dynamic fields through the object's admin-gated `uid_mut` surface. Reads are permissionless. Each extension owns its field keys, validation, and update rules. Changing one descriptive attribute can therefore leave unrelated data and the core object's identity intact.
+State-attaching extensions write typed dynamic fields through the object's admin-gated `uid_mut` surface. Reads are permissionless. Each extension owns its field keys, validation, and update rules. Owning shares alone does not authorize extension writes.
 
-Some Party packages construct typed link payloads rather than attaching fields themselves. The [Party extensions page](/packages/protocol-extensions/party/) distinguishes those helpers from the packages that require an admin capability.
+Extensions describe objects. [Framework packages](/packages/framework/) define policies and workflows such as recording licenses, royalty distribution, and capability custody. A descriptive field alone does not establish an economic agreement or verify a real-world claim.
 
-Extensions describe objects. [Framework packages](/packages/framework/) define policies and workflows such as recording licenses, royalty distribution, and capability custody. A title or profile field alone does not establish an economic agreement or verify a real-world claim.
+<span id="extension-inventory"></span>
+
+## Composition
+
+The composition extensions describe the underlying written work: its preferred title, songwriting and publishing credits, and lyrics. They enrich the Composition object while its identity and share type remain in core.
+
+For example, the same composition can have language-keyed lyrics and credits pointing to Party IDs, while several recordings continue to refer to that one composition.
+
+| Package | Object | Adds |
+| --- | --- | --- |
+| [`composition_title`](https://github.com/misofm/music-protocol-extensions/tree/main/composition_title) | Composition | Preferred title |
+| [`composition_credits`](https://github.com/misofm/music-protocol-extensions/tree/main/composition_credits) | Composition | Writer and publisher credit by Party ID |
+| [`composition_lyrics`](https://github.com/misofm/music-protocol-extensions/tree/main/composition_lyrics) | Composition | Language-keyed, compressed lyrics |
+
+## Recording
+
+The recording extensions describe a particular master: its version label, performance and production credits, advisory classification, genres, and languages. The core Recording keeps the master's identity, share type, and immutable composition ID.
+
+A studio version and a live take can therefore have different labels and credits while both refer to the same underlying composition.
+
+| Package | Object | Adds |
+| --- | --- | --- |
+| [`recording_version`](https://github.com/misofm/music-protocol-extensions/tree/main/recording_version) | Recording | Take or version label |
+| [`recording_credits`](https://github.com/misofm/music-protocol-extensions/tree/main/recording_credits) | Recording | Artist, performance, and production credits |
+| [`recording_advisory`](https://github.com/misofm/music-protocol-extensions/tree/main/recording_advisory) | Recording | Explicit/clean advisory status |
+| [`recording_genre`](https://github.com/misofm/music-protocol-extensions/tree/main/recording_genre) | Recording | Ordered genres |
+| [`recording_language`](https://github.com/misofm/music-protocol-extensions/tree/main/recording_language) | Recording | Ordered languages or instrumental indication |
+
+## Release
+
+The release extensions describe how an ordered track list is presented: its title, artwork, artist billing, description, genres, and kind. The core Release retains the ordered recording IDs and the identity approved by recording admins.
+
+Artwork or a preferred title can be updated under the release administrator without changing the fixed track list. Release Consent does not approve those presentation fields or any commercial terms.
+
+| Package | Object | Adds |
+| --- | --- | --- |
+| [`release_title`](https://github.com/misofm/music-protocol-extensions/tree/main/release_title) | Release | Preferred title |
+| [`release_cover_art`](https://github.com/misofm/music-protocol-extensions/tree/main/release_cover_art) | Release | Cover art and optional track overrides |
+| [`release_credits`](https://github.com/misofm/music-protocol-extensions/tree/main/release_credits) | Release | Top-line artist billing |
+| [`release_description`](https://github.com/misofm/music-protocol-extensions/tree/main/release_description) | Release | Editorial description |
+| [`release_genre`](https://github.com/misofm/music-protocol-extensions/tree/main/release_genre) | Release | Ordered genres |
+| [`release_kind`](https://github.com/misofm/music-protocol-extensions/tree/main/release_kind) | Release | Album, EP, mixtape, or other label |
 
 ## Compatibility and Licensing
 
-Each package has its own dependency pins and published identity. Select compatible source and deployed revisions when combining extensions with their protocol objects or framework packages. Both extension repositories use FSL-1.1-ALv2; follow the applicable source license when reusing code, including excerpts.
+Each directory is a separate Move package with its own dependency pins and published identity. Check its `Move.toml` and relevant `Published.toml` records to select compatible source and deployed revisions before combining packages.
 
-Sources: [Music Protocol Extensions](https://github.com/misofm/music-protocol-extensions/blob/main/README.md) and [Party Extensions](https://github.com/misofm/party-protocol-extensions/blob/625b17935dfe818907f44a2dcb4b109e4d43a9f6/README.md).
+Package source uses [FSL-1.1-ALv2](https://github.com/misofm/music-protocol-extensions/blob/main/LICENSE.md). Follow the repository's source license when reusing code, including excerpts.
+
+Source: [Music Protocol Extensions README](https://github.com/misofm/music-protocol-extensions/blob/main/README.md).
