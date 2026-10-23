@@ -11,10 +11,10 @@ Music-object extensions live in [`music-protocol-extensions`](https://github.com
 
 | Object | Data Model | Packages |
 | --- | --- | --- |
+| Party | Profiles, roles, genres, tags, imagery, external links | [Party Extensions](/packages/protocol-extensions/party/) |
 | Composition | Titles, songwriting and publishing credits, lyrics | [Composition Extensions](/packages/protocol-extensions/composition/) |
 | Recording | Version labels, performance credits, advisory status, genres, languages | [Recording Extensions](/packages/protocol-extensions/recording/) |
 | Release | Titles, artwork, top-line credits, descriptions, genres, release kind | [Release Extensions](/packages/protocol-extensions/release/) |
-| Party | Profiles, roles, genres, tags, imagery, external links | [Party Extensions](/packages/protocol-extensions/party/) |
 
 ## How Extensions Fit the Core
 

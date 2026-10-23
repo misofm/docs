@@ -38,20 +38,20 @@ export default defineConfig({
               items: [
                 { label: 'Overview', slug: 'protocol/overview' },
                 { label: 'Shares', slug: 'protocol/shares' },
+                { label: 'Party', slug: 'protocol/party' },
                 { label: 'Composition', slug: 'protocol/composition' },
                 { label: 'Recording', slug: 'protocol/recording' },
                 { label: 'Release', slug: 'protocol/release' },
-                { label: 'Party', slug: 'protocol/party' },
               ],
             },
             {
               label: 'Protocol Extensions',
               items: [
                 { label: 'Overview', slug: 'packages/protocol-extensions' },
+                { label: 'Party', slug: 'packages/protocol-extensions/party' },
                 { label: 'Composition', slug: 'packages/protocol-extensions/composition' },
                 { label: 'Recording', slug: 'packages/protocol-extensions/recording' },
                 { label: 'Release', slug: 'packages/protocol-extensions/release' },
-                { label: 'Party', slug: 'packages/protocol-extensions/party' },
               ],
             },
             {

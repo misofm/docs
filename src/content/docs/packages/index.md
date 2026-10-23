@@ -7,8 +7,8 @@ Miso separates music and party identities, optional data, and business rules int
 
 | Layer | Responsibility | Start Here |
 | --- | --- | --- |
-| Protocol: Music | Core identity, share types, composition relationships, and release consent | [Protocol Overview](/protocol/overview/) |
 | Protocol: Party | Individual and group identities, names, and consent-based membership | [Party](/protocol/party/) |
+| Protocol: Music | Core identity, share types, composition relationships, and release consent | [Protocol Overview](/protocol/overview/) |
 | Protocol Extensions | Optional data on compositions, recordings, releases, and parties | [Protocol Extensions](/packages/protocol-extensions/) |
 | Framework | Business rules and workflows for royalties, licensing, administration, payments, and commerce | [Framework](/packages/framework/) |
 
