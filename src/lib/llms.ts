@@ -3,7 +3,6 @@ import type { CollectionEntry } from 'astro:content';
 /** The reading order used by the complete Markdown export. */
 export const docIds = [
   'protocol/overview',
-  'protocol/shares',
   'protocol/party',
   'protocol/composition',
   'protocol/recording',

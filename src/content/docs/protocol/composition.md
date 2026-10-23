@@ -9,7 +9,7 @@ In the [overview's example](/protocol/overview/), “I Will Always Love You” i
 
 ## One identity for the work
 
-The core `Composition<CompositionShare>` contains only an object ID. Its type parameter identifies the work's unique [share type](/protocol/shares/). Titles, writers, and lyrics are deliberately outside this core identity: changing a preferred title or correcting a credit should not create a different underlying work.
+The core `Composition<CompositionShare>` contains only an object ID. Its type parameter identifies the work's unique [share type](#composition-shares). Titles, writers, and lyrics are deliberately outside this core identity: changing a preferred title or correcting a credit should not create a different underlying work.
 
 The complete core object definition shows that separation:
 
@@ -22,6 +22,23 @@ public struct Composition<phantom CompositionShare> has key {
 `phantom CompositionShare` ties the object to a particular share type without storing a share balance inside the composition.
 
 Within a protocol package's registry, a composition's ID is derived from its share type. This gives the work and its shares a stable, programmatically verifiable association. A derived address predicts where the object belongs; the published object and its history establish whether it exists.
+
+## Composition Shares
+
+Each composition has a unique `CompositionShare` type and a fixed supply of **100,000,000 shares with six decimals**. Shares are held as `Coin<CompositionShare>` or `Balance<CompositionShare>` values. Two compositions can use the same name and symbol while their full type identities differ by package address, so their shares remain distinct.
+
+The contract fixes these currency conventions:
+
+```move
+const SHARE_DECIMALS: u8 = 6;
+const SHARE_SYMBOL: vector<u8> = b"CSHARE";
+const SHARE_NAME: vector<u8> = b"Composition Share";
+const SHARE_SUPPLY: u64 = 100_000_000_000_000;
+```
+
+When the work is created, core validates the currency, mints the full supply, and consumes the minting authority. The creator receives the initial balance; subsequent allocations divide that supply rather than creating more shares. Core leaves allocation agreements and custody to applications and extensions.
+
+Composition shares can participate in a funded [royalty pool](/packages/royalty-pool/) through registered stakes. A recording's link to the composition does not automatically route recording royalties to these holders; a [recording license](/packages/recording-license/) or another economic agreement defines that route.
 
 ## One composition, many recordings
 

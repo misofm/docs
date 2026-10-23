@@ -24,9 +24,24 @@ public struct Recording<phantom RecordingShare> has key {
 
 The relationship is stored on the recording rather than maintained as a mutable list on the composition. Adding a recording therefore does not require changing the composition or obtaining its admin capability. The core is permissionless: an application that needs recording authorization must check a recognized [recording license](/packages/recording-license/) or another agreement.
 
+## Recording Shares
+
+Each master has a unique `RecordingShare` type with **100,000,000 shares and six decimals**. Shares are held as `Coin<RecordingShare>` or `Balance<RecordingShare>` values. Different recordings of the same composition have separate share types, so their ownership and allocations can differ.
+
+The recording contract fixes its own currency conventions:
+
+```move
+const SHARE_DECIMALS: u8 = 6;
+const SHARE_SYMBOL: vector<u8> = b"RSHARE";
+const SHARE_NAME: vector<u8> = b"Recording Share";
+const SHARE_SUPPLY: u64 = 100_000_000_000_000;
+```
+
+Core validates the currency and fixes its full supply when the recording is created. The creator receives the initial balance, while applications and extensions determine allocations. Holding shares alone pays no royalties: a revenue source must fund the relevant [royalty pool](/packages/royalty-pool/), and the holder must register a stake there.
+
 ## Independent ownership and administration
 
-Every recording has its own [fixed-supply share type](/protocol/shares/). Recording shares and composition shares are distinct types, reflecting the separate economic interests in the master and the underlying work. Recording royalties do not automatically flow to composition share holders simply because the objects are linked.
+Every recording has its own [fixed-supply share type](#recording-shares). Recording shares and composition shares are distinct types, reflecting the separate economic interests in the master and the underlying work. Recording royalties do not automatically flow to composition share holders simply because the objects are linked.
 
 The `RecordingAdminCap` is separate from those shares. It authorizes extension writes and can issue [Release Consent](/protocol/release/#release-consent). Share ownership alone does not grant either power.
 
