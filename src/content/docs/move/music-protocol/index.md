@@ -68,7 +68,7 @@ A recording's composition ID is a **relationship**, not proof of a license. The 
 
 Each composition and recording has its own **share type**, tying shares to that particular work. Core fixes the supply at **100,000,000 shares with six decimals**. The work's identity and share type stay associated as those shares are allocated, transferred, or staked.
 
-Shares express fractional economic ownership. Admin capabilities separately control extension writes and the licenses a work grants. Holding shares alone does not activate royalties: payment packages must route revenue into funded pools, and holders must register stakes. See [Composition Shares](/move/music-protocol/composition/#composition-shares), [Recording Shares](/move/music-protocol/recording/#recording-shares), and [Royalty Pools](/move/framework/royalty-pool/) for the details.
+Shares express fractional economic ownership. Admin capabilities separately control extension writes and the licenses a work grants. Holding shares alone does not activate royalties: payment packages must route revenue into funded pools, and holders must register stakes. See [Composition Shares](/move/music-protocol/composition/#composition-shares), [Recording Shares](/move/music-protocol/recording/#recording-shares), and [Royalty Pool](/move/framework/royalty-pool/) for the details.
 
 ## Miso Link
 

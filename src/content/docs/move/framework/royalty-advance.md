@@ -1,5 +1,5 @@
 ---
-title: Royalty Advances
+title: Royalty Advance
 description: Escrow an advance in an on-chain offer; accepting it pays the rights holder and locks their stake in a royalty grant in one transaction.
 ---
 

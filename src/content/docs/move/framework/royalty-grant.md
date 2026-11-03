@@ -1,5 +1,5 @@
 ---
-title: Royalty Grants
+title: Royalty Grant
 description: Lock a stake and pay part of its royalties to a recipient until an amount is repaid or a term ends, then return the stake.
 ---
 

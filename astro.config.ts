@@ -23,7 +23,17 @@ const nimbusConfig = defineNimbusConfig({
             label: "Party Protocol",
             items: [
               { label: "Overview", link: "/move/party-protocol/" },
-              { label: "Extensions", link: "/move/party-protocol/extensions/" },
+              {
+                label: "Extensions",
+                collapsed: true,
+                items: [
+                  { label: "Overview", link: "/move/party-protocol/extensions/" },
+                  { label: "Party Name", link: "/move/party-protocol/extensions/party-name/" },
+                  { label: "Party Profile", link: "/move/party-protocol/extensions/party-profile/" },
+                  { label: "Party Genre", link: "/move/party-protocol/extensions/party-genre/" },
+                  { label: "Party Group", link: "/move/party-protocol/extensions/party-group/" },
+                ],
+              },
             ],
           },
           {
@@ -33,18 +43,86 @@ const nimbusConfig = defineNimbusConfig({
               { label: "Composition", link: "/move/music-protocol/composition/" },
               { label: "Recording", link: "/move/music-protocol/recording/" },
               { label: "Release", link: "/move/music-protocol/release/" },
-              { label: "Extensions", link: "/move/music-protocol/extensions/" },
+              {
+                label: "Extensions",
+                collapsed: true,
+                items: [
+                  { label: "Overview", link: "/move/music-protocol/extensions/" },
+                  {
+                    label: "Composition",
+                    collapsed: true,
+                    items: [
+                      { label: "Composition Title", link: "/move/music-protocol/extensions/composition-title/" },
+                      { label: "Composition Credits", link: "/move/music-protocol/extensions/composition-credits/" },
+                      { label: "Composition Lyrics", link: "/move/music-protocol/extensions/composition-lyrics/" },
+                    ],
+                  },
+                  {
+                    label: "Recording",
+                    collapsed: true,
+                    items: [
+                      { label: "Recording Version", link: "/move/music-protocol/extensions/recording-version/" },
+                      { label: "Recording Credits", link: "/move/music-protocol/extensions/recording-credits/" },
+                      { label: "Recording Advisory", link: "/move/music-protocol/extensions/recording-advisory/" },
+                      { label: "Recording Genre", link: "/move/music-protocol/extensions/recording-genre/" },
+                      { label: "Recording Language", link: "/move/music-protocol/extensions/recording-language/" },
+                      { label: "Recording Master", link: "/move/music-protocol/extensions/recording-master/" },
+                    ],
+                  },
+                  {
+                    label: "Release",
+                    collapsed: true,
+                    items: [
+                      { label: "Release Title", link: "/move/music-protocol/extensions/release-title/" },
+                      { label: "Release Cover Art", link: "/move/music-protocol/extensions/release-cover-art/" },
+                      { label: "Release Credits", link: "/move/music-protocol/extensions/release-credits/" },
+                      { label: "Release Description", link: "/move/music-protocol/extensions/release-description/" },
+                      { label: "Release Genre", link: "/move/music-protocol/extensions/release-genre/" },
+                      { label: "Release Kind", link: "/move/music-protocol/extensions/release-kind/" },
+                    ],
+                  },
+                ],
+              },
             ],
           },
           {
             label: "Framework",
             items: [
               { label: "Overview", link: "/move/framework/" },
-              { label: "Royalty Pools", link: "/move/framework/royalty-pool/" },
-              { label: "Recording Licenses", link: "/move/framework/recording-license/" },
-              { label: "Release Licenses", link: "/move/framework/release-license/" },
-              { label: "Royalty Grants", link: "/move/framework/royalty-grant/" },
-              { label: "Royalty Advances", link: "/move/framework/royalty-advance/" },
+              {
+                label: "Economics",
+                items: [
+                  { label: "Royalty Pool", link: "/move/framework/royalty-pool/" },
+                  { label: "Recording License", link: "/move/framework/recording-license/" },
+                  { label: "Release License", link: "/move/framework/release-license/" },
+                  { label: "Royalty Grant", link: "/move/framework/royalty-grant/" },
+                  { label: "Royalty Advance", link: "/move/framework/royalty-advance/" },
+                ],
+              },
+              {
+                label: "Records and Player",
+                collapsed: true,
+                items: [
+                  { label: "Record", link: "/move/framework/record/" },
+                  { label: "Record Shop", link: "/move/framework/record-shop/" },
+                  { label: "Miso Player", link: "/move/framework/miso-player/" },
+                ],
+              },
+              {
+                label: "Actions and Libraries",
+                collapsed: true,
+                items: [
+                  { label: "Party Wallet", link: "/move/framework/party-wallet/" },
+                  { label: "Vault", link: "/move/framework/vault/" },
+                  { label: "Audio", link: "/move/framework/audio/" },
+                  { label: "Audio Verifier", link: "/move/framework/audio-verifier/" },
+                  { label: "Credit", link: "/move/framework/credit/" },
+                  { label: "Genre", link: "/move/framework/genre/" },
+                  { label: "Cover Art", link: "/move/framework/cover-art/" },
+                  { label: "Release Track Data", link: "/move/framework/release-track-data/" },
+                  { label: "Release Track Iterator", link: "/move/framework/release-track-iterator/" },
+                ],
+              },
             ],
           },
         ],

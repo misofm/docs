@@ -1,5 +1,5 @@
 ---
-title: Recording Licenses
+title: Recording License
 description: A composition's standing license to record it, paid as a stake of the recording's shares and swept into the composition's pool.
 ---
 

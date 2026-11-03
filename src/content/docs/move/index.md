@@ -22,7 +22,7 @@ The extension packages live in [`misofm/framework`](https://github.com/misofm/fr
 
 ## Framework
 
-Framework packages define what applications can do with those objects: license recordings and releases, distribute royalties, advance money against them, sell Records, and hold capabilities. Start with the [Framework overview](/move/framework/), which traces a sale from a release to its shareholders, then read [Royalty Pools](/move/framework/royalty-pool/), [Recording Licenses](/move/framework/recording-license/), [Release Licenses](/move/framework/release-license/), [Royalty Grants](/move/framework/royalty-grant/), and [Royalty Advances](/move/framework/royalty-advance/).
+Framework packages define what applications can do with those objects: license recordings and releases, distribute royalties, advance money against them, sell Records, and hold capabilities. Start with the [Framework overview](/move/framework/), which traces a sale from a release to its shareholders, then read [Royalty Pool](/move/framework/royalty-pool/), [Recording License](/move/framework/recording-license/), [Release License](/move/framework/release-license/), [Royalty Grant](/move/framework/royalty-grant/), and [Royalty Advance](/move/framework/royalty-advance/).
 
 ## Identifier Resolution
 

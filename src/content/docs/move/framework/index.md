@@ -7,7 +7,7 @@ This page is for developers deciding which Miso packages to build on beyond the 
 
 The [Party](/move/party-protocol/) and [Music](/move/music-protocol/) protocols supply identities and relationships. Framework packages add what a product does with them: license a recording or a release, pay royalties, sell Records, and give each listener a Player. Every top-level directory of the repository is a separate Move package with its own manifest, published as its own immutable package. A product depends only on the packages it uses.
 
-The repository also holds the optional data extensions for those objects. They are documented by object in [Music Protocol Extensions](/move/music-protocol/extensions/) and [Party Protocol Extensions](/move/party-protocol/extensions/).
+The repository also holds the optional data extensions for those objects. Each has its own page, grouped by object under [Music Protocol Extensions](/move/music-protocol/extensions/) and [Party Protocol Extensions](/move/party-protocol/extensions/). Every package below links to its page.
 
 ## How Revenue Moves
 
@@ -22,7 +22,7 @@ Record sale ─→ ReleaseLicense ──forward by splits──→ each track's 
                                                composition pool ──→ composition-share holders
 ```
 
-1. [`record_shop`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/record_shop) sells the Record only when the release has an authorized [Release License](/move/framework/release-license/). It pays the sale to that license, which splits it by fixed basis points into each track's recording pool.
+1. [`record_shop`](/move/framework/record-shop/) sells the Record only when the release has an authorized [Release License](/move/framework/release-license/). It pays the sale to that license, which splits it by fixed basis points into each track's recording pool.
 2. A [Royalty Pool](/move/framework/royalty-pool/) pays the recording's registered share stakes in proportion to their shares.
 3. Because the recording took a [Recording License](/move/framework/recording-license/), one of those stakes is the composition's cut. Sweeping it sends that money to the composition's pool, which pays composition-share holders.
 
@@ -40,36 +40,36 @@ The repository README states the design rules behind the path:
 
 | Package | Role |
 | --- | --- |
-| [`royalty_pool`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/royalty_pool) | One pool per work and payout currency. Holders stake the work's shares and claim a pro-rata cut of everything paid in. [Read the guide](/move/framework/royalty-pool/). |
-| [`recording_license`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/recording_license) | A composition's standing license to record it. The recording pays the composition's rate as a stake of recording shares. [Read the guide](/move/framework/recording-license/). |
-| [`release_license`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/release_license) | A release's license from its recordings: fixed splits, each recording admin's authorization, and forwarding of the release's revenue to each track's pool. [Read the guide](/move/framework/release-license/). |
-| [`royalty_grant`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/royalty_grant) | Locks a stake and grants part of its royalties to a recipient until an amount is repaid or a term ends, then returns the stake. Covers off-chain advances, producer points, and pledges. [Read the guide](/move/framework/royalty-grant/). |
-| [`royalty_advance`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/royalty_advance) | An on-chain advance: a provider escrows a payment in an offer, and accepting it pays the rights holder and creates a `royalty_grant` on their stake in one transaction. [Read the guide](/move/framework/royalty-advance/). |
+| [`royalty_pool`](/move/framework/royalty-pool/) | One pool per work and payout currency. Holders stake the work's shares and claim a pro-rata cut of everything paid in. |
+| [`recording_license`](/move/framework/recording-license/) | A composition's standing license to record it. The recording pays the composition's rate as a stake of recording shares. |
+| [`release_license`](/move/framework/release-license/) | A release's license from its recordings: fixed splits, each recording admin's authorization, and forwarding of the release's revenue to each track's pool. |
+| [`royalty_grant`](/move/framework/royalty-grant/) | Locks a stake and grants part of its royalties to a recipient until an amount is repaid or a term ends, then returns the stake. Covers off-chain advances, producer points, and pledges. |
+| [`royalty_advance`](/move/framework/royalty-advance/) | An on-chain advance: a provider escrows a payment in an offer, and accepting it pays the rights holder and creates a `royalty_grant` on their stake in one transaction. |
 
 ## Records and the Player
 
 | Package | Role |
 | --- | --- |
-| [`record`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/record) | The Record lifecycle: one `Pressing` per edition of a release, one numbered `Record` per purchase. |
-| [`record_shop`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/record_shop) | First-party fixed- or floor-price sales of Records. Refuses to sell unless the release's license is authorized, and forwards proceeds through `release_license`. |
-| [`miso_player`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/miso_player) | A listener's on-chain root: one non-transferable `Player` per address, which other packages extend. |
+| [`record`](/move/framework/record/) | The Record lifecycle: one `Pressing` per edition of a release, one numbered `Record` per purchase. |
+| [`record_shop`](/move/framework/record-shop/) | First-party fixed- or floor-price sales of Records. Refuses to sell unless the release's license is authorized, and forwards proceeds through `release_license`. |
+| [`miso_player`](/move/framework/miso-player/) | A listener's on-chain root: one non-transferable `Player` per address, which other packages extend. |
 
 ## Actions and Libraries
 
-An **Action** accepts a raw admin capability and returns assets to the caller, so it composes with other calls in one programmable transaction. [`party_wallet`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/party_wallet) is the Action in this repository: it receives objects and coins sent to a Party's address, or redeems the Party's accumulator funds, and returns every asset to the caller. It stores no profile data.
+An **Action** accepts a raw admin capability and returns assets to the caller, so it composes with other calls in one programmable transaction. [`party_wallet`](/move/framework/party-wallet/) is the Action in this repository: it receives objects and coins sent to a Party's address, or redeems the Party's accumulator funds, and returns every asset to the caller. It stores no profile data.
 
 Libraries are shared building blocks. They attach nothing to a work or a Party themselves.
 
 | Package | Role |
 | --- | --- |
-| [`audio`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/audio) | `Audio<AudioVerifier>`: one canonical, verified, frozen record of a lossless audio file's facts. |
-| [`audio_verifier`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/audio_verifier) | Creates an `Audio` from facts signed by the Nautilus enclave in [`misofm/audio-verifier-enclave`](https://github.com/misofm/audio-verifier-enclave). |
-| [`credit`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/credit) | `Credit<Role>`: a party's credit on a work, with a display name and one or more roles. Used by the credit extensions. |
-| [`genre`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/genre) | A canonical genre vocabulary as on-chain objects, shared by the genre extensions. |
-| [`cover_art`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/cover_art) | The `CoverArt` value type: a still image and an optional animation, each a Walrus blob ID. |
-| [`vault`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/vault) | Generic capability custody and temporary exact-return leases. |
-| [`release_track_data`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/release_track_data) | `ReleaseTrackData<Data>`: one value per track of a release, aligned to its track list by construction. |
-| [`release_track_iterator`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/release_track_iterator) | `ReleaseTrackIterator<Witness>`: a witness-gated hot potato that walks a release's track list, one typed call per track. |
+| [`audio`](/move/framework/audio/) | `Audio<AudioVerifier>`: one canonical, frozen record of a lossless audio's measured facts, created only by a verifier type. |
+| [`audio_verifier`](/move/framework/audio-verifier/) | Creates an `Audio` from facts signed by the Nautilus enclave in [`misofm/audio-verifier-enclave`](https://github.com/misofm/audio-verifier-enclave). |
+| [`credit`](/move/framework/credit/) | `Credit<Role>`: a party's credit on a work, with a display name and one or more roles. Used by the credit extensions. |
+| [`genre`](/move/framework/genre/) | A canonical genre vocabulary as on-chain objects, shared by the genre extensions. |
+| [`cover_art`](/move/framework/cover-art/) | The `CoverArt` value type: a still image and an optional animation, each a Walrus blob ID. |
+| [`vault`](/move/framework/vault/) | Generic capability custody and temporary exact-return leases. |
+| [`release_track_data`](/move/framework/release-track-data/) | `ReleaseTrackData<Data>`: one value per track of a release, aligned to its track list by construction. Used by `release_cover_art`. |
+| [`release_track_iterator`](/move/framework/release-track-iterator/) | `ReleaseTrackIterator<Witness>`: a witness-gated hot potato that walks a release's track list, one typed call per track. No package uses it at this commit. |
 
 Permissionless automation, when a product needs it, belongs in a separate entry-only **plugin** that holds a capability in a `vault` and calls an Action rather than reimplementing it. The repository deliberately has no Party wallet plugin: every `party_wallet` operation returns assets to its caller, so permissionless automation would only create a way to extract them.
 
@@ -90,7 +90,13 @@ royalty_pool = { git = "https://github.com/misofm/framework.git", subdir = "roya
 
 Packages inside the repository depend on each other by local path. At this commit every package that uses the core pins `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c) and `miso_party` at [`b16e0598`](https://github.com/misofm/party-protocol/tree/b16e05982844453b286937cc085d573a92d7cea4). Those are the core sources recorded as published on mainnet, and the [Party](/move/party-protocol/) and [Music](/move/music-protocol/) protocol pages describe the same commits.
 
-No package is upgraded in place. A package's `Published.toml` records a deployed generation that may not match its current source. For example, the recorded mainnet `royalty_pool` was published before the source renamed its modules to `royalty_pool` and `royalty_pool_stake`. `recording_license`, `release_license`, `royalty_grant`, `royalty_advance`, `miso_player`, and `audio_verifier` record no deployment at this commit. Before constructing a transaction, use the package IDs and API of the generation deployed on your network.
+No package is upgraded in place. A package's `Published.toml` records a deployed generation that may not match its current source, so each package page says whether its recorded generation matches the source it describes. At this commit:
+
+- **Mainnet matches this source** for every data extension and for `record`, `vault`, `party_wallet`, `audio`, `credit`, `genre`, `cover_art`, `release_track_data`, and `release_track_iterator`. Testnet entries, where present, record earlier generations.
+- **Mainnet predates this source** for `royalty_pool`, published before its modules were renamed to `royalty_pool` and `royalty_pool_stake`, and for `record_shop`, recorded before later changes to it and to `record` and `release_license`.
+- **No deployment is recorded** for `recording_license`, `release_license`, `royalty_grant`, `royalty_advance`, `miso_player`, or `audio_verifier`.
+
+A consumer accepts only types from the package generation it links, and shared registries such as `GenreRegistry` and `AudioRegistry` are created per generation; their IDs come from each publish transaction. Several package READMEs still say the package is unpublished; `Published.toml` is the newer record. Before constructing a transaction, use the package IDs and API of the generation deployed on your network.
 
 ## Licensing
 

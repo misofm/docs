@@ -1,5 +1,5 @@
 ---
-title: Release Licenses
+title: Release License
 description: How a release's recording admins authorize it, and how its revenue is split into each track's recording pool.
 ---
 

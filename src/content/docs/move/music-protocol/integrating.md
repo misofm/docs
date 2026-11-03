@@ -61,6 +61,6 @@ The `share` functions take no capability and emit nothing. The [production const
 
 Earlier generations, such as commit `3bd54d1`, used `publish(cap)` with `*PublishedEvent` events, a `ReleaseRegistry`, salted release IDs, and `ReleaseConsent`. Match bindings and event decoding to the generation you use.
 
-For paid flows, choose the [relevant packages](/move/), then read [Royalty Pools](/move/framework/royalty-pool/), [Recording Licenses](/move/framework/recording-license/), and [Release Licenses](/move/framework/release-license/) as needed. Creating a core object alone neither opens a pool nor licenses a recording.
+For paid flows, choose the [relevant packages](/move/), then read [Royalty Pool](/move/framework/royalty-pool/), [Recording License](/move/framework/recording-license/), and [Release License](/move/framework/release-license/) as needed. Creating a core object alone neither opens a pool nor licenses a recording.
 
 Source: pinned [core README](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/README.md), [Move.toml](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/Move.toml), [Published.toml](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/Published.toml), and [source modules](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c/sources).

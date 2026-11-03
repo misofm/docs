@@ -47,11 +47,11 @@ Holding the cap does not transfer shares, grant a music object's admin capabilit
 
 ## Names Are Claims
 
-The display name lives in the [`party_name` extension](/move/party-protocol/extensions/). A name is an unverified claim by the Party's administrator. The protocol does not establish a real-world identity or guarantee that two Parties with the same name represent the same entity.
+The display name lives in the [`party_name` extension](/move/party-protocol/extensions/party-name/). A name is an unverified claim by the Party's administrator. The protocol does not establish a real-world identity or guarantee that two Parties with the same name represent the same entity.
 
 ## Optional Group Membership
 
-A band can use the optional [`party_group` extension](/move/party-protocol/extensions/#group-membership) for consent-based membership. The group Party and the member Party each store their own half of the relationship, so there is no separate Group object and neither side writes to the other's Party. Another application can use a different relationship model around the same Party identity. Neither requires a group field or a kind in core.
+A band can use the optional [`party_group` extension](/move/party-protocol/extensions/party-group/) for consent-based membership. The group Party and the member Party each store their own half of the relationship, so there is no separate Group object and neither side writes to the other's Party. Another application can use a different relationship model around the same Party identity. Neither requires a group field or a kind in core.
 
 ## Profiles and Attribution
 

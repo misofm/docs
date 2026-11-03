@@ -1,0 +1,169 @@
+---
+title: Audio Verifier
+description: Create an Audio<AudioVerifier> from audio facts signed by an attested Nautilus enclave, and understand what that proves.
+---
+
+This page is for developers who register verified audio, operate the enclave policy, or decide whether to trust `Audio<AudioVerifier>`. It explains how `audio_verifier` turns an enclave signature into an [`Audio`](/move/framework/audio/), what Sui checks on-chain, what is trusted to the enclave and to the policy holder, and how enclave images are registered and rotated.
+
+## From a FLAC File to an Audio
+
+Suppose the rights holder of Whitney Houston's [Recording](/move/music-protocol/recording/) of "I Will Always Love You" wants its master on-chain. They upload the master as a FLAC file to the audio verifier enclave from [`misofm/audio-verifier-enclave`](https://github.com/misofm/audio-verifier-enclave/tree/595329a71c5b01d4515fd12c772821100c455573), running on AWS Nitro. The service accepts canonical FLAC only (STREAMINFO as the only metadata block, 8-, 16-, or 24-bit samples, and a sample rate of 44.1, 48, 88.2, 96, 176.4, 192, 352.8, or 384 kHz) and rejects anything else without a signature. The enclave decodes the file, measures the five facts, and returns them with a signature. It signs nothing about the file itself. In one programmable transaction, they then:
+
+1. Call `verify_audio` with the facts, timestamp, and signature. It returns the `Audio<AudioVerifier>`.
+2. Call [`recording_master::add_master`](/move/music-protocol/extensions/recording-master/) with the Recording, its admin cap, and the `Audio`.
+3. Call `audio.freeze()`.
+
+Before uploading, derive the `Audio`'s address with `audio::derive_address<AudioVerifier>` and read it; if it exists, skip steps 1 and 3 and pass the frozen `Audio` to `add_master`. If two uploads of the same audio race, the second `verify_audio` aborts.
+
+## Two Witnesses
+
+```move
+public struct AUDIO_VERIFIER() has drop;
+
+public struct AudioVerifier() has drop;
+
+public struct AudioPayload has copy, drop {
+    channels: u8,
+    bit_depth: u8,
+    sample_rate_hz: u32,
+    samples_per_channel: u64,
+    pcm_digest: vector<u8>,
+}
+```
+
+`AUDIO_VERIFIER` is the package's one-time witness. It owns the enclave policy, so the only enclaves that can sign are `Enclave<AUDIO_VERIFIER>` objects registered under this package's policy. `AudioVerifier` is the witness passed to `audio::new` and names the verifier in `Audio<AudioVerifier>`. It is a separate type because Sui does not allow packing a one-time witness outside `init`. `AudioPayload` is the signed payload, with fields in the same order as the `Audio` key.
+
+At publish, `init` creates the package's one policy, with no PCRs set, shares it, and sends its cap to the publisher:
+
+```move
+fun init(otw: AUDIO_VERIFIER, ctx: &mut TxContext) {
+    let (policy, cap) = enclave_policy::new(otw, ctx);
+    policy.share();
+    transfer::public_transfer(cap, ctx.sender());
+}
+```
+
+The policy and enclave types come from [`kagi`](https://github.com/unconfirmedlabs/kagi/tree/70a85e356aafc2f539aca117423e8c0a75ffb5f6/move), pinned in `Move.toml` at commit `70a85e356aafc2f539aca117423e8c0a75ffb5f6`.
+
+## Verifying the Signature
+
+```move
+public fun verify_audio(
+    registry: &mut AudioRegistry,
+    enclave: &Enclave<AUDIO_VERIFIER>,
+    channels: u8,
+    bit_depth: u8,
+    sample_rate_hz: u32,
+    samples_per_channel: u64,
+    pcm_digest: vector<u8>,
+    timestamp_ms: u64,
+    signature: vector<u8>,
+): Audio<AudioVerifier> {
+    enclave.verify_signature(
+        AUDIO_INTENT,
+        timestamp_ms,
+        AudioPayload { channels, bit_depth, sample_rate_hz, samples_per_channel, pcm_digest },
+        &signature,
+    );
+    let audio = audio::new(
+        registry,
+        AudioVerifier(),
+        channels,
+        bit_depth,
+        sample_rate_hz,
+        samples_per_channel,
+        pcm_digest,
+    );
+    emit(AudioVerifiedEvent {
+        enclave_id: object::id(enclave),
+        policy_version: enclave.policy_version(),
+        verified_at_ms: timestamp_ms,
+        audio_id: object::id(&audio),
+    });
+    audio
+}
+```
+
+Anyone may call `verify_audio`; the signature is not bound to a sender. `AUDIO_INTENT` is 0. kagi's `verify_signature` rebuilds the signed message and checks it against the enclave's stored public key:
+
+```move
+public fun verify_signature<App: drop, Payload: drop>(
+    self: &Enclave<App>,
+    intent: u8,
+    timestamp_ms: u64,
+    payload: Payload,
+    signature: &vector<u8>,
+) {
+    let message = bcs::to_bytes(&create_intent_message(intent, timestamp_ms, payload));
+    assert!(ed25519_verify(signature, &self.pk, &message), EInvalidSignature);
+}
+```
+
+The message is `bcs(IntentMessage { intent: 0, timestamp_ms, payload: AudioPayload })`. Changing any fact, the timestamp, or the intent invalidates the signature. The unit tests check this encoding against a signing vector, `vectors/audio_intent.json`, generated by the enclave's Rust crate.
+
+- **No freshness check.** `timestamp_ms` is the enclave's clock time, supplied by its host. It is signed and kept in `AudioVerifiedEvent`, but nothing compares it with a Sui clock. Replaying a signature can only recreate audio that already exists, which aborts.
+- **The policy is not consulted.** `verify_audio` takes the `Enclave` alone, not the policy, so an enclave object verifies until it is destroyed, even after the policy's PCRs change. Rotation must destroy old enclaves; see below.
+
+## The Trust Model
+
+What Sui checks on-chain:
+
+- **At registration**, `sui::nitro_attestation::load_nitro_attestation` verifies the enclave's attestation document against the AWS Nitro certificate chain at the current clock time. kagi's `enclave::new` then requires the `EnclavePolicyCap`, checks that PCR0, PCR1, and PCR2 in the document equal the policy's, and stores the document's public key in a new `Enclave<AUDIO_VERIFIER>` derived from the policy by that key. The PCR check is the body of kagi's `enclave_policy::load_pk`, where `pcr_at` reads one PCR entry:
+
+  ```move
+  let entries = document.pcrs();
+  let pcrs = Pcrs(pcr_at(entries, 0), pcr_at(entries, 1), pcr_at(entries, 2));
+  assert!(pcrs == self.pcrs, EInvalidPcrs);
+  (*document.public_key()).destroy_or!(abort EMissingPublicKey)
+  ```
+
+- **At verification**, the Ed25519 signature over the facts must come from a registered `Enclave<AUDIO_VERIFIER>`'s key. An enclave registered for another app has another type and cannot sign. `audio::new` then checks the facts' shape and that they are not already registered.
+
+What is trusted off-chain:
+
+- **The enclave code.** Only the enclave decodes the file. Users trust that the image the PCRs identify parses canonical FLAC correctly, measures the facts, and computes the BLAKE3 PCM digest to the [`audio` specification](/move/framework/audio/#checking-a-file-against-an-audio). The enclave repository builds its image reproducibly (`make eif`), so anyone can rebuild it at a given commit and compare the PCRs with those in `EnclavePolicyPcrsSetEvent`.
+- **AWS Nitro.** The attestation and the isolation of the enclave's private key rest on Nitro hardware and AWS's certificate chain.
+- **The `EnclavePolicyCap` holder.** Whoever holds the cap, first the publisher, chooses which image the PCRs name and is the only party that can register enclaves. kagi rejects a PCR of all zeros, which Nitro reports in debug mode, but nothing on-chain ties the PCRs to the audio verifier's source. The cap is `key, store`, so it can be transferred.
+
+What it proves: what the audio is, not who made it or who holds rights to it. Anyone can upload a file and point their own object at the resulting `Audio`. Authorship and duplicate detection belong in curation.
+
+## Operating the Policy
+
+1. **Publish.** The publisher receives the `EnclavePolicyCap<AUDIO_VERIFIER>`.
+2. **Set the PCRs.** Build the image from `misofm/audio-verifier-enclave`, record its PCR0 to PCR2, and call `kagi::enclave_policy::set_pcrs(policy, cap, pcr0, pcr1, pcr2)`. Each PCR must be 48 bytes and not all zeros. Each call increments the policy `version`.
+3. **Register an enclave.** Boot the enclave and fetch its attestation document. In one programmable transaction, call `sui::nitro_attestation::load_nitro_attestation(attestation, clock)`, `kagi::enclave::new(policy, cap, document)`, and `share` on the `Enclave`, and transfer the returned `EnclaveCap`. The `Enclave` records the policy version it was registered under.
+4. **Rotate the image.** In one programmable transaction, call `set_pcrs` with the new image's PCRs, call `kagi::enclave::destroy(enclave, enclave_cap)` for every old enclave, then register the new one. After `set_pcrs`, anyone can delete an enclave from an older policy version with `kagi::enclave::destroy_stale(enclave, policy)`.
+
+`Audio` measured by a retired image stays valid: it was measured by an image that was trusted at the time. A consumer that wants to reject it has to track it by `enclave_id` and `policy_version` from `AudioVerifiedEvent`.
+
+## Failure Cases
+
+| Situation | Result |
+| --- | --- |
+| A signature that does not match the facts, timestamp, intent, or the enclave's key | `verify_audio` aborts with `kagi::enclave::EInvalidSignature` (0). |
+| Facts already registered | `verify_audio` aborts with `sui::derived_object::EObjectAlreadyExists`. |
+| Malformed facts | `verify_audio` aborts with the [`audio` error](/move/framework/audio/#failure-cases) for that fact. |
+| A PCR that is not 48 bytes | `set_pcrs` aborts with `kagi::enclave_policy::EInvalidPcrLength` (1). |
+| A PCR of all zeros | `set_pcrs` aborts with `kagi::enclave_policy::EDebugPcrs` (2). |
+| Attestation PCRs that differ from the policy's | `enclave::new` aborts with `kagi::enclave_policy::EInvalidPcrs` (3). |
+| An attestation without PCR0, PCR1, or PCR2 | `enclave::new` aborts with `kagi::enclave_policy::EMissingPcr` (4). |
+| An attestation without a public key | `enclave::new` aborts with `kagi::enclave_policy::EMissingPublicKey` (5). |
+| Another enclave's `EnclaveCap` | `enclave::destroy` aborts with `kagi::enclave::EWrongEnclaveCap` (1). |
+| An enclave registered under the current policy version | `enclave::destroy_stale` aborts with `kagi::enclave::ENotStale` (2). |
+
+## Events
+
+| Event | Fields |
+| --- | --- |
+| `AudioVerifiedEvent` | `enclave_id`, `policy_version`, `verified_at_ms` (the signed `timestamp_ms`), `audio_id` |
+| `audio::audio::AudioCreatedEvent<AudioVerifier>` | `audio_id`, `channels`, `bit_depth`, `sample_rate_hz`, `samples_per_channel`, `pcm_digest` |
+
+kagi emits `EnclavePolicyPcrsSetEvent<AUDIO_VERIFIER>` (`policy_id`, `version`, `pcr0`, `pcr1`, `pcr2`), `EnclaveRegisteredEvent<AUDIO_VERIFIER>` (`policy_id`, `enclave_id`, `policy_version`, `pk`), and `EnclaveDestroyedEvent<AUDIO_VERIFIER>` (`enclave_id`).
+
+## Deployment
+
+At commit `3a7d223b94f566d9e714a0a6b26efe2549e7bad0`, `audio_verifier` has no `Published.toml` and records no deployed generation, so there is no policy or registered enclave to use yet. The README states that it has not been audited. It does not depend on the core protocol; its dependencies are `audio` by local path and `kagi` at `70a85e356aafc2f539aca117423e8c0a75ffb5f6`. A published `audio_verifier` must link the deployed `audio` package, whose `AudioRegistry` it then writes to. The 11 unit tests pass locally; they use a test enclave with a fixed key, so attestation and enclave registration need an end-to-end test on a Nitro host and a Sui network. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+
+Excerpts from `audio_verifier` on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/audio_verifier) at commit `3a7d223b94f566d9e714a0a6b26efe2549e7bad0`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/audio_verifier/LICENSE.md). The `verify_signature` and `load_pk` excerpts are from [`unconfirmedlabs/kagi`](https://github.com/unconfirmedlabs/kagi/tree/70a85e356aafc2f539aca117423e8c0a75ffb5f6/move) at commit `70a85e356aafc2f539aca117423e8c0a75ffb5f6`, © Unconfirmed Labs, Inc., licensed under [Apache-2.0](https://github.com/unconfirmedlabs/kagi/blob/70a85e356aafc2f539aca117423e8c0a75ffb5f6/move/LICENSE). The docs' Apache license does not relicense either.
+
+Source: [README](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/audio_verifier/README.md), [module](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/audio_verifier/sources/audio_verifier.move), and [tests](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/audio_verifier/tests/audio_verifier_tests.move); kagi [`enclave`](https://github.com/unconfirmedlabs/kagi/blob/70a85e356aafc2f539aca117423e8c0a75ffb5f6/move/sources/enclave.move) and [`enclave_policy`](https://github.com/unconfirmedlabs/kagi/blob/70a85e356aafc2f539aca117423e8c0a75ffb5f6/move/sources/enclave_policy.move); enclave service [`misofm/audio-verifier-enclave`](https://github.com/misofm/audio-verifier-enclave/tree/595329a71c5b01d4515fd12c772821100c455573) at commit `595329a71c5b01d4515fd12c772821100c455573`.

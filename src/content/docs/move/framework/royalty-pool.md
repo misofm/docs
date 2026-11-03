@@ -1,5 +1,5 @@
 ---
-title: Royalty Pools
+title: Royalty Pool
 description: Distribute a payout currency to registered holders of shares in a composition or recording.
 ---
 
