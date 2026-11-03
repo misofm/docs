@@ -42,7 +42,10 @@ for (const file of markdownFiles(docsDir)) {
     throw new Error(`Missing Markdown export for ${sourcePath}`);
   }
   const html = readFileSync(join(distDir, route, 'index.html'), 'utf8');
-  if (!html.includes(`href="/${route}index.md"`) || !html.includes('rel="describedby" href="/llms.txt"')) {
+  // Nimbus's NimbusHead emits both discovery links as absolute alternates.
+  const markdownLink = `<link rel="alternate" type="text/markdown" href="https://docs.miso.fm/${route}index.md">`;
+  const llmsLink = '<link rel="alternate" type="text/plain" href="https://docs.miso.fm/llms.txt" title="LLM index">';
+  if (!html.includes(markdownLink) || !html.includes(llmsLink)) {
     throw new Error(`Missing Markdown or llms.txt discovery link on ${route}`);
   }
 }

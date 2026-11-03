@@ -16,9 +16,13 @@ Whenever documentation content changes, update `public/llms.txt` in the same cha
 - For a Move API, show the exact function or a small verified excerpt, required objects and ownership, returned values, admin capabilities, events, failure cases, and a source or test link. Do not present a schematic excerpt as a runnable module.
 - Put caveats beside the operation they qualify, especially the difference between an on-chain relationship, a rights claim, and a license. Provide a verification checkpoint or a specific recovery path where the reader can get stuck.
 - Pin code claims to an immutable upstream commit when describing a concrete API. Check examples against that source and run the relevant Move tests when changing them. Keep Party Protocol before Music Protocol. Keep the Music Protocol sidebar order: Overview, Composition, Recording, Release, Extensions. Explain share types within Overview, Composition, and Recording rather than as a standalone protocol page.
-- Use Tailwind's stock stone color tokens or utilities for site colors. Starlight's semantic color variables should map to those tokens; avoid new one-off color values.
+- Use Tailwind's stock stone color tokens or utilities for site colors. Nimbus's `--nb-*` theme tokens in `src/styles/globals.css` should map to those tokens; avoid new one-off color values.
 
 These rules are informed by the task/guide/reference separation and working quickstarts in [Stripe](https://docs.stripe.com/checkout/quickstart) and [Bun](https://bun.com/docs/quickstart), the continuing examples and reference format in [React](https://react.dev/learn/thinking-in-react), and the executable examples in [Rust](https://doc.rust-lang.org/book/ch01-02-hello-world.html).
+
+## Nimbus
+
+The site is built with Nimbus (`@cloudflare/nimbus-docs`), pinned to an exact version because it is pre-1.0. Upgrade with `npx @cloudflare/nimbus-docs migrate --dry-run --diff`, then `outdated` and `diff <file>` for starter files; keep `nimbus.json` committed and never edit it by hand. The release-matched agent guide is `node_modules/@cloudflare/nimbus-docs/dist/docs-for-agents.md`. Miso keeps its own `public/llms.txt`, `src/pages/llms-full.txt.ts`, and `src/pages/[...slug]/index.md.ts` instead of Nimbus's generated agent routes, so the curated reading order in `src/lib/llms.ts` still governs. Files copied from the Nimbus starter stay MIT-licensed (see `LICENSE-NIMBUS`).
 
 ## Screenshots from the Mac
 
