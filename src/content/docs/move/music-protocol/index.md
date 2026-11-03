@@ -31,9 +31,9 @@ Records still need reconciliation as data moves between parties. [The MLC's Matc
 
 ## Music's Shared Ledger
 
-The [Miso Music Protocol](https://github.com/misofm/music-protocol) gives builders shared, strongly typed `Composition`, `Recording`, and `Release` objects in Sui Move. Published as the `miso_music` package, its core fixes each object's identity and its relationships to the others. A published object ID resolves to on-chain core state. A recording keeps an immutable composition ID. A release keeps an ordered list of recording IDs authorized by the recording admins. Two integrations reading the same objects see the same core links and can verify the publication transaction.
+The [Miso Music Protocol](https://github.com/misofm/music-protocol) gives builders shared, strongly typed `Composition`, `Recording`, and `Release` objects in Sui Move. Published as the `miso_music` package, its core fixes each object's identity and its relationships to the others. A published object ID resolves to on-chain core state. A recording keeps an immutable composition ID. A release keeps an ordered list of existing recordings' IDs. Two integrations reading the same objects see the same core links and can verify the creating transaction.
 
-The on-chain object is a canonical source for its own core state, so integrations using the same IDs avoid mismatches in those relationships. The core does not contain a complete rights or license record. Its publication history does not prove real-world authorship, and optional metadata can still conflict. Separate packages define licensing, payments, credits, artwork, and other details. Applications must apply their trust rules to those claims. The protocol code is licensed under [Apache License 2.0](https://github.com/misofm/music-protocol/blob/main/LICENSE).
+The on-chain object is a canonical source for its own core state, so integrations using the same IDs avoid mismatches in those relationships. The core does not contain a complete rights or license record. Its publication history does not prove real-world authorship, and optional metadata can still conflict. Separate packages define licensing, payments, credits, artwork, and other details. Applications must apply their trust rules to those claims. The protocol code is licensed under [Apache License 2.0](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/LICENSE).
 
 ```text
 +------------------------------------+
@@ -49,7 +49,7 @@ The on-chain object is a canonical source for its own core state, so integration
 +------------------------------------+
                  ^
                  | recording_ids
-                 | (ordered, 1-1,000)
+                 | (ordered, 1-255)
 +------------------------------------+
 | Release                            |
 | An ordered track list              |
@@ -60,16 +60,15 @@ The on-chain object is a canonical source for its own core state, so integration
 | --- | --- | --- |
 | [Composition](/move/music-protocol/composition/) | Written-work identity and its unique share type | Title, writers, lyrics, recording commission |
 | [Recording](/move/music-protocol/recording/) | Master identity, its share type, and immutable composition ID | Master audio, artist credits, version name, license terms |
-| [Release](/move/music-protocol/release/) | Identity and ordered, distinct recording IDs | Title, cover art, price, release-wide revenue split |
-| [Release Consent](/move/music-protocol/release/#release-consent) | One recording admin's approval for a specific release | Payment terms and presentation metadata |
+| [Release](/move/music-protocol/release/) | Identity and ordered, distinct recording IDs | Title, cover art, price, recording admins' authorization, revenue splits |
 
-A recording's composition ID is a **relationship**, not proof of a license. The current core lets anyone create a recording that points to a composition. Apps that require permission to distribute the recording should check a recognized [recording license](/move/framework/recording-license/) or another agreement. A release is similarly a catalog relationship; a sales package determines its own commercial terms.
+A recording's composition ID is a **relationship**, not proof of a license. The current core lets anyone create a recording that points to a composition. Apps that require permission to distribute the recording should check a recognized [recording license](/move/framework/recording-license/) or another agreement. A release is similarly a catalog relationship: anyone can create one, and a [release license](/move/framework/release-license/) records each recording admin's authorization and the release's revenue splits.
 
 ## Share Types
 
 Each composition and recording has its own **share type**, tying shares to that particular work. Core fixes the supply at **100,000,000 shares with six decimals**. The work's identity and share type stay associated as those shares are allocated, transferred, or staked.
 
-Shares express fractional economic ownership. Administrative capabilities separately control extension writes and release consent. Holding shares alone does not activate royalties: payment packages must route revenue into funded pools, and holders must register stakes. See [Composition Shares](/move/music-protocol/composition/#composition-shares), [Recording Shares](/move/music-protocol/recording/#recording-shares), and [Royalty Pools](/move/framework/royalty-pool/) for the details.
+Shares express fractional economic ownership. Admin capabilities separately control extension writes and the licenses a work grants. Holding shares alone does not activate royalties: payment packages must route revenue into funded pools, and holders must register stakes. See [Composition Shares](/move/music-protocol/composition/#composition-shares), [Recording Shares](/move/music-protocol/recording/#recording-shares), and [Royalty Pools](/move/framework/royalty-pool/) for the details.
 
 ## Miso Link
 
@@ -79,20 +78,22 @@ A Miso Link mapping is an assertion by the SuiNS namespace controller, not a reg
 
 ## Immutable core, optional extensions
 
-Each object is created and published in one transaction. Publication shares it and freezes the embedded relationships. An admin capability still grants `uid_mut` access to attach or change dynamic fields after publication. This is how [metadata extensions](/move/music-protocol/extensions/) add titles, credits, lyrics, artwork, and classifications without expanding or upgrading the core object.
+Each object is created and shared in one transaction: `new` returns it with its admin capability and emits a creation event, and `share` makes it a shared object. Its embedded relationships are fixed from creation. The admin capability still grants `uid_mut` access to attach or change dynamic fields after publication. This is how [metadata extensions](/move/music-protocol/extensions/) add titles, credits, lyrics, artwork, and classifications without expanding or upgrading the core object.
 
 The admin capability controls the object's extension surface. [Shares](#share-types) express fractional economic ownership; owning shares does not grant the admin capability. Treat an extension value as a statement made under that capability and apply the extension's own trust rules.
 
-Core offers one `CompositionRegistry`, one `RecordingRegistry`, and one `ReleaseRegistry` per package publication. Composition and recording IDs derive from the registry and their unique share types. Release IDs derive from the ordered recording list and a 32-byte salt. These registries are shared at package initialization and have no public constructor.
+Core offers one `CompositionRegistry` and one `RecordingRegistry` per package publication, shared at package initialization with no public constructor. Composition and recording IDs derive from the registry and their unique share types. A release gets a fresh ID, so two releases of the same track list are distinct objects.
 
 The following pages explain those design choices in more detail: [Party](/move/party-protocol/), [Composition](/move/music-protocol/composition/), [Recording](/move/music-protocol/recording/), and [Release](/move/music-protocol/release/).
 
 ## Parties and Attribution
 
-The separate [Party protocol](/move/party-protocol/) represents the people and groups credited on works. Music credit extensions reference Party IDs, while Party profile extensions add biographies, roles, imagery, and links. A Party identity complements the composition, recording, and release model; it is not a fourth music-object type in `miso_music`.
+The separate [Party protocol](/move/party-protocol/) represents the people and groups credited on works. Music credit extensions reference Party IDs, while Party extensions add a display name, biographies, and genres. A Party identity complements the composition, recording, and release model; it is not a fourth music-object type in `miso_music`.
 
 ## Where money flows
 
-Core contains no royalty ledger, payout balance, composition commission rate, or release split. The [royalty-pool](/move/framework/royalty-pool/) package stakes a work's shares and distributes a payout currency to registered stakes. The [recording-license](/move/framework/recording-license/) package can express a composition's standing recording terms and hold its cut of recording shares. A sales or streaming package routes revenue into the appropriate pools. Read the specific package's terms before assuming a revenue path is active.
+Core contains no royalty ledger, payout balance, composition commission rate, or release split. The [royalty-pool](/move/framework/royalty-pool/) package stakes a work's shares and distributes a payout currency to registered stakes. The [recording-license](/move/framework/recording-license/) package expresses a composition's standing recording terms and holds its cut of recording shares. The [release-license](/move/framework/release-license/) package fixes a release's per-track splits and forwards its revenue to each track's pool. [Royalty grants](/move/framework/royalty-grant/) and [advances](/move/framework/royalty-advance/) assign part of a stake's royalties to someone else for a term or until an amount is repaid. A sales or streaming package routes revenue into the appropriate pools. [Framework](/move/framework/#how-revenue-moves) traces the full path. Read the specific package's terms before assuming a revenue path is active.
 
-Source: [music-protocol README](https://github.com/misofm/music-protocol/blob/main/README.md) and its [`composition`](https://github.com/misofm/music-protocol/blob/main/sources/composition.move), [`recording`](https://github.com/misofm/music-protocol/blob/main/sources/recording.move), and [`release`](https://github.com/misofm/music-protocol/blob/main/sources/release.move) modules.
+These pages describe `miso_music` at commit [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c), the source recorded as published on Sui mainnet. See [Move Integration](/move/music-protocol/integrating/) for the deployment record.
+
+Source: pinned [music-protocol README](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/README.md) and its [`composition`](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/sources/composition.move), [`recording`](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/sources/recording.move), and [`release`](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/sources/release.move) modules.

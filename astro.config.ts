@@ -43,6 +43,8 @@ const nimbusConfig = defineNimbusConfig({
               { label: "Royalty Pools", link: "/move/framework/royalty-pool/" },
               { label: "Recording Licenses", link: "/move/framework/recording-license/" },
               { label: "Release Licenses", link: "/move/framework/release-license/" },
+              { label: "Royalty Grants", link: "/move/framework/royalty-grant/" },
+              { label: "Royalty Advances", link: "/move/framework/royalty-advance/" },
             ],
           },
         ],

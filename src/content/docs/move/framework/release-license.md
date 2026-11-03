@@ -7,7 +7,7 @@ This page is for developers who sell or distribute a release. It explains how `r
 
 ## Why a Release Needs a License
 
-A core `Release` is an ordered list of recording IDs. At the core revision the framework pins ([`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c)), creating one needs no permission from the recordings' admins, and the Release stores nothing else. Whether those admins agreed to the release, and how its revenue divides among tracks, live in this package. The [Release](/move/music-protocol/release/) page describes an earlier core revision in which recording admins consented when the release was created.
+A core `Release` is an ordered list of recording IDs. At the core revision the framework pins ([`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c)), creating one needs no permission from the recordings' admins, and the Release stores nothing else. Whether those admins agreed to the release, and how its revenue divides among tracks, live in this package. [Release](/move/music-protocol/release/#authorization-lives-in-a-release-license) explains why the core leaves them out.
 
 Suppose a release puts Whitney Houston's "I Will Always Love You" first among three tracks. Its release admin creates the release's license with one split per track, and each track's recording admin authorizes that release on their own recording.
 

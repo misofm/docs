@@ -7,12 +7,12 @@ Miso separates music and party identities, optional data, and business rules int
 
 | Layer | Responsibility | Start Here |
 | --- | --- | --- |
-| Protocol: Party | Entity identities, names, and capability-controlled administration | [Party](/move/party-protocol/) |
-| Protocol: Music | Core identity, share types, composition relationships, and release consent | [Protocol Overview](/move/music-protocol/) |
+| Protocol: Party | Entity identities and capability-controlled administration | [Party](/move/party-protocol/) |
+| Protocol: Music | Core identity, share types, composition relationships, and ordered releases | [Protocol Overview](/move/music-protocol/) |
 | Protocol Extensions | Optional data on compositions, recordings, releases, and parties | [Protocol Extensions](/move/music-protocol/extensions/) |
 | Framework | Royalty pools, recording and release licenses, grants and advances, Records, the Player, and shared libraries | [Framework](/move/framework/) |
 
-The core also depends on [`share`](https://github.com/misofm/share) to validate each work's canonical share type and fix its supply. This supports the core's ownership model.
+The core also depends on [`share`](https://github.com/unconfirmedlabs/share) to validate each work's canonical share type and fix its supply. This supports the core's ownership model.
 
 ## Protocol Extensions
 
@@ -22,7 +22,7 @@ The extension packages live in [`misofm/framework`](https://github.com/misofm/fr
 
 ## Framework
 
-Framework packages define what applications can do with those objects: license recordings and releases, distribute royalties, advance money against them, sell Records, and hold capabilities. Start with the [Framework overview](/move/framework/), which traces a sale from a release to its shareholders, then read [Royalty Pools](/move/framework/royalty-pool/), [Recording Licenses](/move/framework/recording-license/), and [Release Licenses](/move/framework/release-license/).
+Framework packages define what applications can do with those objects: license recordings and releases, distribute royalties, advance money against them, sell Records, and hold capabilities. Start with the [Framework overview](/move/framework/), which traces a sale from a release to its shareholders, then read [Royalty Pools](/move/framework/royalty-pool/), [Recording Licenses](/move/framework/recording-license/), [Release Licenses](/move/framework/release-license/), [Royalty Grants](/move/framework/royalty-grant/), and [Royalty Advances](/move/framework/royalty-advance/).
 
 ## Identifier Resolution
 
@@ -30,4 +30,4 @@ Framework packages define what applications can do with those objects: license r
 
 ## Compatibility and Licensing
 
-Each repository has its own `Move.toml`, source revision, license, and published package IDs. Read the dependency pins and relevant `Published.toml` records before composing packages. The core is Apache-2.0; other packages may use FSL-1.1-ALv2. Follow each repository's own terms and the [source excerpt licensing guidance](/licensing/).
+Each package has its own `Move.toml`, source revision, license, and published package IDs. Read the dependency pins and relevant `Published.toml` records before composing packages. The core is Apache-2.0; other packages may use FSL-1.1-ALv2. Follow each repository's own terms and the [source excerpt licensing guidance](/licensing/).

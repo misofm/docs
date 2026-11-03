@@ -2,7 +2,7 @@
 
 > Developer documentation for the Miso Music Protocol, a small set of Sui Move primitives for identifying musical compositions, recordings, and releases and connecting them to optional rights, metadata, and payment packages.
 
-The core Move package is `miso_music`. A `Composition` is the written work, a `Recording` is a particular master with an immutable composition ID, and a `Release` is an ordered list of recording IDs. Each composition and recording has its own fixed-supply share type. Admin capabilities control extension writes and release consent; owning shares alone does not grant those powers.
+The core Move package is `miso_music`. A `Composition` is the written work, a `Recording` is a particular master with an immutable composition ID, and a `Release` is an ordered list of recording IDs. Each composition and recording has its own fixed-supply share type. Admin capabilities control extension writes and the licenses a work grants; owning shares alone does not grant those powers. Anyone can create a release of shared recordings; the Framework's release license records each recording admin's authorization and the release's revenue splits. The pages describe the core sources recorded as published on Sui mainnet (`miso_music` at bc547c79, `miso_party` at b16e0598).
 
 Read the music overview first, then the separate Party protocol, Composition, Recording, and Release. Share types are explained within the overview and the composition/recording pages. The Move Packages sidebar groups Party Protocol, Music Protocol, and Framework. Party Protocol contains its overview and extensions. Music Protocol covers Composition, Recording, and Release, followed by a single Extensions page listing all music extensions by object. These pages explain the protocol design with inline excerpts from the actual Move contracts; use the supplemental Move source guide only when inspecting the implementation. Add only the extensions needed for the product. A core object link is not proof of real-world authorship or a license, and holding shares pays nothing by itself: payment depends on a funded royalty pool and registered stakes. Pin compatible source revisions and verify published package IDs before constructing transactions against a network.
 
@@ -12,14 +12,14 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 
 ## Party Protocol
 
-- [Party](https://docs.miso.fm/move/party-protocol/index.md): The identity-only `miso_party` source generation: stable entity IDs, names, public object-bound capability authorization, attribution, and unverified identity claims. Group storage and membership are optional extension features; historical deployments retain their old layout.
+- [Party](https://docs.miso.fm/move/party-protocol/index.md): The identity-only `miso_party` generation published on mainnet: a Party is only an ID, its one derived admin cap is checked by `uid_mut`, and names, profiles, genres, and group membership are extensions. Covers attribution, unverified identity claims, the creation event and error, the mainnet package ID, and what changed from earlier generations.
 - [Party Extensions](https://docs.miso.fm/move/party-protocol/extensions/index.md): Optional party_name, party_profile, party_genre, and party_group extensions from misofm/framework; two-sided group membership with owned invites and no Group object; profile limits; administrator claims versus proof. Inline Profile and group excerpts retain FSL-1.1-ALv2.
 
 ## Music Protocol
 
 - [Composition](https://docs.miso.fm/move/music-protocol/composition/index.md): Why the written work has an identity independent of recordings, its unique share type, fixed supply, allocation and royalty participation, its minimal Move definition, capability-gated extension access, and optional extensions.
-- [Recording](https://docs.miso.fm/move/music-protocol/recording/index.md): Why a master has independent identity and shares, its share-type constants, fixed supply and royalty participation, an immutable composition relationship, its Move object and publication event definitions, and separate consent for each release.
-- [Release](https://docs.miso.fm/move/music-protocol/release/index.md): Ordered track lists, identity committed to order and salt, inline object and consent definitions, the contract's consent-target check, release administration, and the separation of presentation and commercial terms.
+- [Recording](https://docs.miso.fm/move/music-protocol/recording/index.md): Why a master has independent identity and shares, its share-type constants, fixed supply and royalty participation, an immutable composition relationship, its Move object and creation event definitions, its one derived admin cap, and release authorization recorded on the recording by the Framework's release license.
+- [Release](https://docs.miso.fm/move/music-protocol/release/index.md): Ordered track lists of 1-255 distinct recordings with fresh release IDs, ReleaseTrack proofs that let anyone release shared recordings, the opening checks of `release::new`, why recording admins' authorization lives in a release license, release administration, failure cases, events, and the earlier consent-and-salt generation.
 
 
 ## Packages, Protocol Extensions, and Framework
@@ -30,10 +30,12 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 - [Royalty Pools](https://docs.miso.fm/move/framework/royalty-pool/index.md): One pool per work and currency, stake registration before sharing, deposits, the once-per-timestamp settle guard, claims, failure cases, events, and the pre-rename mainnet generation.
 - [Recording Licenses](https://docs.miso.fm/move/framework/recording-license/index.md): A composition's standing policy and rate, the exact recording-share cut held as a stake, registration and sweep into the composition pool, what the rate covers, withdrawal trust, failure cases, and events.
 - [Release Licenses](https://docs.miso.fm/move/framework/release-license/index.md): Per-track splits, recording admins' authorization written on each recording, the permanent Authorized state, forwarding release revenue to each track's pool regardless of authorization, failure cases, and events.
+- [Royalty Grants](https://docs.miso.fm/move/framework/royalty-grant/index.md): Locking an unregistered stake to pay a recipient part of its royalties until an amount is repaid or a term ends; terms and schemes, owner and recipient caps, how each sweep is split and rounded, buyout, waive, reclaim, timing caveats, the grant-first order for off-chain payments, failure cases, and events.
+- [Royalty Advances](https://docs.miso.fm/move/framework/royalty-advance/index.md): On-chain advances escrowed in an offer; accepting pays the owner and creates a royalty grant with the provider as recipient in one transaction. Offer creation, acceptance by exact stake size, caps and payment following the offer's addresses, cancellation and expiry, failure cases, and events.
 
 ## Optional
 
-- [Move Source Guide](https://docs.miso.fm/move/music-protocol/integrating/index.md): Supplemental implementation material: reproduce the pinned core tests, inspect dependencies and constructor tests, and distinguish source revisions from network deployments.
+- [Move Source Guide](https://docs.miso.fm/move/music-protocol/integrating/index.md): Supplemental implementation material: reproduce the pinned core tests, pin the dependency, the recorded mainnet package and registry IDs with their publish transaction, the new/share creation flow for each object, and differences from earlier generations.
 
 ## Complete Text and Terms
 

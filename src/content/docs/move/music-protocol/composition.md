@@ -61,14 +61,14 @@ public fun uid_mut<CompositionShare>(
 }
 ```
 
-Here the capability's type supplies the authorization: there is one composition per share type within the registry. Extensions use this UID to attach their own typed dynamic fields.
+Here the capability's type supplies the authorization: there is one composition per share type within the registry, and the cap's ID is derived from the composition, so each composition has exactly one admin cap. Extensions use this UID to attach their own typed dynamic fields. The cap is also what a composition admin presents to publish a [recording license policy](/move/framework/recording-license/) or create the composition's [royalty pools](/move/framework/royalty-pool/).
 
 Composition shares are separate from this administrative control. Holding shares does not grant the admin capability, and holding the capability does not imply ownership of the shares. [Royalty pools](/move/framework/royalty-pool/) and other economic packages define how share holders participate in payments.
 
 ## A small core, richer extensions
 
-Publication makes the composition a shared on-chain object. Its identity and share type remain fixed, while authorized [extensions](/move/music-protocol/extensions/#composition) can maintain descriptive and economic data around it. Applications reading the same composition ID agree on the core identity while applying the relevant extension's rules to its metadata and rights claims.
+`composition::new` emits `CompositionCreatedEvent` with the composition and admin cap IDs, and the creating transaction calls `composition.share()` to make it a shared on-chain object; `share` takes no capability and emits nothing. Its identity and share type remain fixed, while authorized [extensions](/move/music-protocol/extensions/#composition) can maintain descriptive and economic data around it. Applications reading the same composition ID agree on the core identity while applying the relevant extension's rules to its metadata and rights claims.
 
-Contract excerpts © Miso Labs, Inc., licensed under [Apache-2.0](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/LICENSE).
+Contract excerpts © Miso Labs, Inc., licensed under [Apache-2.0](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/LICENSE).
 
-Source: [composition module](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/sources/composition.move) and [protocol design](https://github.com/misofm/music-protocol/blob/3bd54d135058324ce3e326e027eb300e0ceca2d8/README.md).
+Source: [composition module](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/sources/composition.move) and [protocol design](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/README.md).

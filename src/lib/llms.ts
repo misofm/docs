@@ -14,6 +14,8 @@ export const docIds = [
   'move/framework/royalty-pool',
   'move/framework/recording-license',
   'move/framework/release-license',
+  'move/framework/royalty-grant',
+  'move/framework/royalty-advance',
   'move/music-protocol/integrating',
   'licensing',
 ] as const;

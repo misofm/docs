@@ -51,7 +51,7 @@ public struct RoyaltyPoolStake<phantom Share> has key, store {
 
 **Only registered stakes earn.** Each deposit is divided among the shares registered when it is folded in. Unregistered shares earn nothing, and their portion goes to the registered stakes, so revenue is never stranded. This applies to every holder, including a stake held by a [recording license](/move/framework/recording-license/).
 
-A stake is a bearer claim: anyone with `&mut RoyaltyPoolStake` can claim its royalties. Keep stakes address-owned, or wrap them in a module that gates access. A shared or carelessly wrapped stake can be drained.
+A stake is a bearer claim: anyone with `&mut RoyaltyPoolStake` can claim its royalties. Keep stakes address-owned, or wrap them in a module that gates access, as a [royalty grant](/move/framework/royalty-grant/) does. A shared or carelessly wrapped stake can be drained.
 
 ## Setting Up a Pool
 
