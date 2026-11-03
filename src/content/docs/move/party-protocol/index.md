@@ -34,7 +34,7 @@ Crediting a Party does not itself transfer shares, grant a music object's admin 
 
 ## Optional Group Relations
 
-A band can use the optional [`party_group` extension](/move/party-protocol/extensions/#group-relations) to maintain consent-based membership. Another application can use a different relationship model around the same Party identity. Neither requires a group field or `PartyKind` in core.
+A band can use the optional [`party_group` extension](/move/party-protocol/extensions/#group-membership) to maintain consent-based membership. Another application can use a different relationship model around the same Party identity. Neither requires a group field or `PartyKind` in core.
 
 The group extension owns its storage, limits, invitations, acceptance, exit, and removal rules. Its Group object is separate from the Party. Choosing that extension commits an application to its specific direct-membership policy; core remains independent of that choice.
 

@@ -13,7 +13,7 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 ## Party Protocol
 
 - [Party](https://docs.miso.fm/move/party-protocol/index.md): The identity-only `miso_party` source generation: stable entity IDs, names, public object-bound capability authorization, attribution, and unverified identity claims. Group storage and membership are optional extension features; historical deployments retain their old layout.
-- [Party Extensions](https://docs.miso.fm/move/party-protocol/extensions/index.md): Optional party_group relations with extension-owned shared state, consent and direct membership, profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. Both inline Group and Profile excerpts retain FSL-1.1-ALv2.
+- [Party Extensions](https://docs.miso.fm/move/party-protocol/extensions/index.md): Optional party_name, party_profile, party_genre, and party_group extensions from misofm/framework; two-sided group membership with owned invites and no Group object; profile limits; administrator claims versus proof. Inline Profile and group excerpts retain FSL-1.1-ALv2.
 
 ## Music Protocol
 
@@ -25,10 +25,11 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 ## Packages, Protocol Extensions, and Framework
 
 - [Packages Overview](https://docs.miso.fm/move/index.md): How core identities, data-model extensions, and business-logic framework packages fit together; core share validation, identifier resolution, compatibility, and licensing.
-- [Music Protocol Extensions](https://docs.miso.fm/move/music-protocol/extensions/index.md): Complete package inventory for compositions, recordings, and releases, with cap-gated writes, permissionless reads, compatibility, and licensing.
-- [Framework](https://docs.miso.fm/move/framework/index.md): Reusable business-logic packages for licensing, royalties, payments, custody, workflows, streaming, and commerce, plus supporting utilities.
-- [Royalty Pools](https://docs.miso.fm/move/framework/royalty-pool/index.md): Pool creation, stake registration, deposits, settlement, claims, and payout trust boundaries.
-- [Recording Licenses](https://docs.miso.fm/move/framework/recording-license/index.md): Optional standing composition policy, recording-share cut, and revenue sweep into a composition pool.
+- [Music Protocol Extensions](https://docs.miso.fm/move/music-protocol/extensions/index.md): Complete inventory of the composition, recording, and release extensions in misofm/framework, with cap-gated writes, permissionless reads, compatibility, and licensing.
+- [Framework](https://docs.miso.fm/move/framework/index.md): The misofm/framework packages: how a release sale reaches recording and composition shareholders, economics (royalty pools, recording and release licenses, royalty grants and advances), Records, the Player, Actions, libraries, where the old repositories went, core pins, and deployed generations.
+- [Royalty Pools](https://docs.miso.fm/move/framework/royalty-pool/index.md): One pool per work and currency, stake registration before sharing, deposits, the once-per-timestamp settle guard, claims, failure cases, events, and the pre-rename mainnet generation.
+- [Recording Licenses](https://docs.miso.fm/move/framework/recording-license/index.md): A composition's standing policy and rate, the exact recording-share cut held as a stake, registration and sweep into the composition pool, what the rate covers, withdrawal trust, failure cases, and events.
+- [Release Licenses](https://docs.miso.fm/move/framework/release-license/index.md): Per-track splits, recording admins' authorization written on each recording, the permanent Authorized state, forwarding release revenue to each track's pool regardless of authorization, failure cases, and events.
 
 ## Optional
 
@@ -43,5 +44,5 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 
 - [Miso Music Protocol](https://github.com/misofm/music-protocol): Core Move package, templates, source modules, and Apache 2.0 license.
 - [Party Protocol](https://github.com/misofm/party-protocol): Apache-2.0 identity primitive in `miso_party`, separate from the music core.
-- [Party Extensions](https://docs.miso.fm/move/party-protocol/extensions/index.md): Optional party_group relations with extension-owned shared state, consent and direct membership, profiles, roles, genres, tags, media, CTAs, platform links, and pure link-payload packages. Both inline Group and Profile excerpts retain FSL-1.1-ALv2.
+- [Miso Framework](https://github.com/misofm/framework): FSL-1.1-ALv2 monorepo of separately published Move packages: music and party extensions, royalty pools, recording and release licenses, royalty grants and advances, Records, the Player, Actions, and libraries.
 - [Miso Link](https://github.com/misofm/link): SuiNS-based mapping of legacy industry identifiers to on-chain object addresses. A mapping is an assertion by its namespace controller, not an official registry record or rights verification.

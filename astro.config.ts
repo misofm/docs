@@ -42,6 +42,7 @@ const nimbusConfig = defineNimbusConfig({
               { label: "Overview", link: "/move/framework/" },
               { label: "Royalty Pools", link: "/move/framework/royalty-pool/" },
               { label: "Recording Licenses", link: "/move/framework/recording-license/" },
+              { label: "Release Licenses", link: "/move/framework/release-license/" },
             ],
           },
         ],
