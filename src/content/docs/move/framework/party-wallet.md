@@ -5,7 +5,7 @@ description: Take objects, coins, and accumulator funds sent to a Party's addres
 
 This page is for developers who send assets or payouts to a Party, or who administer a Party that has received them. It explains the Party's two inboxes, how `party_wallet` takes assets out of each with the `PartyAdminCap`, how to compose it with other calls or a [Vault](/move/framework/vault/), and why the package has deliberately no plugin.
 
-`party_wallet` is an [Action](/move/framework/#actions-and-libraries): each function accepts the raw capability and returns the asset to the caller. It stores no data.
+`party_wallet` is an [Action](/move/framework/#actions-and-plugins): each function accepts the raw capability and returns the asset to the caller. It stores no data.
 
 ## A Party's Two Inboxes
 

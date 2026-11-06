@@ -5,7 +5,7 @@ description: Take objects, coins, and accumulator funds sent to a Player's addre
 
 This page is for developers who send Records, coins, or payouts to a listener's Player, or who build the wallet side of a listener app. It explains a Player's two inboxes, how `player_wallet` takes assets out of each by holding the Player, how a transfer of the Player moves its inboxes with it, and the one mistake that locks a Player for good.
 
-`player_wallet` is an [Action](/move/framework/#actions-and-libraries) and the [Player](/move/framework/player/) counterpart of [Party Wallet](/move/framework/party-wallet/). The difference is the authority: a Party is shared, so `party_wallet` takes the Party's `PartyAdminCap`; a Player is owned, so `player_wallet` takes `&mut Player`, which only its holder can pass. Each function returns the asset to the caller. The package stores no data and has no installation surface.
+`player_wallet` is an [Action](/move/framework/#actions-and-plugins) and the [Player](/move/framework/player/) counterpart of [Party Wallet](/move/framework/party-wallet/). The difference is the authority: a Party is shared, so `party_wallet` takes the Party's `PartyAdminCap`; a Player is owned, so `player_wallet` takes `&mut Player`, which only its holder can pass. Each function returns the asset to the caller. The package stores no data and has no installation surface.
 
 ## A Player's Two Inboxes
 

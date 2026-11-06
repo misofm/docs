@@ -57,7 +57,7 @@ A band can use the optional [`party_group` extension](/move/framework/party-grou
 
 [Party extensions](/move/framework/#party-extensions) add a display name, a profile card with biographies, country, and languages, and genre tags. Music credit extensions refer to Party IDs, so attribution follows the same identity across a catalog.
 
-Profiles and credit records are claims by the relevant administrators. Applications choose which identities and assertions they trust. Capability custody and operational workflows belong to [Framework](/move/framework/#actions-and-libraries) packages.
+Profiles and credit records are claims by the relevant administrators. Applications choose which identities and assertions they trust. Capability custody and operational workflows belong to [Framework](/move/framework/#actions-and-plugins) packages.
 
 ## Events and Errors
 

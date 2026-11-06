@@ -78,7 +78,7 @@ A Miso Link mapping is an assertion by the SuiNS namespace controller, not a reg
 
 ## Immutable core, optional extensions
 
-Each object is created and shared in one transaction: `new` returns it with its admin capability and emits a creation event, and `share` makes it a shared object. Its embedded relationships are fixed from creation. The admin capability still grants `uid_mut` access to attach or change dynamic fields after publication. This is how [metadata extensions](/move/framework/#music-extensions) add titles, credits, lyrics, artwork, and classifications without expanding or upgrading the core object.
+Each object is created and shared in one transaction: `new` returns it with its admin capability and emits a creation event, and `share` makes it a shared object. Its embedded relationships are fixed from creation. The admin capability still grants `uid_mut` access to attach or change dynamic fields after publication. This is how [metadata extensions](/move/framework/#how-extensions-work) add titles, credits, lyrics, artwork, and classifications without expanding or upgrading the core object.
 
 The admin capability controls the object's extension surface. [Shares](#share-types) express fractional economic ownership; owning shares does not grant the admin capability. Treat an extension value as a statement made under that capability and apply the extension's own trust rules.
 

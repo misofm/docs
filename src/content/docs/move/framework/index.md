@@ -1,9 +1,9 @@
 ---
 title: Framework
-description: Every package in misofm/framework, covering Miso's economic model, Record sales, the Player, Actions, libraries, and the optional data extensions for works and Parties.
+description: Every package in misofm/framework, covering the data extensions for works and Parties, Records and the Player, royalties, verified audio, and shared libraries.
 ---
 
-This page is for developers deciding which Miso packages to build on beyond the core protocols. It maps the packages in [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7) to the jobs they do, and shows how the economic packages pass revenue between compositions, recordings, and releases.
+This page is for developers deciding which Miso packages to build on beyond the core protocols. It maps the packages in [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7) to the jobs they do, and shows how the royalty packages pass revenue between compositions, recordings, and releases.
 
 The [Party](/move/party-protocol/) and [Music](/move/music-protocol/) protocols supply identities and relationships. Framework packages add the data and behavior a product needs on top of them: titles, credits, and other descriptive fields, and the ability to share a recording's revenue with its composition, license a release from its recordings, pay royalties, sell Records, and give each listener a Player. Every top-level directory of the repository is a separate Move package with its own manifest, published as its own immutable package. A product depends only on the packages it uses.
 
@@ -37,49 +37,6 @@ The repository README states the design rules behind the path:
 - The party granting a right stores it. Each authorization is written by the work that grants it, and no one else can.
 - Access never depends on spending. A Record says which pressing and edition it is, not what it cost; a tier is its own pressing or edition.
 
-## Economics
-
-| Package | Role |
-| --- | --- |
-| [`royalty_pool`](/move/framework/royalty-pool/) | One pool per work and payout currency. Holders stake the work's shares and claim a pro-rata cut of everything paid in. |
-| [`recording_revenue_share`](/move/framework/recording-revenue-share/) | A recording permanently gives its composition a share of itself at the rate the composition publishes. The composition holds the shares as a stake in the recording's pools. |
-| [`release_license`](/move/framework/release-license/) | A release's license from its recordings: splits set once, each recording admin's authorization, and forwarding of the release's revenue to each track's pool. |
-| [`royalty_grant`](/move/framework/royalty-grant/) | Locks a stake and grants part of its royalties to a recipient until an amount is repaid or a term ends, then returns the stake. Covers off-chain advances, producer points, and pledges. |
-| [`royalty_advance`](/move/framework/royalty-advance/) | An on-chain advance: a provider escrows a payment in an offer, and accepting it pays the rights holder and creates a `royalty_grant` on their stake in one transaction. |
-
-## Records and the Player
-
-| Package | Role |
-| --- | --- |
-| [`record`](/move/framework/record/) | The Record lifecycle: one `Pressing` per edition of a release, one numbered `Record` per purchase, created only by authorized distributors. |
-| [`record_sale`](/move/framework/record-sale/) | First-party fixed-price sales of Records: one price in one currency per Pressing, set once. Refuses to sell unless the release's license is authorized, and forwards proceeds through `release_license`. |
-| [`player`](/move/framework/player/) | A listener's on-chain root: one slim, transferable `Player`, which other packages extend. |
-
-## Actions and Libraries
-
-An **Action** accepts a raw capability, or here a mutable Player, and returns assets to the caller, so it composes with other calls in one programmable transaction. The repository has two:
-
-| Package | Role |
-| --- | --- |
-| [`party_wallet`](/move/framework/party-wallet/) | Receives objects and coins sent to a Party's address, or redeems the Party's accumulator funds, with the Party's admin cap, returning every asset to the caller. |
-| [`player_wallet`](/move/framework/player-wallet/) | The same inbox operations for a Player's address, authorized by `&mut Player` instead of an admin cap. |
-
-Libraries are shared building blocks. They attach nothing to a work or a Party themselves.
-
-| Package | Role |
-| --- | --- |
-| [`vault`](/move/framework/vault/) | Generic capability custody and temporary exact-return leases. |
-| [`enclave`](/move/framework/enclave/) | `EnclavePolicy<App>`: verifies AWS Nitro enclave attestations and enclave-signed messages. A PCR change retires every older enclave key. Apache-2.0. |
-| [`audio`](/move/framework/audio/) | `Audio<AudioVerifier>`: one canonical, frozen record of a lossless audio's measured facts, created only by a verifier type. |
-| [`audio_verifier`](/move/framework/audio-verifier/) | Creates an `Audio` from facts signed by the Nautilus enclave in [`misofm/audio-verifier-enclave`](https://github.com/misofm/audio-verifier-enclave), verified through `enclave`. |
-| [`credit`](/move/framework/credit/) | `Credit<Role>`: a party's credit on a work, with a display name and one or more roles. Used by the credit extensions. |
-| [`genre`](/move/framework/genre/) | A canonical genre vocabulary as on-chain objects, shared by the genre extensions. |
-| [`cover_art`](/move/framework/cover-art/) | The `CoverArt` value type: a still image and an optional animation, each a Walrus blob ID. |
-| [`release_track_data`](/move/framework/release-track-data/) | `ReleaseTrackData<Data>`: one value per track of a release, aligned to its track list by construction. Used by `release_cover_art`. |
-| [`release_track_iterator`](/move/framework/release-track-iterator/) | `ReleaseTrackIterator<Witness>`: a witness-gated hot potato that walks a release's track list, one typed call per track. No package uses it at this commit. |
-
-Permissionless automation, when a product needs it, belongs in a separate entry-only **plugin** that holds a capability in a `vault` and calls an Action rather than reimplementing it. The repository deliberately has no Party wallet plugin: every `party_wallet` operation returns assets to its caller, so permissionless automation would only create a way to extract them.
-
 ## How Extensions Work
 
 An extension adds one slice of optional typed data to a core object: a `Composition`, `Recording`, or `Release` from `miso_music`, or a `Party` from `miso_party`. The core keeps each object's identity and relationships; extensions add titles, credits, lyrics, names, and other descriptive fields without expanding it.
@@ -91,43 +48,47 @@ An extension adds one slice of optional typed data to a core object: a `Composit
 
 Extensions describe objects; they do not move value or custody capabilities. A stored title, credit, name, or genre is a claim by the object's administrator, not proof of authorship or identity, and a recording's [release authorization](/move/framework/release-license/#authorization) covers the release and its revenue splits, not these presentation fields. Applications decide which claims they trust and treat stored text as untrusted input.
 
-## Music Extensions
+## Actions and Plugins
 
-### Composition
+An **Action** accepts a raw capability, or a mutable Player, and returns assets to the caller, so it composes with other calls in one programmable transaction. The repository has two: [`party_wallet`](/move/framework/party-wallet/) under [Party Extensions](#party-extensions) and [`player_wallet`](/move/framework/player-wallet/) under [Records and Player](#records-and-player).
+
+Permissionless automation, when a product needs it, belongs in a separate entry-only **plugin** that holds a capability in a [`vault`](/move/framework/vault/) and calls an Action rather than reimplementing it. The repository deliberately has no Party wallet plugin: every `party_wallet` operation returns assets to its caller, so permissionless automation would only create a way to extract them.
+
+## Composition Extensions
 
 The written work: its preferred title, writing credits, and lyrics. Several recordings can refer to the one composition that carries them.
 
 | Package | Adds |
 | --- | --- |
-| [`composition_title`](/move/framework/composition-title/) | Preferred title |
 | [`composition_credits`](/move/framework/composition-credits/) | Songwriter, composer, lyricist, arranger, adapter, and translator credits by Party ID |
 | [`composition_lyrics`](/move/framework/composition-lyrics/) | Language-keyed, compressed lyrics |
+| [`composition_title`](/move/framework/composition-title/) | Preferred title |
 
-### Recording
+## Recording Extensions
 
 A particular master. A studio version and a live take can carry different labels and credits while both refer to the same composition.
 
 | Package | Adds |
 | --- | --- |
-| [`recording_version`](/move/framework/recording-version/) | Take or version label, such as Live or Radio Edit |
-| [`recording_credits`](/move/framework/recording-credits/) | Artist, performance, and production credits, including primary and featured artists |
 | [`recording_advisory`](/move/framework/recording-advisory/) | Explicit, not explicit, or cleaned advisory |
+| [`recording_credits`](/move/framework/recording-credits/) | Artist, performance, and production credits, including primary and featured artists |
 | [`recording_genre`](/move/framework/recording-genre/) | Genres, one dynamic field per genre |
 | [`recording_language`](/move/framework/recording-language/) | Ordered languages, or an explicit instrumental indication |
 | [`recording_master`](/move/framework/recording-master/) | References to canonical verified [`audio`](/move/framework/audio/) masters |
+| [`recording_version`](/move/framework/recording-version/) | Take or version label, such as Live or Radio Edit |
 
-### Release
+## Release Extensions
 
 How an ordered track list is presented. These fields change under the release administrator without changing the fixed track list.
 
 | Package | Adds |
 | --- | --- |
-| [`release_title`](/move/framework/release-title/) | Preferred title |
 | [`release_cover_art`](/move/framework/release-cover-art/) | Cover art with optional per-track overrides |
 | [`release_credits`](/move/framework/release-credits/) | Top-line primary and featured artist billing |
 | [`release_description`](/move/framework/release-description/) | Editorial description |
 | [`release_genre`](/move/framework/release-genre/) | Genres, one dynamic field per genre |
 | [`release_kind`](/move/framework/release-kind/) | Album, EP, Mixtape, or another label |
+| [`release_title`](/move/framework/release-title/) | Preferred title |
 
 ## Party Extensions
 
@@ -135,12 +96,56 @@ A core `Party` is identity only: an object ID and capability-controlled administ
 
 | Package | Adds |
 | --- | --- |
-| [`party_name`](/move/framework/party-name/) | Display name, one non-empty `String`, kept separate from the profile so a rename touches only the name |
-| [`party_profile`](/move/framework/party-profile/) | Profile card: short and long biographies, country, and languages, replaced as a whole |
 | [`party_genre`](/move/framework/party-genre/) | Genre tags, one dynamic field per genre from the shared [`genre`](/move/framework/genre/) vocabulary |
 | [`party_group`](/move/framework/party-group/) | Optional two-sided group membership: each Party stores its own half, with owned invite objects |
+| [`party_name`](/move/framework/party-name/) | Display name, one non-empty `String`, kept separate from the profile so a rename touches only the name |
+| [`party_profile`](/move/framework/party-profile/) | Profile card: short and long biographies, country, and languages, replaced as a whole |
 
-Never send a Party's only `PartyAdminCap` to that Party's own address: receiving it back through [`party_wallet`](/move/framework/party-wallet/) would require the same cap.
+[`party_wallet`](/move/framework/party-wallet/) is the Party's [Action](#actions-and-plugins), not an extension: it receives objects and coins sent to a Party's address, or redeems the Party's accumulator funds, with the Party's admin cap, returning every asset to the caller. Never send a Party's only `PartyAdminCap` to that Party's own address: receiving it back would require the same cap.
+
+## Records and Player
+
+| Package | Role |
+| --- | --- |
+| [`record`](/move/framework/record/) | The Record lifecycle: one `Pressing` per edition of a release, one numbered `Record` per purchase, created only by authorized distributors. |
+| [`record_sale`](/move/framework/record-sale/) | First-party fixed-price sales of Records: one price in one currency per Pressing, set once. Refuses to sell unless the release's license is authorized, and forwards proceeds through `release_license`. |
+| [`player`](/move/framework/player/) | A listener's on-chain root: one slim, transferable `Player`, which other packages extend. |
+| [`player_wallet`](/move/framework/player-wallet/) | An [Action](#actions-and-plugins) that receives objects and coins sent to a Player's address, or redeems its accumulator funds, authorized by `&mut Player` and returned to the caller. |
+
+## Royalties
+
+These packages hold, route, and finance the revenue described in [How Revenue Moves](#how-revenue-moves), listed in that order.
+
+| Package | Role |
+| --- | --- |
+| [`royalty_pool`](/move/framework/royalty-pool/) | One pool per work and payout currency. Holders stake the work's shares and claim a pro-rata cut of everything paid in. |
+| [`recording_revenue_share`](/move/framework/recording-revenue-share/) | A recording permanently gives its composition a share of itself at the rate the composition publishes. The composition holds the shares as a stake in the recording's pools. |
+| [`release_license`](/move/framework/release-license/) | A release's license from its recordings: splits set once, each recording admin's authorization, and forwarding of the release's revenue to each track's pool. |
+| [`royalty_grant`](/move/framework/royalty-grant/) | Locks a stake and grants part of its royalties to a recipient until an amount is repaid or a term ends, then returns the stake. Covers off-chain advances, producer points, and pledges. |
+| [`royalty_advance`](/move/framework/royalty-advance/) | An on-chain advance: a provider escrows a payment in an offer, and accepting it pays the rights holder and creates a `royalty_grant` on their stake in one transaction. |
+
+## Audio
+
+Verified audio facts that a recording's masters point to.
+
+| Package | Role |
+| --- | --- |
+| [`audio`](/move/framework/audio/) | `Audio<AudioVerifier>`: one canonical, frozen record of a lossless audio's measured facts, created only by a verifier type. |
+| [`audio_verifier`](/move/framework/audio-verifier/) | Creates an `Audio` from facts signed by the Nautilus enclave in [`misofm/audio-verifier-enclave`](https://github.com/misofm/audio-verifier-enclave), verified through `enclave`. |
+| [`enclave`](/move/framework/enclave/) | `EnclavePolicy<App>`: verifies AWS Nitro enclave attestations and enclave-signed messages. A PCR change retires every older enclave key. Apache-2.0. |
+
+## Libraries
+
+Shared building blocks. They attach nothing to a work or a Party themselves.
+
+| Package | Role |
+| --- | --- |
+| [`cover_art`](/move/framework/cover-art/) | The `CoverArt` value type: a still image and an optional animation, each a Walrus blob ID. |
+| [`credit`](/move/framework/credit/) | `Credit<Role>`: a party's credit on a work, with a display name and one or more roles. Used by the credit extensions. |
+| [`genre`](/move/framework/genre/) | A canonical genre vocabulary as on-chain objects, shared by the genre extensions. |
+| [`release_track_data`](/move/framework/release-track-data/) | `ReleaseTrackData<Data>`: one value per track of a release, aligned to its track list by construction. Used by `release_cover_art`. |
+| [`release_track_iterator`](/move/framework/release-track-iterator/) | `ReleaseTrackIterator<Witness>`: a witness-gated hot potato that walks a release's track list, one typed call per track. No package uses it at this commit. |
+| [`vault`](/move/framework/vault/) | Generic capability custody and temporary exact-return leases. |
 
 ## Compatibility and Deployments
 

@@ -53,7 +53,7 @@ Core does not ask the recording admin before a release includes the recording; [
 
 ## Audio and metadata live in extensions
 
-The core recording does not contain audio, artist credits, a version name, or license terms. [Extension packages](/move/framework/#recording) attach those details under the recording admin's authority. They can evolve without changing the master object's identity or its composition relationship.
+The core recording does not contain audio, artist credits, a version name, or license terms. [Extension packages](/move/framework/#recording-extensions) attach those details under the recording admin's authority. They can evolve without changing the master object's identity or its composition relationship.
 
 `recording::new` emits the recording, admin capability, and composition IDs together, giving indexers a direct record of the core relationship. The creating transaction then calls `recording.share()`, which takes no capability and emits nothing.
 

@@ -67,7 +67,7 @@ Composition shares are separate from this administrative control. Holding shares
 
 ## A small core, richer extensions
 
-`composition::new` emits `CompositionCreatedEvent` with the composition and admin cap IDs, and the creating transaction calls `composition.share()` to make it a shared on-chain object; `share` takes no capability and emits nothing. Its identity and share type remain fixed, while authorized [extensions](/move/framework/#composition) can maintain descriptive and economic data around it. Applications reading the same composition ID agree on the core identity while applying the relevant extension's rules to its metadata and rights claims.
+`composition::new` emits `CompositionCreatedEvent` with the composition and admin cap IDs, and the creating transaction calls `composition.share()` to make it a shared on-chain object; `share` takes no capability and emits nothing. Its identity and share type remain fixed, while authorized [extensions](/move/framework/#composition-extensions) can maintain descriptive and economic data around it. Applications reading the same composition ID agree on the core identity while applying the relevant extension's rules to its metadata and rights claims.
 
 Contract excerpts © Miso Labs, Inc., licensed under [Apache-2.0](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/LICENSE).
 

@@ -125,7 +125,7 @@ For example, a Party admin who keeps its `PartyAdminCap` in a Vault calls [`part
 
 The Vault accepts any type with `drop` as a witness and does not check its name, constructor visibility, or issuer. Whoever can construct a value of the witness type can borrow the capability. Authorizing a type anyone can construct, such as `u64`, lets anyone borrow it. Choose a witness whose constructor only the plugin's own module can call.
 
-In this framework, a plugin is a separate entry-only package that borrows a capability from a Vault and calls an [Action](/move/framework/#actions-and-libraries) rather than reimplementing it. There is deliberately no Party wallet plugin; [Party Wallet](/move/framework/party-wallet/) explains why.
+In this framework, a plugin is a separate entry-only package that borrows a capability from a Vault and calls an [Action](/move/framework/#actions-and-plugins) rather than reimplementing it. There is deliberately no Party wallet plugin; [Party Wallet](/move/framework/party-wallet/) explains why.
 
 ## Withdrawing, Restoring, and Destroying
 
