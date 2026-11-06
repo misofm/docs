@@ -93,7 +93,7 @@ const nimbusConfig = defineNimbusConfig({
                 label: "Economics",
                 items: [
                   { label: "Royalty Pool", link: "/move/framework/royalty-pool/" },
-                  { label: "Recording License", link: "/move/framework/recording-license/" },
+                  { label: "Recording Revenue Share", link: "/move/framework/recording-revenue-share/" },
                   { label: "Release License", link: "/move/framework/release-license/" },
                   { label: "Royalty Grant", link: "/move/framework/royalty-grant/" },
                   { label: "Royalty Advance", link: "/move/framework/royalty-advance/" },
@@ -104,8 +104,8 @@ const nimbusConfig = defineNimbusConfig({
                 collapsed: true,
                 items: [
                   { label: "Record", link: "/move/framework/record/" },
-                  { label: "Record Shop", link: "/move/framework/record-shop/" },
-                  { label: "Miso Player", link: "/move/framework/miso-player/" },
+                  { label: "Record Sale", link: "/move/framework/record-sale/" },
+                  { label: "Player", link: "/move/framework/player/" },
                 ],
               },
               {
@@ -113,7 +113,9 @@ const nimbusConfig = defineNimbusConfig({
                 collapsed: true,
                 items: [
                   { label: "Party Wallet", link: "/move/framework/party-wallet/" },
+                  { label: "Player Wallet", link: "/move/framework/player-wallet/" },
                   { label: "Vault", link: "/move/framework/vault/" },
+                  { label: "Enclave", link: "/move/framework/enclave/" },
                   { label: "Audio", link: "/move/framework/audio/" },
                   { label: "Audio Verifier", link: "/move/framework/audio-verifier/" },
                   { label: "Credit", link: "/move/framework/credit/" },
@@ -133,12 +135,16 @@ const nimbusConfig = defineNimbusConfig({
 
 export default defineConfig({
   site: "https://docs.miso.fm",
-  // Old /packages and /protocol URLs, kept working after the move to /move.
+  // Old /packages and /protocol URLs, kept working after the move to /move, and
+  // pages of renamed packages.
   redirects: {
     "/packages": "/move/",
     "/packages/framework": "/move/framework/",
     "/packages/royalty-pool": "/move/framework/royalty-pool/",
-    "/packages/recording-license": "/move/framework/recording-license/",
+    "/packages/recording-license": "/move/framework/recording-revenue-share/",
+    "/move/framework/recording-license": "/move/framework/recording-revenue-share/",
+    "/move/framework/record-shop": "/move/framework/record-sale/",
+    "/move/framework/miso-player": "/move/framework/player/",
     "/packages/protocol-extensions": "/move/music-protocol/extensions/",
     "/packages/protocol-extensions/party": "/move/party-protocol/extensions/",
     "/packages/protocol-extensions/release": "/move/music-protocol/extensions/#release",

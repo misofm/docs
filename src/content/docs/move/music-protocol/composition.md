@@ -38,13 +38,13 @@ const SHARE_SUPPLY: u64 = 100_000_000_000_000;
 
 When the work is created, core validates the currency, mints the full supply, and consumes the minting authority. The creator receives the initial balance; subsequent allocations divide that supply rather than creating more shares. Core leaves allocation agreements and custody to applications and extensions.
 
-Composition shares can participate in a funded [royalty pool](/move/framework/royalty-pool/) through registered stakes. A recording's link to the composition does not automatically route recording royalties to these holders; a [recording license](/move/framework/recording-license/) or another economic agreement defines that route.
+Composition shares can participate in a funded [royalty pool](/move/framework/royalty-pool/) through registered stakes. A recording's link to the composition does not automatically route recording royalties to these holders; a [recording revenue share](/move/framework/recording-revenue-share/) or another economic agreement defines that route.
 
 ## One composition, many recordings
 
 A composition does not maintain a list of every recording made from it. Each recording stores the composition's ID instead. This lets new studio versions, live performances, and covers refer to the work without changing the composition object.
 
-That reference describes which work was recorded. Permission to record it, and any agreed payment to its rights holders, belongs to a [recording license](/move/framework/recording-license/) or another agreement. The core relationship alone does not impose a commission.
+That reference describes which work was recorded. Permission to record it belongs to an agreement outside the core. A voluntary payment to its holders can be made through a [recording revenue share](/move/framework/recording-revenue-share/), which is not a copyright license. The core relationship alone does not impose a commission.
 
 ## Administration and shares
 
@@ -61,7 +61,7 @@ public fun uid_mut<CompositionShare>(
 }
 ```
 
-Here the capability's type supplies the authorization: there is one composition per share type within the registry, and the cap's ID is derived from the composition, so each composition has exactly one admin cap. Extensions use this UID to attach their own typed dynamic fields. The cap is also what a composition admin presents to publish a [recording license policy](/move/framework/recording-license/) or create the composition's [royalty pools](/move/framework/royalty-pool/).
+Here the capability's type supplies the authorization: there is one composition per share type within the registry, and the cap's ID is derived from the composition, so each composition has exactly one admin cap. Extensions use this UID to attach their own typed dynamic fields. The cap is also what a composition admin presents to publish [revenue share terms](/move/framework/recording-revenue-share/) or create the composition's [royalty pools](/move/framework/royalty-pool/).
 
 Composition shares are separate from this administrative control. Holding shares does not grant the admin capability, and holding the capability does not imply ownership of the shares. [Royalty pools](/move/framework/royalty-pool/) and other economic packages define how share holders participate in payments.
 

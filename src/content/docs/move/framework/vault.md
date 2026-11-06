@@ -176,13 +176,13 @@ Only `VaultCreatedEvent` carries `cap_id`; the other events identify the admin c
 
 ## Deployment
 
-`vault` has no dependency on `miso_music` or `miso_party`. Its [`Published.toml`](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/vault/Published.toml) records two generations:
+`vault` has no dependency on `miso_music` or `miso_party`. Its [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/vault/Published.toml) records two generations:
 
 - **Mainnet** `published-at = "0x58dde377276ef4b67670c1ce471e122350b94dc30472ff6d082fa9e5361a9520"`, recorded after the last change to the package's sources, so it corresponds to the source on this page.
 - **Testnet** `published-at = "0x9909927b5fc7d02a8b4eaf26170bcb08760d8ae67c58998650460900185f15ff"`, recorded before later source changes. The README warns that this source's state layout is incompatible with the published testnet v1 package; use a fresh publication and a fresh `VaultRegistry` rather than that one.
 
 Each generation has its own `VaultRegistry`, created by `init` at publish, so Vault addresses differ between generations. The README does not state an audit status. The 41 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
-Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/vault) at commit `3a7d223b94f566d9e714a0a6b26efe2549e7bad0`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/vault/LICENSE.md). The docs' Apache license does not relicense them.
+Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/vault) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/vault/LICENSE.md). The docs' Apache license does not relicense them.
 
-Source: [README](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/vault/README.md), [module](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/vault/sources/vault.move), and [tests](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/vault/tests/vault_tests.move).
+Source: [README](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/vault/README.md), [module](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/vault/sources/vault.move), and [tests](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/vault/tests/vault_tests.move).

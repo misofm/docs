@@ -49,7 +49,7 @@ Each work needs its own share currency, published from an unchanged copy of the 
 2. `recording::new(registry, currency, composition, treasury_cap)` does the same for a recording, taking a reference to its composition, and emits `RecordingCreatedEvent`. Call `recording.share()`.
 3. For a release, call `release::new_release_track(recording)` for each recording in track order, pass the vector to `release::new`, and call `release.share()`. No recording admin's consent is needed; [Release](/move/music-protocol/release/#authorization-lives-in-a-release-license) explains where that authorization lives.
 
-The `share` functions take no capability and emit nothing. The [production constructor test](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/tests/production_constructor_tests.move) shows the template initialization and constructor calls in context. The [Share Types](/move/music-protocol/#share-types) section explains why each work has its own share type. A core relationship does not grant a recording license, authorize a release, or open a royalty pool.
+The `share` functions take no capability and emit nothing. The [production constructor test](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/tests/production_constructor_tests.move) shows the template initialization and constructor calls in context. The [Share Types](/move/music-protocol/#share-types) section explains why each work has its own share type. A core relationship does not grant a license, share revenue with the composition, authorize a release, or open a royalty pool.
 
 ## Read and extend
 
@@ -61,6 +61,6 @@ The `share` functions take no capability and emit nothing. The [production const
 
 Earlier generations, such as commit `3bd54d1`, used `publish(cap)` with `*PublishedEvent` events, a `ReleaseRegistry`, salted release IDs, and `ReleaseConsent`. Match bindings and event decoding to the generation you use.
 
-For paid flows, choose the [relevant packages](/move/), then read [Royalty Pool](/move/framework/royalty-pool/), [Recording License](/move/framework/recording-license/), and [Release License](/move/framework/release-license/) as needed. Creating a core object alone neither opens a pool nor licenses a recording.
+For paid flows, choose the [relevant packages](/move/), then read [Royalty Pool](/move/framework/royalty-pool/), [Recording Revenue Share](/move/framework/recording-revenue-share/), and [Release License](/move/framework/release-license/) as needed. Creating a core object alone neither opens a pool nor shares a recording's revenue.
 
 Source: pinned [core README](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/README.md), [Move.toml](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/Move.toml), [Published.toml](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/Published.toml), and [source modules](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c/sources).

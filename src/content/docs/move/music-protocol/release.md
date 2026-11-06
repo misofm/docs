@@ -56,7 +56,7 @@ Core leaves permission out on purpose. A release is derived from its recordings,
 
 1. The release admin creates the release's license with one revenue split per track.
 2. Each recording admin authorizes that release, with those splits, on their own recording.
-3. Once every track has authorized, the license is permanently `Authorized`. A store such as [`record_shop`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/record_shop) refuses to sell until then.
+3. Once every track has authorized, the license is permanently `Authorized`. A store such as [`record_sale`](/move/framework/record-sale/) refuses to sell until then.
 
 An on-chain release is not evidence that its recordings' admins approved it. Before distributing or selling a release, check `release_license::is_authorized` or another agreement the recording admins have made.
 

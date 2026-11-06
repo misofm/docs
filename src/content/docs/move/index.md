@@ -10,7 +10,7 @@ Miso separates music and party identities, optional data, and business rules int
 | Protocol: Party | Entity identities and capability-controlled administration | [Party](/move/party-protocol/) |
 | Protocol: Music | Core identity, share types, composition relationships, and ordered releases | [Protocol Overview](/move/music-protocol/) |
 | Protocol Extensions | Optional data on compositions, recordings, releases, and parties | [Protocol Extensions](/move/music-protocol/extensions/) |
-| Framework | Royalty pools, recording and release licenses, grants and advances, Records, the Player, and shared libraries | [Framework](/move/framework/) |
+| Framework | Royalty pools, recording revenue shares, release licenses, grants and advances, Record sales, the Player, and shared libraries | [Framework](/move/framework/) |
 
 The core also depends on [`share`](https://github.com/unconfirmedlabs/share) to validate each work's canonical share type and fix its supply. This supports the core's ownership model.
 
@@ -18,11 +18,11 @@ The core also depends on [`share`](https://github.com/unconfirmedlabs/share) to 
 
 <span id="metadata-extensions"></span>
 
-The extension packages live in [`misofm/framework`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0), one directory per package. Music extensions add optional data to Composition, Recording, and Release; Party extensions add a name, profile, genres, and optional group membership to a Party. Each extension adds one data concern around its core object. Browse the [extension inventory](/move/music-protocol/extensions/#extension-inventory) by object.
+The extension packages live in [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7), one directory per package. Music extensions add optional data to Composition, Recording, and Release; Party extensions add a name, profile, genres, and optional group membership to a Party. Each extension adds one data concern around its core object. Browse the [extension inventory](/move/music-protocol/extensions/#extension-inventory) by object.
 
 ## Framework
 
-Framework packages define what applications can do with those objects: license recordings and releases, distribute royalties, advance money against them, sell Records, and hold capabilities. Start with the [Framework overview](/move/framework/), which traces a sale from a release to its shareholders, then read [Royalty Pool](/move/framework/royalty-pool/), [Recording License](/move/framework/recording-license/), [Release License](/move/framework/release-license/), [Royalty Grant](/move/framework/royalty-grant/), and [Royalty Advance](/move/framework/royalty-advance/).
+Framework packages define what applications can do with those objects: share a recording's revenue with its composition, license releases, distribute royalties, advance money against them, sell Records, and hold capabilities. Start with the [Framework overview](/move/framework/), which traces a sale from a release to its shareholders, then read [Royalty Pool](/move/framework/royalty-pool/), [Recording Revenue Share](/move/framework/recording-revenue-share/), [Release License](/move/framework/release-license/), [Royalty Grant](/move/framework/royalty-grant/), and [Royalty Advance](/move/framework/royalty-advance/).
 
 ## Identifier Resolution
 

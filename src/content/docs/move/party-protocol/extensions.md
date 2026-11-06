@@ -5,7 +5,7 @@ description: How optional names, profiles, genres, and group membership attach t
 
 This page is for developers who display or edit information about a Party. It explains how extensions attach data to a [Party](/move/party-protocol/) and lists each Party extension, each with its own page.
 
-Each package is its own directory in [`misofm/framework`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0). At that commit the extensions pin `miso_party` at [`b16e0598`](https://github.com/misofm/party-protocol/tree/b16e05982844453b286937cc085d573a92d7cea4), where core `Party` is identity only: an object ID and capability-controlled administration, with no name or other display data. Renaming a Party or rewriting its biography changes an extension's field, not the Party ID that credits refer to.
+Each package is its own directory in [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7). At that commit the extensions pin `miso_party` at [`b16e0598`](https://github.com/misofm/party-protocol/tree/b16e05982844453b286937cc085d573a92d7cea4), where core `Party` is identity only: an object ID and capability-controlled administration, with no name or other display data. Renaming a Party or rewriting its biography changes an extension's field, not the Party ID that credits refer to.
 
 ## How Party Extensions Work
 
@@ -36,6 +36,6 @@ Extensions store data; they do not custody capabilities or move value. [`party_w
 
 Each directory is a separate Move package with its own published identity. Check its `Move.toml` and `Published.toml` before combining packages; each package page states which recorded deployment matches its source. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
-Package source is © Miso Labs, Inc. and licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/LICENSE.md). Core Party remains Apache-2.0. The docs' Apache license does not relicense excerpts on the package pages.
+Package source is © Miso Labs, Inc. and licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/LICENSE.md). Core Party remains Apache-2.0. The docs' Apache license does not relicense excerpts on the package pages.
 
-Source: [Framework README](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/README.md) and [Party roadmap](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/ROADMAP.md) at commit `3a7d223b94f566d9e714a0a6b26efe2549e7bad0`.
+Source: [Framework README](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/README.md) and [Party roadmap](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/ROADMAP.md) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`.

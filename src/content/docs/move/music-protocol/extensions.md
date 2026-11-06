@@ -7,13 +7,13 @@ This page is for developers choosing which descriptive data to attach to music o
 
 Music Protocol Extensions add optional typed data to compositions, recordings, and releases. The core keeps each object's identity and relationships; extensions add titles, credits, lyrics, and other descriptive fields without expanding that core.
 
-Each package is its own directory in [`misofm/framework`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0), alongside the [Framework](/move/framework/) packages. Choose the data your application needs. Party names, profiles, genres, and membership are covered separately in [Party Protocol Extensions](/move/party-protocol/extensions/). Shared value types such as [`credit`](/move/framework/credit/), [`genre`](/move/framework/genre/), [`cover_art`](/move/framework/cover-art/), and [`audio`](/move/framework/audio/) are Framework libraries.
+Each package is its own directory in [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7), alongside the [Framework](/move/framework/) packages. Choose the data your application needs. Party names, profiles, genres, and membership are covered separately in [Party Protocol Extensions](/move/party-protocol/extensions/). Shared value types such as [`credit`](/move/framework/credit/), [`genre`](/move/framework/genre/), [`cover_art`](/move/framework/cover-art/), and [`audio`](/move/framework/audio/) are Framework libraries.
 
 ## How Extensions Fit the Core
 
 State-attaching extensions write typed dynamic fields through the object's admin-gated `uid_mut` surface. Reads are permissionless. Each extension owns its field keys, validation, and update rules. Owning shares alone does not authorize extension writes.
 
-Extensions describe objects. [Framework packages](/move/framework/) define policies and workflows such as recording licenses, royalty distribution, and capability custody. A descriptive field alone does not establish an economic agreement or verify a real-world claim.
+Extensions describe objects. [Framework packages](/move/framework/) define policies and workflows such as revenue shares between works, release licenses, royalty distribution, and capability custody. A descriptive field alone does not establish an economic agreement or verify a real-world claim.
 
 <span id="extension-inventory"></span>
 
@@ -61,8 +61,8 @@ Artwork or a preferred title can be updated under the release administrator with
 
 ## Compatibility and Licensing
 
-Each directory is a separate Move package with its own dependency pins and published identity. At commit `3a7d223b94f566d9e714a0a6b26efe2549e7bad0` the extensions pin `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c). Check each package's `Move.toml` and `Published.toml` to select compatible source and deployed revisions before combining packages; see [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+Each directory is a separate Move package with its own dependency pins and published identity. At commit `ffbc8f0b2852932f879f00130117c5b597ea7db7` the extensions pin `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c). Check each package's `Move.toml` and `Published.toml` to select compatible source and deployed revisions before combining packages; see [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
-Package source is © Miso Labs, Inc. and uses [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/LICENSE.md). Follow the repository's source license when reusing code, including excerpts.
+Package source is © Miso Labs, Inc. and uses [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/LICENSE.md). Follow the repository's source license when reusing code, including excerpts.
 
-Source: [Framework README](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/README.md#music-extensions) and each package's README at commit `3a7d223b94f566d9e714a0a6b26efe2549e7bad0`.
+Source: [Framework README](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/README.md#music-extensions) and each package's README at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`.

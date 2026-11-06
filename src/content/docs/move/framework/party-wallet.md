@@ -73,7 +73,7 @@ public fun redeem_balance<Currency>(
 
 Both return a `Balance<Currency>`, not a `Coin<Currency>`; convert it with `coin::from_balance` in the same transaction, or pass it to another call that takes a balance. Zero-value coins are accepted and counted. The coin and funds mechanics come from [`hikida`](https://github.com/unconfirmedlabs/hikida/tree/e245b09f5cee183500c1878d8b34d7bf1b85e20d).
 
-Redeeming more than the Party's address holds fails in Sui's accumulator on a network. The Move unit-test VM does not enforce that limit, so the package's [`e2e` localnet test](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/party_wallet/e2e) checks it against a real validator: it funds a Party with 500 MIST, confirms that redeeming 501 fails with no event or asset, and then redeems exactly 500.
+Redeeming more than the Party's address holds fails in Sui's accumulator on a network. The Move unit-test VM does not enforce that limit, so the package's [`e2e` localnet test](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/e2e) checks it against a real validator: it funds a Party with 500 MIST, confirms that redeeming 501 fails with no event or asset, and then redeems exactly 500.
 
 A redemption also produces the accumulator's own withdrawal effect. Indexers that read both that effect and `PartyFundsRedeemedEvent` must not count one redemption twice.
 
@@ -130,13 +130,13 @@ The events carry no list of coin IDs; the transaction's inputs and effects recor
 
 ## Deployment
 
-`party_wallet` pins `miso_party` at [`b16e0598`](https://github.com/misofm/party-protocol/tree/b16e05982844453b286937cc085d573a92d7cea4) and `hikida` at `e245b09f`, and uses `vault` only in test mode. Its [`Published.toml`](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/party_wallet/Published.toml) records two generations:
+`party_wallet` pins `miso_party` at [`b16e0598`](https://github.com/misofm/party-protocol/tree/b16e05982844453b286937cc085d573a92d7cea4) and `hikida` at `e245b09f`, and uses `vault` only in test mode. Its [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/Published.toml) records two generations:
 
 - **Mainnet** `published-at = "0x19555c911bfdfe63b2efa3a942cf11f7b5dfe54c929f38fff754a16a3f51508c"`, recorded after the last change to the package's sources and dependency pins, so it corresponds to the source on this page.
 - **Testnet** `published-at = "0xbd3fbf4a6bb5c5a68f3060188f8ae17039fa8e38802bf8058230cf19812d3f59"`, recorded before later source changes and core re-pins, so it predates this source.
 
 The README does not state an audit status. The 15 unit tests pass locally; run the `e2e` validator test with Sui 1.79.0 and Bun after changes to the funds paths. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
-Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/party_wallet) at commit `3a7d223b94f566d9e714a0a6b26efe2549e7bad0`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/party_wallet/LICENSE.md). The docs' Apache license does not relicense them.
+Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/LICENSE.md). The docs' Apache license does not relicense them.
 
-Source: [README](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/party_wallet/README.md), [module](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/party_wallet/sources/party_wallet.move), [tests](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/party_wallet/tests/party_wallet_tests.move), and [localnet test](https://github.com/misofm/framework/blob/3a7d223b94f566d9e714a0a6b26efe2549e7bad0/party_wallet/e2e/wallet.localnet.ts).
+Source: [README](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/README.md), [module](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/sources/party_wallet.move), [tests](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/tests/party_wallet_tests.move), and [localnet test](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/e2e/wallet.localnet.ts).
