@@ -16,13 +16,13 @@ public struct Credit<Role: copy + drop + store> has copy, drop, store {
 }
 ```
 
-`Credit` is a plain value, not an object, and has no admin, ID, or events of its own. `display_name` is how the credit reads on that work. It is not checked against the Party's name, which lives in [`party_name`](/move/party-protocol/extensions/party-name/). `Role` is the extension's role enum:
+`Credit` is a plain value, not an object, and has no admin, ID, or events of its own. `display_name` is how the credit reads on that work. It is not checked against the Party's name, which lives in [`party_name`](/move/framework/party-name/). `Role` is the extension's role enum:
 
 | Extension | Stored as | Role type | Extra limits |
 | --- | --- | --- | --- |
-| [`composition_credits`](/move/music-protocol/extensions/composition-credits/) | `VecMap<ID, Credit<CompositionPartyRole>>` on a Composition | `CompositionPartyRole` | none beyond `credit` |
-| [`recording_credits`](/move/music-protocol/extensions/recording-credits/) | `VecMap<ID, Credit<RecordingPartyRole>>` on a Recording | `RecordingPartyRole` | at most 10 roles, not both primary and featured |
-| [`release_credits`](/move/music-protocol/extensions/release-credits/) | `VecMap<ID, Credit<ReleasePartyRole>>` on a Release | `ReleasePartyRole` | exactly one role |
+| [`composition_credits`](/move/framework/composition-credits/) | `VecMap<ID, Credit<CompositionPartyRole>>` on a Composition | `CompositionPartyRole` | none beyond `credit` |
+| [`recording_credits`](/move/framework/recording-credits/) | `VecMap<ID, Credit<RecordingPartyRole>>` on a Recording | `RecordingPartyRole` | at most 10 roles, not both primary and featured |
+| [`release_credits`](/move/framework/release-credits/) | `VecMap<ID, Credit<ReleasePartyRole>>` on a Release | `ReleasePartyRole` | exactly one role |
 
 Each extension keys its map by Party ID, so a Party has at most one credit per work, and attaching one requires the work's admin cap and a reference to the Party. See each extension's page for its roles and limits.
 

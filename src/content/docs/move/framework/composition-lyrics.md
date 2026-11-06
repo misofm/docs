@@ -60,7 +60,7 @@ The size checks run before `uid_mut(cap)`, which accepts only the composition's 
 
 `has_lyrics(composition, language)`, `lyrics(composition, language)`, and `max_lyrics_length()` are permissionless. `lyrics` borrows the stored bytes and aborts when that language has no entry, even if others do. To list the attached languages, list the composition's dynamic fields (for example with `suix_getDynamicFields`) and keep those whose name type is this package's `CompositionLyricsKey`, or replay the set and cleared events per composition and language.
 
-No entry for any language does not mean the composition is instrumental; it means none has been supplied. A recording's instrumental status belongs in [`recording_language`](/move/music-protocol/extensions/recording-language/), and lyric timing belongs to a recording rather than to this text.
+No entry for any language does not mean the composition is instrumental; it means none has been supplied. A recording's instrumental status belongs in [`recording_language`](/move/framework/recording-language/), and lyric timing belongs to a recording rather than to this text.
 
 ## Failure Cases
 

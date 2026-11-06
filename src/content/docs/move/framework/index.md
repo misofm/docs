@@ -1,13 +1,13 @@
 ---
 title: Framework
-description: Miso's economic model, Record sales, the Player, and shared libraries, built as separate Move packages in misofm/framework.
+description: Every package in misofm/framework, covering Miso's economic model, Record sales, the Player, Actions, libraries, and the optional data extensions for works and Parties.
 ---
 
 This page is for developers deciding which Miso packages to build on beyond the core protocols. It maps the packages in [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7) to the jobs they do, and shows how the economic packages pass revenue between compositions, recordings, and releases.
 
-The [Party](/move/party-protocol/) and [Music](/move/music-protocol/) protocols supply identities and relationships. Framework packages add what a product does with them: share a recording's revenue with its composition, license a release from its recordings, pay royalties, sell Records, and give each listener a Player. Every top-level directory of the repository is a separate Move package with its own manifest, published as its own immutable package. A product depends only on the packages it uses.
+The [Party](/move/party-protocol/) and [Music](/move/music-protocol/) protocols supply identities and relationships. Framework packages add the data and behavior a product needs on top of them: titles, credits, and other descriptive fields, and the ability to share a recording's revenue with its composition, license a release from its recordings, pay royalties, sell Records, and give each listener a Player. Every top-level directory of the repository is a separate Move package with its own manifest, published as its own immutable package. A product depends only on the packages it uses.
 
-The repository also holds the optional data extensions for those objects. Each has its own page, grouped by object under [Music Protocol Extensions](/move/music-protocol/extensions/) and [Party Protocol Extensions](/move/party-protocol/extensions/). Every package below links to its page.
+Every package below has its own page, titled with the package name.
 
 ## How Revenue Moves
 
@@ -80,21 +80,67 @@ Libraries are shared building blocks. They attach nothing to a work or a Party t
 
 Permissionless automation, when a product needs it, belongs in a separate entry-only **plugin** that holds a capability in a `vault` and calls an Action rather than reimplementing it. The repository deliberately has no Party wallet plugin: every `party_wallet` operation returns assets to its caller, so permissionless automation would only create a way to extract them.
 
-## Renamed and Retired Packages
+## How Extensions Work
 
-Several packages were renamed in the framework, and each rename is a new package identity:
+An extension adds one slice of optional typed data to a core object: a `Composition`, `Recording`, or `Release` from `miso_music`, or a `Party` from `miso_party`. The core keeps each object's identity and relationships; extensions add titles, credits, lyrics, names, and other descriptive fields without expanding it.
 
-| Earlier package | Now |
+- Each extension stores its data as a dynamic field under a key type private to its package, so a change to one extension never touches another's data.
+- Every write goes through the object's `uid_mut(cap)`, which requires the object's admin capability. A Composition or Recording cap is bound to its work's share type, so another work's cap does not type-check; a Release or Party cap for another object aborts in the core with `EUnauthorized`. Owning shares alone does not authorize a write.
+- Reads are permissionless.
+- Every actual change emits an event carrying the subject's ID and the full new value, so an indexer can rebuild each field from events alone. Equal-value sets and absent clears emit nothing.
+
+Extensions describe objects; they do not move value or custody capabilities. A stored title, credit, name, or genre is a claim by the object's administrator, not proof of authorship or identity, and a recording's [release authorization](/move/framework/release-license/#authorization) covers the release and its revenue splits, not these presentation fields. Applications decide which claims they trust and treat stored text as untrusted input.
+
+## Music Extensions
+
+### Composition
+
+The written work: its preferred title, writing credits, and lyrics. Several recordings can refer to the one composition that carries them.
+
+| Package | Adds |
 | --- | --- |
-| `recording_license` | [`recording_revenue_share`](/move/framework/recording-revenue-share/), recast as a voluntary revenue share rather than a license |
-| `record_shop` | [`record_sale`](/move/framework/record-sale/), fixed price only |
-| `miso_player` | [`player`](/move/framework/player/), a transferable `Player` with no per-address registry |
+| [`composition_title`](/move/framework/composition-title/) | Preferred title |
+| [`composition_credits`](/move/framework/composition-credits/) | Songwriter, composer, lyricist, arranger, adapter, and translator credits by Party ID |
+| [`composition_lyrics`](/move/framework/composition-lyrics/) | Language-keyed, compressed lyrics |
 
-`enclave` supersedes the external `unconfirmedlabs/kagi` registry that `audio_verifier` used before.
+### Recording
 
-Packages that had their own repositories now live in `misofm/framework`. The standalone `royalty-pool`, `credit`, `vault`, `record`, `record-shop`, `genre`, and `cover-art` repositories are archived, and `recording-license`, `release-track-data`, `release-track-iterator`, `music-protocol-extensions`, and `party-protocol-extensions` are no longer available. The archived `vault-plugins` and `record-extensions` have no counterpart in the framework at this commit, and `party-protocol-actions` is no longer available; `party_wallet` is the framework's Party Action.
+A particular master. A studio version and a live take can carry different labels and credits while both refer to the same composition.
 
-[`pay`](https://github.com/misofm/pay), [`crank`](https://github.com/misofm/crank), and [`streaming`](https://github.com/misofm/streaming) remain separate repositories outside the framework; check each one's dependency pins before combining it with framework packages.
+| Package | Adds |
+| --- | --- |
+| [`recording_version`](/move/framework/recording-version/) | Take or version label, such as Live or Radio Edit |
+| [`recording_credits`](/move/framework/recording-credits/) | Artist, performance, and production credits, including primary and featured artists |
+| [`recording_advisory`](/move/framework/recording-advisory/) | Explicit, not explicit, or cleaned advisory |
+| [`recording_genre`](/move/framework/recording-genre/) | Genres, one dynamic field per genre |
+| [`recording_language`](/move/framework/recording-language/) | Ordered languages, or an explicit instrumental indication |
+| [`recording_master`](/move/framework/recording-master/) | References to canonical verified [`audio`](/move/framework/audio/) masters |
+
+### Release
+
+How an ordered track list is presented. These fields change under the release administrator without changing the fixed track list.
+
+| Package | Adds |
+| --- | --- |
+| [`release_title`](/move/framework/release-title/) | Preferred title |
+| [`release_cover_art`](/move/framework/release-cover-art/) | Cover art with optional per-track overrides |
+| [`release_credits`](/move/framework/release-credits/) | Top-line primary and featured artist billing |
+| [`release_description`](/move/framework/release-description/) | Editorial description |
+| [`release_genre`](/move/framework/release-genre/) | Genres, one dynamic field per genre |
+| [`release_kind`](/move/framework/release-kind/) | Album, EP, Mixtape, or another label |
+
+## Party Extensions
+
+A core `Party` is identity only: an object ID and capability-controlled administration. Renaming a Party or rewriting its biography changes an extension's field, not the Party ID that credits refer to.
+
+| Package | Adds |
+| --- | --- |
+| [`party_name`](/move/framework/party-name/) | Display name, one non-empty `String`, kept separate from the profile so a rename touches only the name |
+| [`party_profile`](/move/framework/party-profile/) | Profile card: short and long biographies, country, and languages, replaced as a whole |
+| [`party_genre`](/move/framework/party-genre/) | Genre tags, one dynamic field per genre from the shared [`genre`](/move/framework/genre/) vocabulary |
+| [`party_group`](/move/framework/party-group/) | Optional two-sided group membership: each Party stores its own half, with owned invite objects |
+
+Never send a Party's only `PartyAdminCap` to that Party's own address: receiving it back through [`party_wallet`](/move/framework/party-wallet/) would require the same cap.
 
 ## Compatibility and Deployments
 
@@ -110,6 +156,8 @@ Packages inside the repository depend on each other by local path. At this commi
 No package is upgraded in place. A package's `Published.toml` records a deployed generation that may not match its current source, so each package page says whether its recorded generation matches the source it describes. At this commit **every package has a mainnet generation recorded after its last source change**, so mainnet matches the source on each page. For `audio`, `audio_verifier`, `genre`, and `vault`, the only later change is a comment marker, which does not change bytecode. Testnet entries, where present, record earlier generations.
 
 A consumer accepts only types from the package generation it links, and shared objects such as `GenreRegistry`, `AudioRegistry`, and an `EnclavePolicy` are created per generation; their IDs come from each publish transaction. Before constructing a transaction, use the package IDs and API of the generation deployed on your network.
+
+[`pay`](https://github.com/misofm/pay), [`crank`](https://github.com/misofm/crank), and [`streaming`](https://github.com/misofm/streaming) remain separate repositories outside the framework; check each one's dependency pins before combining it with framework packages.
 
 ## Licensing
 

@@ -19,7 +19,7 @@ public struct Party has key {
 }
 ```
 
-A Party's name, biography, genres, and group memberships are optional [extensions](/move/party-protocol/extensions/). Renaming a Party changes an extension field, never the ID that credits refer to.
+A Party's name, biography, genres, and group memberships are optional [extensions](/move/framework/#party-extensions). Renaming a Party changes an extension field, never the ID that credits refer to.
 
 `party::new(ctx)` returns the Party and its admin capability and emits `PartyCreatedEvent` with both IDs. `Party` has only `key` and its module offers no transfer, so the creating transaction must call `party.share()`. `share` takes no capability and emits nothing.
 
@@ -47,15 +47,15 @@ Holding the cap does not transfer shares, grant a music object's admin capabilit
 
 ## Names Are Claims
 
-The display name lives in the [`party_name` extension](/move/party-protocol/extensions/party-name/). A name is an unverified claim by the Party's administrator. The protocol does not establish a real-world identity or guarantee that two Parties with the same name represent the same entity.
+The display name lives in the [`party_name` extension](/move/framework/party-name/). A name is an unverified claim by the Party's administrator. The protocol does not establish a real-world identity or guarantee that two Parties with the same name represent the same entity.
 
 ## Optional Group Membership
 
-A band can use the optional [`party_group` extension](/move/party-protocol/extensions/party-group/) for consent-based membership. The group Party and the member Party each store their own half of the relationship, so there is no separate Group object and neither side writes to the other's Party. Another application can use a different relationship model around the same Party identity. Neither requires a group field or a kind in core.
+A band can use the optional [`party_group` extension](/move/framework/party-group/) for consent-based membership. The group Party and the member Party each store their own half of the relationship, so there is no separate Group object and neither side writes to the other's Party. Another application can use a different relationship model around the same Party identity. Neither requires a group field or a kind in core.
 
 ## Profiles and Attribution
 
-[Party extensions](/move/party-protocol/extensions/) add a display name, a profile card with biographies, country, and languages, and genre tags. Music credit extensions refer to Party IDs, so attribution follows the same identity across a catalog.
+[Party extensions](/move/framework/#party-extensions) add a display name, a profile card with biographies, country, and languages, and genre tags. Music credit extensions refer to Party IDs, so attribution follows the same identity across a catalog.
 
 Profiles and credit records are claims by the relevant administrators. Applications choose which identities and assertions they trust. Capability custody and operational workflows belong to [Framework](/move/framework/#actions-and-libraries) packages.
 

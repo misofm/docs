@@ -7,7 +7,7 @@ This page is for developers who point recordings at verified audio, or who check
 
 ## One Record per Measured Audio
 
-Suppose the rights holder of Whitney Houston's [Recording](/move/music-protocol/recording/) of "I Will Always Love You" has a lossless master. A verifier decodes it and measures five facts: channels, bit depth, sample rate, samples per channel, and a digest of the decoded samples. `audio::new` records those facts as an `Audio`, and the [`recording_master`](/move/music-protocol/extensions/recording-master/) extension points the Recording at it. Dolly Parton's Recording of the song is different audio, so its master is a different `Audio`.
+Suppose the rights holder of Whitney Houston's [Recording](/move/music-protocol/recording/) of "I Will Always Love You" has a lossless master. A verifier decodes it and measures five facts: channels, bit depth, sample rate, samples per channel, and a digest of the decoded samples. `audio::new` records those facts as an `Audio`, and the [`recording_master`](/move/framework/recording-master/) extension points the Recording at it. Dolly Parton's Recording of the song is different audio, so its master is a different `Audio`.
 
 ```move
 public struct Audio<phantom AudioVerifier> has key {

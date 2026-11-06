@@ -7,7 +7,7 @@ This page is for developers who classify releases by genre or read those classif
 
 ## A Product-Level Genre
 
-Suppose the release admin of *The Bodyguard* soundtrack tags the release `SOUNDTRACK`. The tag describes the release as a product. Each recording on it can carry its own, different genres through [`recording_genre`](/move/music-protocol/extensions/recording-genre/): a compilation can be filed as one genre even when its tracks are not.
+Suppose the release admin of *The Bodyguard* soundtrack tags the release `SOUNDTRACK`. The tag describes the release as a product. Each recording on it can carry its own, different genres through [`recording_genre`](/move/framework/recording-genre/): a compilation can be filed as one genre even when its tracks are not.
 
 Genres come from the [`genre`](/move/framework/genre/) vocabulary. Each genre is a frozen `Genre` object whose name is uppercase words joined by single underscores, such as `DRUM_AND_BASS`, and whose ID is derived from that name. The release stores one dynamic field per genre ID, with the value `true`:
 
@@ -36,7 +36,7 @@ Taking `&Genre` means every stored ID resolves to a real vocabulary entry. It do
 
 `remove_genre(release, cap, genre_id)` removes a tag by ID and does not need the `Genre` object.
 
-The IDs are the vocabulary's own, so release genres join directly with [`recording_genre`](/move/music-protocol/extensions/recording-genre/) and [`party_genre`](/move/party-protocol/extensions/party-genre/) tags. Genre is a presentation claim by the release admin, not something the protocol verifies.
+The IDs are the vocabulary's own, so release genres join directly with [`recording_genre`](/move/framework/recording-genre/) and [`party_genre`](/move/framework/party-genre/) tags. Genre is a presentation claim by the release admin, not something the protocol verifies.
 
 ## Failure Cases
 

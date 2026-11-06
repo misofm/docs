@@ -9,7 +9,7 @@ This page is for developers who classify recordings by genre or read those class
 
 Suppose the admin of Whitney Houston's recording of "I Will Always Love You" adds the vocabulary's `POP` and `SOUL` genres, and the admin of Dolly Parton's recording adds `COUNTRY`. The two masters share one composition but are classified separately, because genre describes the audio, and only each recording's admin has standing to classify it. One recording can be a track on many releases, and its genres travel with it.
 
-A release such as *The Bodyguard* soundtrack can carry its own product-level genres through [`release_genre`](/move/music-protocol/extensions/release-genre/). A compilation can be classified as a product even when its tracks are classified differently. The package README recommends that a client resolving a track's genre read the recording's genres first and fall back to the release's only when the recording has none.
+A release such as *The Bodyguard* soundtrack can carry its own product-level genres through [`release_genre`](/move/framework/release-genre/). A compilation can be classified as a product even when its tracks are classified differently. The package README recommends that a client resolving a track's genre read the recording's genres first and fall back to the release's only when the recording has none.
 
 ## Storage
 

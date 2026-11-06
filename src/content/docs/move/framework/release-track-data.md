@@ -9,7 +9,7 @@ This page is for developers who write a release extension that stores something 
 
 ## One Value per Track
 
-A [Release](/move/music-protocol/release/) is an ordered list of recording IDs, fixed when the release is created. Suppose *The Bodyguard* soundtrack's release admin gives Whitney Houston's "I Will Always Love You" its own artwork while the other tracks use the album cover. [`release_cover_art`](/move/music-protocol/extensions/release-cover-art/) stores the overrides as a `ReleaseTrackData<Option<CoverArt>>`: one slot per track, `none` everywhere except at that track's position.
+A [Release](/move/music-protocol/release/) is an ordered list of recording IDs, fixed when the release is created. Suppose *The Bodyguard* soundtrack's release admin gives Whitney Houston's "I Will Always Love You" its own artwork while the other tracks use the album cover. [`release_cover_art`](/move/framework/release-cover-art/) stores the overrides as a `ReleaseTrackData<Option<CoverArt>>`: one slot per track, `none` everywhere except at that track's position.
 
 ```move
 public struct ReleaseTrackData<Data: store + drop>(vector<Data>) has drop, store;

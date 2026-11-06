@@ -13,7 +13,7 @@ A core Party is only an ID. Suppose Whitney Houston's Party is created for credi
 public struct PartyNameKey() has copy, drop, store;
 ```
 
-Each Party has at most one name, under `PartyNameKey()`. The name is kept apart from the [`party_profile`](/move/party-protocol/extensions/party-profile/) card, so a rename writes and emits only the name. Renaming never changes the Party ID that credits refer to.
+Each Party has at most one name, under `PartyNameKey()`. The name is kept apart from the [`party_profile`](/move/framework/party-profile/) card, so a rename writes and emits only the name. Renaming never changes the Party ID that credits refer to.
 
 ## Setting the Name
 

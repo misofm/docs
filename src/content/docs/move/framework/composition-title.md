@@ -15,7 +15,7 @@ public struct CompositionTitleKey() has copy, drop, store;
 
 The title is a `String` dynamic field on the composition's UID under this package's key, so a composition has at most one. It is stored exactly as supplied: whitespace, case, and multi-byte UTF-8 are not trimmed or normalized. Nothing on-chain reads it, and it has no economic or authorization meaning. A title does not identify the work; two compositions can carry the same title, so applications identify a work by its composition ID.
 
-Recordings carry no title either. A recording's display title is its composition's title plus the recording's optional [version name](/move/music-protocol/extensions/recording-version/), read through the recording's `composition_id`.
+Recordings carry no title either. A recording's display title is its composition's title plus the recording's optional [version name](/move/framework/recording-version/), read through the recording's `composition_id`.
 
 ## Setting the Title
 

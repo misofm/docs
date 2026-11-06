@@ -27,7 +27,7 @@ public struct Profile has drop, store {
 
 Lengths count UTF-8 bytes, so text with multibyte characters reaches them sooner. `CountryCode` and `LanguageCode` come from the pinned `country_code` and `language_code` packages, whose `new` functions abort unless the string is an assigned code, so a stored value is always a real code.
 
-Each Party has at most one card, under `PartyProfileKey()`. The card holds no name, genres, or join date: the name is in [`party_name`](/move/party-protocol/extensions/party-name/), genres are in [`party_genre`](/move/party-protocol/extensions/party-genre/), and the join date comes from the Party's `PartyCreatedEvent`.
+Each Party has at most one card, under `PartyProfileKey()`. The card holds no name, genres, or join date: the name is in [`party_name`](/move/framework/party-name/), genres are in [`party_genre`](/move/framework/party-genre/), and the join date comes from the Party's `PartyCreatedEvent`.
 
 ## Replacing the Card
 

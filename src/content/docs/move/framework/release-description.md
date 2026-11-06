@@ -7,7 +7,7 @@ This page is for developers who write or display the descriptive text for a rele
 
 ## One Paragraph per Release
 
-Suppose the release admin of *The Bodyguard* soundtrack sets a short paragraph introducing the album. Like a [title](/move/music-protocol/extensions/release-title/), the description is presentation, so it lives in an extension and can change without touching the [Release](/move/music-protocol/release/)'s fixed track list.
+Suppose the release admin of *The Bodyguard* soundtrack sets a short paragraph introducing the album. Like a [title](/move/framework/release-title/), the description is presentation, so it lives in an extension and can change without touching the [Release](/move/music-protocol/release/)'s fixed track list.
 
 The description is a single `String` stored under the package's `ReleaseDescriptionKey()` dynamic field on the release, with no wrapper struct. It is stored exactly as supplied: whitespace, line breaks, case, and multi-byte UTF-8 are not normalized.
 

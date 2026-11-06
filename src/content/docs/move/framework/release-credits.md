@@ -28,9 +28,9 @@ public enum ReleasePartyRole has copy, drop, store {
 }
 ```
 
-The display name is the billing name on this release. It is stored with the credit and can differ from the Party's [`party_name`](/move/party-protocol/extensions/party-name/), so a release keeps the name it was billed under after the Party is renamed.
+The display name is the billing name on this release. It is stored with the credit and can differ from the Party's [`party_name`](/move/framework/party-name/), so a release keeps the name it was billed under after the Party is renamed.
 
-Release billing is a display claim. No economics read it, and it is separate from the performers and producers that [`recording_credits`](/move/music-protocol/extensions/recording-credits/) records on each recording.
+Release billing is a display claim. No economics read it, and it is separate from the performers and producers that [`recording_credits`](/move/framework/recording-credits/) records on each recording.
 
 ## Adding a Credit
 

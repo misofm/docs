@@ -96,7 +96,7 @@ Readers can follow each recording ID to its composition. Authorization and split
 
 ## Fixed Relationships, Extensible Presentation
 
-Titles, artwork, credits, and other presentation data belong to [extensions](/move/music-protocol/extensions/#release). They are managed around the fixed track list without expanding the core release model.
+Titles, artwork, credits, and other presentation data belong to [extensions](/move/framework/#release). They are managed around the fixed track list without expanding the core release model.
 
 Contract excerpts © Miso Labs, Inc., licensed under [Apache-2.0](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/LICENSE).
 

@@ -7,7 +7,7 @@ This page is for developers who label a recording or build its display title. It
 
 ## Naming a Take
 
-Dolly Parton's and Whitney Houston's masters of "I Will Always Love You" are separate [Recordings](/move/music-protocol/recording/) of one composition, and neither recording carries a title. Suppose a third recording of the composition is a live performance. Its recording admin sets the version name `Live`, and an application shows the composition's [title](/move/music-protocol/extensions/composition-title/) with that version, for example as "I Will Always Love You (Live)". A recording with no version name is the composition's plain rendition and displays under the composition title alone. How the two strings are joined is a client convention; the contract stores only the version name.
+Dolly Parton's and Whitney Houston's masters of "I Will Always Love You" are separate [Recordings](/move/music-protocol/recording/) of one composition, and neither recording carries a title. Suppose a third recording of the composition is a live performance. Its recording admin sets the version name `Live`, and an application shows the composition's [title](/move/framework/composition-title/) with that version, for example as "I Will Always Love You (Live)". A recording with no version name is the composition's plain rendition and displays under the composition title alone. How the two strings are joined is a client convention; the contract stores only the version name.
 
 ```move
 public struct RecordingVersionKey() has copy, drop, store;

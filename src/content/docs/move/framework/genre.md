@@ -7,7 +7,7 @@ This page is for developers who tag works or Parties with genres, or who index t
 
 ## Genres Are Objects, Not Strings
 
-Suppose the release admin of *The Bodyguard* soundtrack wants to tag the [Release](/move/music-protocol/release/) `SOUNDTRACK`. The tag is not a string copied onto the Release. It is the ID of a frozen `Genre` object named `SOUNDTRACK`, and [`release_genre`](/move/music-protocol/extensions/release-genre/) stores that ID. Every Release, Recording, or Party tagged `SOUNDTRACK` points at the same object.
+Suppose the release admin of *The Bodyguard* soundtrack wants to tag the [Release](/move/music-protocol/release/) `SOUNDTRACK`. The tag is not a string copied onto the Release. It is the ID of a frozen `Genre` object named `SOUNDTRACK`, and [`release_genre`](/move/framework/release-genre/) stores that ID. Every Release, Recording, or Party tagged `SOUNDTRACK` points at the same object.
 
 ```move
 public struct Genre has key {
@@ -65,9 +65,9 @@ Each extension takes a `&Genre` when adding a tag, so a tag is proven against th
 
 | Extension | Tags | Admin cap |
 | --- | --- | --- |
-| [`recording_genre`](/move/music-protocol/extensions/recording-genre/) | a Recording | `RecordingAdminCap` |
-| [`release_genre`](/move/music-protocol/extensions/release-genre/) | a Release | `ReleaseAdminCap` |
-| [`party_genre`](/move/party-protocol/extensions/party-genre/) | a Party | `PartyAdminCap` |
+| [`recording_genre`](/move/framework/recording-genre/) | a Recording | `RecordingAdminCap` |
+| [`release_genre`](/move/framework/release-genre/) | a Release | `ReleaseAdminCap` |
+| [`party_genre`](/move/framework/party-genre/) | a Party | `PartyAdminCap` |
 
 ## Failure Cases
 

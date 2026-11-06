@@ -19,7 +19,7 @@ public struct RecordingCreditsKey() has copy, drop, store;
 
 The record is one dynamic field on the recording under `RecordingCreditsKey()`. It maps each credited Party ID to its credit, in the order the credits were added, with at most one credit per Party and at most 150 per recording. The first `add_credit` attaches the record and the `remove_credit` that empties it detaches it, so `has_credits(recording)` is true exactly when at least one credit exists.
 
-Each credit is a [`credit`](/move/framework/credit/) `Credit<Role>`: a display name of 1 to 200 bytes and one or more distinct roles, at most 10 on a recording. The display name is stored on the credit; it is not read from the Party, so it can differ from the Party's [name](/move/party-protocol/extensions/party-name/). Dolly Parton's songwriting credit belongs on the composition, in [`composition_credits`](/move/music-protocol/extensions/composition-credits/); a recording does not inherit the composition's credits.
+Each credit is a [`credit`](/move/framework/credit/) `Credit<Role>`: a display name of 1 to 200 bytes and one or more distinct roles, at most 10 on a recording. The display name is stored on the credit; it is not read from the Party, so it can differ from the Party's [name](/move/framework/party-name/). Dolly Parton's songwriting credit belongs on the composition, in [`composition_credits`](/move/framework/composition-credits/); a recording does not inherit the composition's credits.
 
 ## Roles
 
@@ -111,7 +111,7 @@ What the contract enforces about artists:
 - **The count is free.** A recording can have several primary artists, several featured artists, or none; nothing requires a primary artist.
 - **Billing order is insertion order.** To list the artists, filter `credits(recording)` for the two roles in map order.
 
-A release's top-line billing is separate. [`release_credits`](/move/music-protocol/extensions/release-credits/) stores primary and featured artists on a Release under the release admin's authority, and it neither reads nor checks the credits of the release's recordings.
+A release's top-line billing is separate. [`release_credits`](/move/framework/release-credits/) stores primary and featured artists on a Release under the release admin's authority, and it neither reads nor checks the credits of the release's recordings.
 
 ## Adding a Credit
 

@@ -10,7 +10,7 @@ This page is for developers who register verified audio, operate the enclave pol
 Suppose the rights holder of Whitney Houston's [Recording](/move/music-protocol/recording/) of "I Will Always Love You" wants its master on-chain. They upload the master as a FLAC file to the audio verifier enclave from [`misofm/audio-verifier-enclave`](https://github.com/misofm/audio-verifier-enclave/tree/595329a71c5b01d4515fd12c772821100c455573), running on AWS Nitro. The service accepts canonical FLAC only (STREAMINFO as the only metadata block, 8-, 16-, or 24-bit samples, and a sample rate of 44.1, 48, 88.2, 96, 176.4, 192, 352.8, or 384 kHz) and rejects anything else without a signature. The enclave decodes the file, measures the five facts, and returns them with a signature. It signs nothing about the file itself. In one programmable transaction, they then:
 
 1. Call `verify_audio` with the enclave's public key, the facts, the timestamp, and the signature. It returns the `Audio<AudioVerifier>`.
-2. Call [`recording_master::add_master`](/move/music-protocol/extensions/recording-master/) with the Recording, its admin cap, and the `Audio`.
+2. Call [`recording_master::add_master`](/move/framework/recording-master/) with the Recording, its admin cap, and the `Audio`.
 3. Call `audio.freeze()`.
 
 Before uploading, derive the `Audio`'s address with `audio::derive_address<AudioVerifier>` and read it; if it exists, skip steps 1 and 3 and pass the frozen `Audio` to `add_master`. If two uploads of the same audio race, the second `verify_audio` aborts.

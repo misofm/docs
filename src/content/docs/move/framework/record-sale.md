@@ -209,7 +209,7 @@ The currency is each event's type parameter. `SaleAuthorizedEvent` carries the f
 The package's [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/record_sale/Published.toml) records two generations:
 
 - **Mainnet** `published-at = "0xdaa3e0c73a3be3c98e28738d44b172b2520fe7041f5c6e65d8c3e8aa77f4d569"`, recorded after the last change to the package's sources and manifest and to `record` and `release_license`, so it corresponds to the source on this page.
-- **Testnet** `published-at = "0x6eb622211786516988c6ee8e7c0403b4ef64a8c004d654494122e29c103060e1"`, carried over from the package's predecessor `record_shop` and recorded before the rename and later source changes, so it predates this source.
+- **Testnet** `published-at = "0x6eb622211786516988c6ee8e7c0403b4ef64a8c004d654494122e29c103060e1"`, recorded before later source changes, so it predates this source.
 
 The README makes no statement about an audit. The package pins `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c) and links `record` and `release_license` by local path; it can sell only Pressings of the `record` package it links. The 26 unit tests pass locally, including a complete sale that checks the forwarded amounts, and both privacy fixtures fail to compile as expected. The package has no localnet test, so funds arriving at pool addresses are not checked against a validator. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 

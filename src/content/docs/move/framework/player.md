@@ -88,11 +88,11 @@ The event carries no owner. The creator is the transaction sender, and later hol
 
 ## Deployment
 
-`player` depends on neither core protocol, only the Sui framework. The package was renamed from `miso_player` and redesigned after commit `3a7d223b94f566d9e714a0a6b26efe2549e7bad0`: the per-address `PlayerRegistry`, the key-only `Player`, and the one-per-address rule are gone. Its [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/player/Published.toml) records one generation:
+`player` depends on neither core protocol, only the Sui framework. Its [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/player/Published.toml) records one generation:
 
 - **Mainnet** `published-at = "0x47137c6af0c5938d4d49a1c2e5af7cfe983ac50c9561d0863d2ee1d013b3ae53"`, version 1, toolchain 1.82.1, recorded after the last change to the package's sources, so it corresponds to the source on this page.
 
-An earlier Mainnet generation, `0x1696aeabdfab810e474908072c2c9b685071135622b6a5342ebc7e15f6767b7f`, was recorded for a numbered, registry-based design and then replaced in the file; it does not match this source. There is no Testnet generation. The README does not state an audit status. The 6 unit tests pass locally with Sui 1.82.2. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+There is no Testnet generation. The README does not state an audit status. The 6 unit tests pass locally with Sui 1.82.2. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
 Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/player) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/player/LICENSE.md). The docs' Apache license does not relicense them.
 

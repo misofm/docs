@@ -36,7 +36,7 @@ Taking `&Genre` means every stored ID resolves to a real vocabulary entry. It do
 
 `remove_genre(party, cap, genre_id)` removes a tag by ID and does not need the `Genre` object.
 
-The IDs are the vocabulary's own, so Party genres join directly with [`release_genre`](/move/music-protocol/extensions/release-genre/) and [`recording_genre`](/move/music-protocol/extensions/recording-genre/) tags.
+The IDs are the vocabulary's own, so Party genres join directly with [`release_genre`](/move/framework/release-genre/) and [`recording_genre`](/move/framework/recording-genre/) tags.
 
 ## Failure Cases
 

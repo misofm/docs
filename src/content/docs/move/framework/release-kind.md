@@ -40,7 +40,7 @@ public fun set_kind(release: &mut Release, cap: &ReleaseAdminCap, kind: String) 
 
 The function shows three rules:
 
-- **The value is checked before the cap.** A kind must be 1 to 32 bytes. The limit counts bytes, not characters; it fits "Album (Deluxe Edition)", and anything longer is a title, which belongs in [`release_title`](/move/music-protocol/extensions/release-title/).
+- **The value is checked before the cap.** A kind must be 1 to 32 bytes. The limit counts bytes, not characters; it fits "Album (Deluxe Edition)", and anything longer is a title, which belongs in [`release_title`](/move/framework/release-title/).
 - **The cap is checked through the core.** `uid_mut(cap)` aborts on another release's cap.
 - **An equal value is silent.** Setting the kind already stored neither writes nor emits.
 

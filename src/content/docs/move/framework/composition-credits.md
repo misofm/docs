@@ -19,7 +19,7 @@ public struct CompositionCreditsKey() has copy, drop, store;
 
 The record is one dynamic field on the composition under `CompositionCreditsKey()`. It maps each credited Party ID to its credit, in the order the credits were added, with at most one credit per Party and at most 50 per composition. The first `add_credit` attaches the record and the `remove_credit` that empties it detaches it, so `has_credits(composition)` is true exactly when at least one credit exists.
 
-Each credit is a [`credit`](/move/framework/credit/) `Credit<Role>`: a display name of 1 to 200 bytes and one or more distinct roles. The display name is stored on the credit itself; it is not read from the Party, so it can differ from the Party's [name](/move/party-protocol/extensions/party-name/).
+Each credit is a [`credit`](/move/framework/credit/) `Credit<Role>`: a display name of 1 to 200 bytes and one or more distinct roles. The display name is stored on the credit itself; it is not read from the Party, so it can differ from the Party's [name](/move/framework/party-name/).
 
 ## Roles
 
@@ -36,7 +36,7 @@ public enum CompositionPartyRole has copy, drop, store {
 
 The enum is closed, and each role is built with its constructor, such as `composition_party_role::new_songwriter_role()`. A credit can combine roles, such as `Composer` and `Lyricist`. Because `credit::new` rejects duplicate roles, a credit holds one to six of them. There is no publisher role: these are writing credits, and publishing interests are not recorded here. Roles are unit variants, so each is encoded as its variant index in the declaration order above.
 
-Recordings keep their own performance and production credits in [`recording_credits`](/move/music-protocol/extensions/recording-credits/); a recording does not inherit the composition's credits.
+Recordings keep their own performance and production credits in [`recording_credits`](/move/framework/recording-credits/); a recording does not inherit the composition's credits.
 
 ## Adding and Removing Credits
 

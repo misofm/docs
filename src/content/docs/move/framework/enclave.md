@@ -5,7 +5,7 @@ description: Trust one AWS Nitro enclave image per App, let anyone register its 
 
 This page is for developers who build a Move package that trusts output signed by an AWS Nitro enclave, operate that package's enclave policy, or register enclaves under it. It explains how `enclave` states which enclave image an App trusts, how anyone registers a running enclave's key from its attestation document, how a signature is checked, how a PCR change retires every old key at once, and what the library deliberately does not check.
 
-`enclave` is a library. It is the on-chain half of [nautilus-rust](https://github.com/unconfirmedlabs/nautilus-rust) and works with any [Nautilus](https://github.com/MystenLabs/nautilus) enclave through Sui's native `NitroAttestationDocument`. It supersedes `unconfirmedlabs/kagi` as a new package; no on-chain state is migrated. Unlike the rest of `misofm/framework`, it is licensed under Apache-2.0.
+`enclave` is a library. It is the on-chain half of [nautilus-rust](https://github.com/unconfirmedlabs/nautilus-rust) and works with any [Nautilus](https://github.com/MystenLabs/nautilus) enclave through Sui's native `NitroAttestationDocument`. Unlike the rest of `misofm/framework`, it is licensed under Apache-2.0.
 
 ## One Policy per App
 

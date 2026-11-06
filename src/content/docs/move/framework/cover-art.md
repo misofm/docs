@@ -24,7 +24,7 @@ public struct CoverArt has copy, drop, store {
 
 ## Who Uses It
 
-[`release_cover_art`](/move/music-protocol/extensions/release-cover-art/) stores an `Option<CoverArt>` for the album cover and per-track overrides in a [`ReleaseTrackData<Option<CoverArt>>`](/move/framework/release-track-data/), set with the `ReleaseAdminCap`. To set *The Bodyguard*'s cover, call `cover_art::new` and pass the result to `release_cover_art::set_cover` in the same programmable transaction. That extension's events carry the blob IDs, so an indexer does not need to read the Release.
+[`release_cover_art`](/move/framework/release-cover-art/) stores an `Option<CoverArt>` for the album cover and per-track overrides in a [`ReleaseTrackData<Option<CoverArt>>`](/move/framework/release-track-data/), set with the `ReleaseAdminCap`. To set *The Bodyguard*'s cover, call `cover_art::new` and pass the result to `release_cover_art::set_cover` in the same programmable transaction. That extension's events carry the blob IDs, so an indexer does not need to read the Release.
 
 ## Deployment
 
