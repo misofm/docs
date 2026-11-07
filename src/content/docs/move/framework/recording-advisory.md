@@ -67,13 +67,13 @@ The advisory is the admin's statement, unchecked against the audio. There is no 
 
 ## Deployment
 
-At commit `eca70827172dc35e5471376cf909d0417a8ebaf3`, [`Published.toml`](https://github.com/misofm/framework/blob/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory/Published.toml) records:
+At commit `6999ebc675624c8786700b772c8cad8054337569`, [`Published.toml`](https://github.com/misofm/framework/blob/6999ebc675624c8786700b772c8cad8054337569/recording_advisory/Published.toml) records:
 
-- Mainnet: `0xde4e648166711882a80588239a91dd48f712faa5d4af570e77a2478897d45f43`. Predates this source: that generation still has a `Cleaned` value. A new generation is not yet published.
+- Mainnet: `0xfb8360a1df3f8725cd15043e7b9692eb4a053c583106b5cc94c7b604a2a67675`, published immutably in transaction `F29KvA5q3gZh1DPARWcbwnQdWd8NwdZCcQ8L5RvEHdye`. Matches this source.
 - Testnet: `0xaf50ef46545e86e6e9e532649323211c5b5c94e47b677d80285c3a92102e3238`. Earlier generation.
 
 Pins `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c). The README does not say whether it is audited. The 13 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
-Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory) at commit `eca70827172dc35e5471376cf909d0417a8ebaf3`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory/LICENSE.md). The docs' Apache license does not relicense them.
+Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/6999ebc675624c8786700b772c8cad8054337569/recording_advisory) at commit `6999ebc675624c8786700b772c8cad8054337569`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/6999ebc675624c8786700b772c8cad8054337569/recording_advisory/LICENSE.md). The docs' Apache license does not relicense them.
 
-Source: [README](https://github.com/misofm/framework/blob/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory/README.md), [module](https://github.com/misofm/framework/blob/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory/sources/recording_advisory.move), and [tests](https://github.com/misofm/framework/tree/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory/tests).
+Source: [README](https://github.com/misofm/framework/blob/6999ebc675624c8786700b772c8cad8054337569/recording_advisory/README.md), [module](https://github.com/misofm/framework/blob/6999ebc675624c8786700b772c8cad8054337569/recording_advisory/sources/recording_advisory.move), and [tests](https://github.com/misofm/framework/tree/6999ebc675624c8786700b772c8cad8054337569/recording_advisory/tests).
