@@ -1,11 +1,11 @@
 ---
 title: Recording Advisory
-description: Mark a recording explicit, not explicit, or cleaned, in one dynamic field its admin writes.
+description: Mark a recording explicit or not explicit, in one dynamic field its admin writes.
 ---
 
 Label a recording's content for listeners and storefronts, or read the label to badge and filter tracks. No advisory is not the same as `NotExplicit`.
 
-## Three Values, or None
+## Two Values, or None
 
 If the admin of Whitney Houston's recording of "I Will Always Love You" sets `NotExplicit`, a storefront shows no badge. If the admin sets nothing, no one has said anything. Do not treat the track as clean.
 
@@ -13,13 +13,12 @@ If the admin of Whitney Houston's recording of "I Will Always Love You" sets `No
 public enum Advisory has copy, drop, store {
     Explicit,
     NotExplicit,
-    Cleaned,
 }
 ```
 
-A recording holds at most one `Advisory`, under the `RecordingAdvisoryKey()` dynamic field. `Cleaned` marks an explicit recording re-issued with the offending content removed. An absent field means no advisory is asserted: `has_advisory` returns `false`.
+A recording holds at most one `Advisory`, under the `RecordingAdvisoryKey()` dynamic field. An absent field means no advisory is asserted: `has_advisory` returns `false`. A clean edit of an explicit recording is its own Recording, marked `NotExplicit`, with "Clean" as its [version](/move/framework/recording-version/).
 
-Move enums cannot be constructed or matched outside their module. Build with `explicit()`, `not_explicit()`, or `cleaned()`. Test with `is_explicit`, `is_not_explicit`, or `is_cleaned`. In a programmable transaction, call the constructor first and pass its result to `set_advisory`.
+Move enums cannot be constructed or matched outside their module. Build with `explicit()` or `not_explicit()`. Test with `is_explicit` or `is_not_explicit`. In a programmable transaction, call the constructor first and pass its result to `set_advisory`.
 
 ## Setting and Clearing
 
@@ -63,18 +62,18 @@ The advisory is the admin's statement, unchecked against the audio. There is no 
 
 | Event | Fields |
 | --- | --- |
-| `RecordingAdvisorySetEvent` | `recording_id`, `advisory`, which serializes as its variant index: `Explicit` 0, `NotExplicit` 1, `Cleaned` 2 |
+| `RecordingAdvisorySetEvent` | `recording_id`, `advisory`, which serializes as its variant index: `Explicit` 0, `NotExplicit` 1 |
 | `RecordingAdvisoryClearedEvent` | `recording_id` |
 
 ## Deployment
 
-At commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/recording_advisory/Published.toml) records:
+At commit `eca70827172dc35e5471376cf909d0417a8ebaf3`, [`Published.toml`](https://github.com/misofm/framework/blob/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory/Published.toml) records:
 
-- Mainnet: `0xde4e648166711882a80588239a91dd48f712faa5d4af570e77a2478897d45f43`. Postdates the last source change and core pin: matches this source.
+- Mainnet: `0xde4e648166711882a80588239a91dd48f712faa5d4af570e77a2478897d45f43`. Predates this source: that generation still has a `Cleaned` value. A new generation is not yet published.
 - Testnet: `0xaf50ef46545e86e6e9e532649323211c5b5c94e47b677d80285c3a92102e3238`. Earlier generation.
 
 Pins `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c). The README does not say whether it is audited. The 13 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
-Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/recording_advisory) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/recording_advisory/LICENSE.md). The docs' Apache license does not relicense them.
+Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory) at commit `eca70827172dc35e5471376cf909d0417a8ebaf3`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory/LICENSE.md). The docs' Apache license does not relicense them.
 
-Source: [README](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/recording_advisory/README.md), [module](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/recording_advisory/sources/recording_advisory.move), and [tests](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/recording_advisory/tests).
+Source: [README](https://github.com/misofm/framework/blob/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory/README.md), [module](https://github.com/misofm/framework/blob/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory/sources/recording_advisory.move), and [tests](https://github.com/misofm/framework/tree/eca70827172dc35e5471376cf909d0417a8ebaf3/recording_advisory/tests).
