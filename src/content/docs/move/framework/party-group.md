@@ -3,11 +3,11 @@ title: Party Group
 description: Record consent-based group membership between Parties, with each side writing its own half.
 ---
 
-This page is for developers who show which Parties belong to a band, collective, or other group, or who build the invite and join flow. It explains how `party_group` stores membership as two halves, how a member is invited, joins, declines, or leaves, and how to read membership without an indexer.
+`party_group` records which Parties belong to a band, collective, or other group. Each side writes its own half, so membership needs both Parties' consent. Read it over plain RPC.
 
 ## Two Halves of a Membership
 
-Suppose a band records its own version of "I Will Always Love You". The band is a [Party](/move/party-protocol/), and so is each of its members. Core Party has no kind, member list, or group API, and `party_group` adds no Group object. It stores membership as two dynamic fields, one on each Party, plus an invite object:
+A band is a [Party](/move/party-protocol/), and so is each member. Core Party has no group API and `party_group` adds no Group object. Membership is one dynamic field on each Party, plus an invite object:
 
 ```move
 public struct PartyGroupInvite has key {
@@ -20,7 +20,10 @@ public struct PartyMemberKey(ID) has copy, drop, store;
 public struct PartyGroupMembershipKey(ID) has copy, drop, store;
 ```
 
-The band's Party stores `PartyMemberKey(member_id)`, which is the group's consent. The member's Party stores `PartyGroupMembershipKey(group_id)`, which is the member's consent. Each half is written by that Party's own admin on its own Party through `uid_mut(cap)`, so neither side writes to the other's Party or can force the relationship. A Party is a member only when both halves exist:
+- The band's Party stores `PartyMemberKey(member_id)`: the group's consent.
+- The member's Party stores `PartyGroupMembershipKey(group_id)`: the member's consent.
+
+Each admin writes its own half on its own Party through `uid_mut(cap)`. Neither side writes to the other's Party or can force the relationship. A Party is a member only when both halves exist:
 
 | Group half | Member half | State |
 | --- | --- | --- |
@@ -33,7 +36,7 @@ The band's Party stores `PartyMemberKey(member_id)`, which is the group's consen
 
 ## Inviting a Member
 
-The band's admin calls `add_member` with the band's `PartyAdminCap` and the member Party:
+Call `add_member` with the group's `PartyAdminCap` and the member Party:
 
 ```move
 public fun add_member(group: &mut Party, cap: &PartyAdminCap, member: &Party, ctx: &mut TxContext) {
@@ -50,11 +53,15 @@ public fun add_member(group: &mut Party, cap: &PartyAdminCap, member: &Party, ct
 }
 ```
 
-The function writes the group's half and transfers a new `PartyGroupInvite` to the member Party's own address, where only the member's admin can receive it. A removed member that still holds its half must `leave` before the group can add it again. A Party cannot add itself, because `add_member` borrows the group mutably and the member immutably. Invites are ordinary new objects, not derived ones, so a member can be invited again after leaving.
+It writes the group's half and transfers a new `PartyGroupInvite` to the member Party's address, where only the member's admin can receive it.
+
+- A removed member still holding its half must `leave` before it can be added again.
+- A Party cannot add itself: the group is borrowed mutably, the member immutably.
+- Invites are ordinary objects, not derived, so a member can be invited again after leaving.
 
 ## Joining, Declining, and Leaving
 
-The member's admin answers the invite in a later transaction, since a `Receiving` argument must name an object the Party already owns. It passes the invite to `join` with the member's own `PartyAdminCap`:
+Answer the invite in a later transaction: a `Receiving` argument must name an object the Party already owns. Pass it to `join` with the member's `PartyAdminCap`:
 
 ```move
 public fun join(
@@ -77,17 +84,15 @@ public fun join(
 }
 ```
 
-`join` receives the invite, checks that it names the group passed in and that the group still holds its half, deletes the invite, and writes the member's half.
-
-- **A revoked invite cannot be used.** If the group called `remove_member` before the member joined, `join` aborts with `EInviteNotFound` and the invite stays on the member Party. Clean it up with `decline`.
+- **A revoked invite cannot be used.** If the group called `remove_member` first, `join` aborts with `EInviteNotFound` and the invite stays on the member Party. Clear it with `decline`.
 - **`decline(member, cap, invite)`** receives and deletes any invite without checking the group's half. It writes nothing else.
-- **Extra invites from one group.** If the group removes and re-adds a member before it joins, the member holds two invites. The first `join` succeeds, a later one aborts with `EMembershipAlreadyAdded`, and `decline` clears the extra invite.
+- **Extra invites.** If the group removes and re-adds a member before it joins, the member holds two invites. The first `join` succeeds, a later one aborts with `EMembershipAlreadyAdded`, and `decline` clears the extra.
 
-Either side ends the relationship on its own half: the group with `remove_member(group, cap, member_id)`, the member with `leave(member, cap, group_id)`. Neither needs the other Party.
+Either side ends the relationship on its own half: `remove_member(group, cap, member_id)` for the group, `leave(member, cap, group_id)` for the member. Neither needs the other Party.
 
 ## Finding Members and Invites
 
-Each key type answers one question with plain RPC, without an indexer:
+Plain RPC answers each question:
 
 | Question | List | Filter |
 | --- | --- | --- |
@@ -95,11 +100,11 @@ Each key type answers one question with plain RPC, without an indexer:
 | Which groups has this Party joined? | Dynamic fields of the member Party | Name type `PartyGroupMembershipKey`; the name holds the group Party ID |
 | Which invites are pending? | Objects owned by the member Party's address | Type `PartyGroupInvite`; `invite.group_id()` names the group |
 
-A single half is only a hint. An invited member is listed by the group before it joins, and a removed member still lists the group until it leaves. Confirm with `is_member`.
+A single half is only a hint: the group lists an invited member before it joins, and a removed member still lists the group until it leaves. Confirm with `is_member`.
 
 ## What Membership Means
 
-Membership is direct and nonrecursive. It grants no capability over either Party and no music rights or shares. Any Party may be a member, including one that is itself a group, and there is no member limit. Applications must not infer authority or membership through nested groups.
+Membership is direct and nonrecursive. It grants no capability over either Party and no music rights or shares. Any Party may be a member, including a group. No member limit. Do not infer authority or membership through nested groups.
 
 ## Failure Cases
 
@@ -124,11 +129,11 @@ Membership is direct and nonrecursive. It grants no capability over either Party
 | `PartyGroupInviteDeclinedEvent` | `group_id`, `member_id`, `invite_id` |
 | `PartyGroupLeftEvent` | `group_id`, `member_id` |
 
-`group_id` and `member_id` are Party IDs; `invite_id` is the invite object's ID. The added and removed events track the group's half, and the joined and left events track the member's half. Apply them in transaction order: a Party is a member while both halves are present.
+`group_id` and `member_id` are Party IDs. `invite_id` is the invite object's ID. Added and removed events track the group's half. Joined and left events track the member's. Apply in transaction order.
 
 ## Deployment
 
-At commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_group/Published.toml) records a mainnet publication at `0xce13403dddb989f83670c25b478b15af91ae974b3b896602b3b01c4510a0d8e5`. It was recorded after the last change to this package's source and manifest, so the recorded generation matches this source. The package README does not mention an audit. The package pins `miso_party` at [`b16e0598`](https://github.com/misofm/party-protocol/tree/b16e05982844453b286937cc085d573a92d7cea4). The 18 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+At commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_group/Published.toml) records a mainnet publication at `0xce13403dddb989f83670c25b478b15af91ae974b3b896602b3b01c4510a0d8e5`. Recorded after the last source and manifest change, so it matches this source. The README mentions no audit. The package pins `miso_party` at [`b16e0598`](https://github.com/misofm/party-protocol/tree/b16e05982844453b286937cc085d573a92d7cea4). The 18 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
 Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_group) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_group/LICENSE.md). Core Party remains Apache-2.0. The docs' Apache license does not relicense the excerpts.
 

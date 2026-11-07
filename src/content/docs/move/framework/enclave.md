@@ -1,15 +1,15 @@
 ---
 title: Enclave
-description: Trust one AWS Nitro enclave image per App, let anyone register its keys from attestation documents, and verify enclave-signed intent messages on-chain.
+description: One trusted AWS Nitro enclave image per App, with attestation-based key registration and on-chain signature checks.
 ---
 
-This page is for developers who build a Move package that trusts output signed by an AWS Nitro enclave, operate that package's enclave policy, or register enclaves under it. It explains how `enclave` states which enclave image an App trusts, how anyone registers a running enclave's key from its attestation document, how a signature is checked, how a PCR change retires every old key at once, and what the library deliberately does not check.
+Trust output signed by an AWS Nitro enclave. `enclave` records which image an App trusts, lets anyone register a running enclave's key from its attestation document, verifies signatures, and retires every old key when the PCRs change.
 
-`enclave` is a library. It is the on-chain half of [nautilus-rust](https://github.com/unconfirmedlabs/nautilus-rust) and works with any [Nautilus](https://github.com/MystenLabs/nautilus) enclave through Sui's native `NitroAttestationDocument`. Unlike the rest of `misofm/framework`, it is licensed under Apache-2.0.
+It is a library, the on-chain half of [nautilus-rust](https://github.com/unconfirmedlabs/nautilus-rust), and works with any [Nautilus](https://github.com/MystenLabs/nautilus) enclave through Sui's native `NitroAttestationDocument`. Unlike the rest of `misofm/framework`, it is Apache-2.0.
 
 ## One Policy per App
 
-The framework's [Audio Verifier](/move/framework/audio-verifier/) is the running example. Its enclave decodes a FLAC file, measures the audio, and signs the facts. Sui cannot rerun that work, so `audio_verifier` must decide which enclave keys it believes. It does that with one `EnclavePolicy<AUDIO_VERIFIER>`, created in its `init`:
+Example: [Audio Verifier](/move/framework/audio-verifier/). Its enclave decodes FLAC, measures the audio, and signs the facts. Sui cannot rerun that, so `audio_verifier` trusts enclave keys through one `EnclavePolicy<AUDIO_VERIFIER>`, created in `init`:
 
 ```move
 public struct EnclavePolicy<phantom App: drop> has key {
@@ -25,7 +25,7 @@ public struct EnclavePolicyAdminCap<phantom App: drop> has key, store {
 public struct Pcrs(vector<u8>, vector<u8>, vector<u8>) has copy, drop, store;
 ```
 
-The policy is the single statement of which image the App trusts: PCR0, PCR1, and PCR2 of the image, and a `version` that counts PCR changes. Its type parameter is the App, so each App's keys are separate. The policy has only `key`, so it cannot be wrapped or transferred; `share` is the only way to keep it. The admin cap is `key + store`, so it can move to any custody, such as a multisig.
+The policy holds the trusted image's PCR0, PCR1, PCR2 and a `version` counting PCR changes. The App type parameter keeps each App's keys separate. The policy is `key` only, so it cannot be wrapped or transferred and `share` is the only way to keep it. The admin cap is `key + store` and can move to any custody, such as a multisig.
 
 ```move
 public fun new<App: drop>(
@@ -37,13 +37,13 @@ public fun new<App: drop>(
 }
 ```
 
-`new` requires the App's one-time witness, so it runs once, in the App's `init`, and each App has exactly one policy. The private `create` builds the policy with empty PCRs at version 0, claims the cap as a derived object of the policy, and emits `EnclavePolicyCreatedEvent`. `init` then shares the policy and sends the cap to an address. The [Audio Verifier](/move/framework/audio-verifier/#two-witnesses) sends it to the publisher; the README's example sends it to a fixed admin address instead, and warns that a cap sent to an ephemeral publishing signer is lost, leaving a policy whose PCRs can never be set.
+`new` requires the App's one-time witness, so it runs once, in `init`: one policy per App. The private `create` builds the policy with empty PCRs at version 0, claims the cap as a derived object of the policy, and emits `EnclavePolicyCreatedEvent`. `init` then shares the policy and sends the cap to an address. The [Audio Verifier](/move/framework/audio-verifier/#two-witnesses) sends it to the publisher. The README's example sends it to a fixed admin address and warns that a cap sent to an ephemeral publishing signer is lost, so the PCRs can never be set.
 
-A consuming function must name its own policy type, as `verify_audio` takes `EnclavePolicy<AUDIO_VERIFIER>`. A generic `EnclavePolicy<T>` parameter would accept a key registered for any other App.
+A consuming function must name its own policy type, as `verify_audio` takes `EnclavePolicy<AUDIO_VERIFIER>`. A generic `EnclavePolicy<T>` would accept a key registered for any other App.
 
 ## Setting the PCRs
 
-PCRs are known only after the enclave image is built, which happens after the package is published. The policy therefore starts unset, and nothing can register until the cap holder calls `set_pcrs`:
+PCRs exist only after the image is built, which is after publishing. The policy starts unset, and nothing registers until the cap holder calls `set_pcrs`:
 
 ```move
 public fun set_pcrs<App: drop>(
@@ -71,7 +71,7 @@ public fun set_pcrs<App: drop>(
 }
 ```
 
-`set_pcrs` checks the cap first, then each PCR with this private helper:
+`set_pcrs` checks the cap first, then each PCR:
 
 ```move
 fun assert_valid_pcr(pcr: &vector<u8>) {
@@ -80,11 +80,11 @@ fun assert_valid_pcr(pcr: &vector<u8>) {
 }
 ```
 
-Each PCR must be 48 bytes (`PCR_LENGTH`, a SHA-384 digest) and not all zeros. A Nitro enclave in debug mode reports all-zero PCRs and its memory is readable from the host, so a policy can never admit one. Setting the current PCRs again aborts, so `version` moves only on a real change. Anyone who can reproduce the image build can compare its PCRs with those in `EnclavePolicyPcrsSetEvent`, but nothing on-chain ties the PCRs to a particular source tree; that choice is the cap holder's.
+Each PCR must be 48 bytes (`PCR_LENGTH`, a SHA-384 digest) and not all zeros. A debug-mode Nitro enclave reports all-zero PCRs and its memory is readable from the host, so a policy never admits one. Setting the current PCRs again aborts, so `version` moves only on a real change. Anyone who can reproduce the image build can compare its PCRs with `EnclavePolicyPcrsSetEvent`. Nothing on-chain ties PCRs to a source tree. That choice is the cap holder's.
 
 ### The Admin Cap Is Derived from the Policy
 
-The cap stores no policy ID. `create` claims its UID from the policy with the key `EnclavePolicyAdminCapKey()`, and `set_pcrs` checks the cap by deriving that address again:
+The cap stores no policy ID. `create` claims its UID from the policy with key `EnclavePolicyAdminCapKey()`, and `set_pcrs` re-derives that address to check the cap:
 
 ```move
 public fun derive_admin_cap_address<App: drop>(self: &EnclavePolicy<App>): address {
@@ -98,11 +98,11 @@ fun authorize<App: drop>(self: &EnclavePolicy<App>, cap: &EnclavePolicyAdminCap<
 }
 ```
 
-Each policy has exactly one cap, and because `new` requires the one-time witness, each App has one policy. The derived check still rejects a cap from another policy, such as one created with `new_for_testing` in unit tests. Clients can compute the cap's ID offline with `derive_admin_cap_address` or the SDK's `derivePolicyAdminCapId`.
+Each policy has one cap. The check rejects a cap from another policy, such as one from `new_for_testing`. Compute the ID offline with `derive_admin_cap_address` or the SDK's `derivePolicyAdminCapId`.
 
 ## Registering an Enclave
 
-Registration is permissionless. Anyone holding a valid attestation document whose PCRs match the policy's current PCRs can register the enclave's key:
+Registration is permissionless. Anyone with a valid attestation document whose PCRs match the policy's can register its key:
 
 ```move
 public fun register<App: drop>(self: &mut EnclavePolicy<App>, document: NitroAttestationDocument) {
@@ -113,7 +113,7 @@ public fun register<App: drop>(self: &mut EnclavePolicy<App>, document: NitroAtt
 }
 ```
 
-The document comes from `sui::nitro_attestation::load_nitro_attestation(attestation, clock)`, which verifies the AWS Nitro certificate chain at the clock's time. That function is `entry`, so it is called from the programmable transaction itself, and its result is passed straight to `register`; an App needs no registration wrapper. `load_pk` then checks the PCRs and the key:
+Get the document from `sui::nitro_attestation::load_nitro_attestation(attestation, clock)`, which verifies the AWS Nitro certificate chain at the clock's time. It is `entry`: call it in the programmable transaction and pass its result to `register`. An App needs no wrapper. `load_pk` checks the PCRs and key:
 
 ```move
 fun load_pk<App: drop>(self: &EnclavePolicy<App>, document: &NitroAttestationDocument): vector<u8> {
@@ -124,9 +124,13 @@ fun load_pk<App: drop>(self: &EnclavePolicy<App>, document: &NitroAttestationDoc
 }
 ```
 
-PCRs are matched by index, not by position in the document. While the policy is unset, its empty PCRs never equal a real document's, so `register` aborts with `EInvalidPcrs`. The key must be present and 32 bytes, an Ed25519 public key. `add` stores it as a dynamic field on the policy, `EnclaveKey(pk) -> version`, and aborts if the key is already registered. PCR3 and PCR4 are not checked, so an enclave running the trusted image in any AWS account can register.
+- PCRs match by index, not document position.
+- An unset policy's empty PCRs never equal a real document's, so `register` aborts with `EInvalidPcrs`.
+- The key must be present and 32 bytes, an Ed25519 public key.
+- `add` stores it as a dynamic field on the policy, `EnclaveKey(pk) -> version`, and aborts if the key is already registered.
+- PCR3 and PCR4 are not checked, so an enclave running the trusted image in any AWS account can register.
 
-Routine boots and re-registrations need no cap, so the cap can stay cold.
+Boots and re-registrations need no cap, so it can stay cold.
 
 ## Verifying a Signature
 
@@ -145,7 +149,7 @@ public fun verify_signature<App: drop, Payload: drop>(
 }
 ```
 
-The caller supplies the signer's `pk` and reads the policy by shared, read-only reference. `registered_version` aborts with `EEnclaveNotRegistered` for an unknown key; a key registered under any other version aborts with `EStaleEnclave`. The signed message is the BCS encoding of an `IntentMessage`:
+The caller supplies the signer's `pk` and passes the policy by shared, read-only reference. An unknown key aborts with `EEnclaveNotRegistered` (from `registered_version`). A key registered under another version aborts with `EStaleEnclave`. The signed message is the BCS encoding of an `IntentMessage`:
 
 ```move
 public struct IntentMessage<Payload: drop> has copy, drop {
@@ -155,18 +159,18 @@ public struct IntentMessage<Payload: drop> has copy, drop {
 }
 ```
 
-That is one `intent` byte, `timestamp_ms` as a little-endian `u64`, and the payload's BCS bytes. nautilus-rust's `NautilusContext::sign_intent` signs this layout. The test `intent_message_layout_matches_nautilus_rust` pins the shared vector `0020b1d110960100000d53616e204672616e636973636f0d00000000000000` (intent 0, timestamp 1744038900000, payload `{ location: "San Francisco", temperature: 13 }`). `create_intent_message` is public, so callers can build the same message.
+Layout: one `intent` byte, `timestamp_ms` as a little-endian `u64`, then the payload's BCS bytes. nautilus-rust's `NautilusContext::sign_intent` signs this layout. The test `intent_message_layout_matches_nautilus_rust` pins the shared vector `0020b1d110960100000d53616e204672616e636973636f0d00000000000000` (intent 0, timestamp 1744038900000, payload `{ location: "San Francisco", temperature: 13 }`). `create_intent_message` is public.
 
-- **Domain separation is the `intent` byte.** Give each kind of message its own intent value. `audio_verifier` signs its audio facts under intent 0.
-- **The intent namespace belongs to the image, not the App.** If one image is registered under two policies, its signatures verify under both. Use distinct intents or distinct images per App if that matters.
-- **No replay protection.** A valid signature verifies any number of times. Callers dedupe, for example by timestamp or by a nonce in the payload; `audio_verifier` relies on its `Audio` being created once per set of facts.
-- **No freshness check.** `verify_signature` takes no `Clock`. `timestamp_ms` comes from the enclave's clock, which the host provides, so treat it as the time the enclave claims, not as attested time.
+- **Domain separation is the `intent` byte.** Give each message kind its own value. `audio_verifier` signs audio facts under intent 0.
+- **The intent namespace belongs to the image, not the App.** One image registered under two policies verifies under both. Use distinct intents or images per App if that matters.
+- **No replay protection.** A valid signature verifies any number of times. Callers dedupe, for example by timestamp or a payload nonce. `audio_verifier` relies on its `Audio` being created once per set of facts.
+- **No freshness check.** `verify_signature` takes no `Clock`. `timestamp_ms` comes from the enclave's clock, which the host provides. It is the time the enclave claims, not attested time.
 
 ## Rotation, Stale Keys, and Rollback
 
-A PCR change is the kill switch. Each `set_pcrs` increments `version`, and every key registered under an older version stops verifying at once. Rotating to a new image is one programmable transaction: `set_pcrs` with the new PCRs, then `register` with the new enclave's attestation document.
+A PCR change is the kill switch: each `set_pcrs` increments `version`, and every key registered under an older version stops verifying at once. Rotate in one programmable transaction: `set_pcrs` with the new PCRs, then `register` the new enclave's attestation document.
 
-There is no per-key revoke. Registration is permissionless, so a removed key could simply register again; an enclave key can leak only if the image is broken, and that calls for new PCRs anyway. Stale keys can be deleted by anyone to reclaim storage:
+There is no per-key revoke. Registration is permissionless, so a removed key could re-register, and a key leaks only if the image is broken, which calls for new PCRs anyway. Anyone can delete stale keys to reclaim storage:
 
 ```move
 public fun remove_stale<App: drop>(self: &mut EnclavePolicy<App>, pk: vector<u8>) {
@@ -176,9 +180,9 @@ public fun remove_stale<App: drop>(self: &mut EnclavePolicy<App>, pk: vector<u8>
 }
 ```
 
-`remove` aborts with `EEnclaveNotRegistered` for an unknown key, and a key registered under the current version aborts with `ENotStale`.
+`remove` aborts with `EEnclaveNotRegistered` for an unknown key. A key registered under the current version aborts with `ENotStale`.
 
-A rollback from image A to B and back to A needs no reboot. After setting A's PCRs again, call `remove_stale` for the still-running enclave's key, then `register` it with that enclave's attestation document; it is stored under the new version. The test `rollback_re_registers_the_same_attestation_without_reboot` checks this sequence.
+Rolling back from image A to B and back to A needs no reboot. Set A's PCRs again, call `remove_stale` for the running enclave's key, then `register` it with its attestation document. It is stored under the new version. The test `rollback_re_registers_the_same_attestation_without_reboot` checks this.
 
 ## Deployment Order
 
@@ -187,13 +191,13 @@ A rollback from image A to B and back to A needs no reboot. After setting A's PC
 3. Call `set_pcrs` with the cap.
 4. Boot the enclave and `register` it. Anyone may submit the transaction.
 
-To use the library, depend on it from the framework repository:
+Depend on the library from the framework repository:
 
 ```toml
 enclave = { git = "https://github.com/misofm/framework.git", subdir = "enclave", rev = "ffbc8f0b2852932f879f00130117c5b597ea7db7" }
 ```
 
-For unit tests, `new_for_testing<App>(ctx)` creates a policy and cap without a one-time witness, and `register_for_testing(policy, pk, version)` stores a key directly with the same duplicate and 32-byte checks as `register`, so downstream packages need no real attestation document. Both are `#[test_only]`.
+For unit tests (both `#[test_only]`): `new_for_testing<App>(ctx)` creates a policy and cap without a one-time witness. `register_for_testing(policy, pk, version)` stores a key with the same duplicate and 32-byte checks as `register`, so downstream tests need no attestation document.
 
 ## Views
 
@@ -209,7 +213,7 @@ A key is usable when `registered_version(policy, pk)` equals `version(policy)`.
 
 ## TypeScript SDK
 
-The package's [`sdk/`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/enclave/sdk) directory holds `@misofm/enclave`, a small Apache-2.0 TypeScript module for reading registrations without a Move call:
+[`sdk/`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/enclave/sdk) holds `@misofm/enclave`, a small Apache-2.0 TypeScript module that reads registrations without a Move call:
 
 | Export | What it does |
 | --- | --- |
@@ -219,9 +223,11 @@ The package's [`sdk/`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f
 | `isKeyUsable(client, { policyId, publicKey, packageId, policyVersion })` | Whether the key is registered under `policyVersion`; `false` when the version is `null`. |
 | `EnclaveClient`, `EnclaveKeyRef` | Types. `EnclaveClient` is any Sui client exposing the core `getObjects` API (gRPC, GraphQL, or JSON-RPC). |
 
-`packageId` is always the published `enclave` package that defines the key types, not the App's package. The Sui clients report a missing object like any other per-object error, so `null` means "not readable", not proof that the key is absent; `isKeyUsable` fails closed. The SDK test pins the policy and admin cap IDs that the Move test `admin_cap_address_matches_the_pinned_vector` asserts, so the two derivations cannot drift.
+- `packageId` is always the published `enclave` package that defines the key types, not the App's package.
+- Sui clients report a missing object like any per-object error, so `null` means "not readable", not "key absent". `isKeyUsable` fails closed.
+- The SDK test pins the IDs that the Move test `admin_cap_address_matches_the_pinned_vector` asserts, so the derivations cannot drift.
 
-`package.json` declares `@mysten/sui` `^2.6.0`, `typescript` `^5` as a peer dependency, and `@types/bun` `latest`; the committed `bun.lock` resolves them to 2.6.0, 5.9.3, and 1.3.10. With Bun 1.4.4, `bun install --frozen-lockfile`, `bun run test` (17 tests), and `bun run typecheck` pass locally.
+`package.json` declares `@mysten/sui` `^2.6.0`, `typescript` `^5` (peer), and `@types/bun` `latest`. The committed `bun.lock` resolves them to 2.6.0, 5.9.3, and 1.3.10. With Bun 1.4.4, `bun install --frozen-lockfile`, `bun run test` (17 tests), and `bun run typecheck` pass locally.
 
 ## Failure Cases
 
@@ -242,7 +248,7 @@ The package's [`sdk/`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f
 | 12 | `ENotStale` | `remove_stale` with a key registered under the current version. |
 | 13 | `EInvalidSignature` | `verify_signature` with a signature that does not match `pk` and the intent message. |
 
-An attestation document that fails the AWS certificate chain check never reaches `register`; `load_nitro_attestation` rejects it in the Sui framework.
+A document that fails the AWS certificate chain check never reaches `register`. `load_nitro_attestation` rejects it.
 
 ## Events
 
@@ -253,15 +259,15 @@ An attestation document that fails the AWS certificate chain check never reaches
 | `EnclaveRegisteredEvent<App>` | `policy_id`, `pk`, `version` | `register` |
 | `EnclaveStaleRemovedEvent<App>` | `policy_id`, `pk`, `version` (the key's registered version) | `remove_stale` |
 
-An indexer can rebuild a policy's PCRs, version, and key set from these events. `verify_signature` emits nothing; consuming packages emit their own events, such as `audio_verifier`'s `AudioVerifiedEvent`.
+These events rebuild a policy's PCRs, version, and key set. `verify_signature` emits nothing. Consuming packages emit their own, such as `audio_verifier`'s `AudioVerifiedEvent`.
 
 ## Deployment
 
-`enclave` depends only on the Sui framework. Its [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/enclave/Published.toml) records one generation:
+`enclave` depends only on the Sui framework. [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/enclave/Published.toml) records one generation:
 
-- **Mainnet** `published-at = "0xc8906ad5bebb9c50e786a3246791cdd2e95c304596574a68647c2d48de69afe8"`, from publish transaction `2BFqHWf7cn4Y8rXKw4hCbxLpf4Qh5GvbPboiTkXKMqqY`, recorded after the last change to the package's sources, so it corresponds to the source on this page. The mainnet `audio_verifier` links this generation.
+- **Mainnet** `published-at = "0xc8906ad5bebb9c50e786a3246791cdd2e95c304596574a68647c2d48de69afe8"`, from publish transaction `2BFqHWf7cn4Y8rXKw4hCbxLpf4Qh5GvbPboiTkXKMqqY`, recorded after the last source change, so it matches this source. The mainnet `audio_verifier` links this generation.
 
-It records no testnet generation. The package has no `init`, so its publish created no policy; each App creates its own. The package README's Deployments section still says "Not yet published"; `Published.toml` is the newer record. The README does not state an audit status. The 37 unit tests pass locally with Sui 1.82.2; they use a real Nitro attestation document from Mysten's weather example. The corpus has no document without a public key or a PCR, so `EMissingPublicKey`, `EInvalidPublicKeyLength`, and `EMissingPcr` are tested through test-only wrappers of the private helpers that raise them. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+No testnet generation is recorded. The package has no `init`, so publishing created no policy. Each App creates its own. The README's Deployments section still says "Not yet published". `Published.toml` is newer. The README states no audit status. The 37 unit tests pass locally with Sui 1.82.2 and use a real Nitro attestation document from Mysten's weather example. That corpus has no document lacking a public key or a PCR, so `EMissingPublicKey`, `EInvalidPublicKeyLength`, and `EMissingPcr` are tested through test-only wrappers of the private helpers that raise them. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
 Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/enclave) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [Apache-2.0](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/enclave/LICENSE.md). This package is Apache-2.0, unlike the rest of `misofm/framework`, which is FSL-1.1-ALv2.
 

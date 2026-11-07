@@ -1,31 +1,31 @@
 ---
 title: Miso Music Protocol
-description: A guide to the Miso Music Protocol and its Move packages on Sui.
+description: Developer docs for the Miso Music Protocol and its Sui Move packages.
 sidebar:
   label: Home
 ---
 
 import { LinkButton } from "@/components/ui/link-button";
 
-Understand music identity, ownership, and licensing on Sui.
+Music identity, ownership, and licensing on Sui.
 
 <div class="not-prose flex flex-wrap gap-3 my-6">
   <LinkButton href="/move/music-protocol/" variant="primary" icon>Explore the Protocol</LinkButton>
   <LinkButton href="/move/" variant="secondary">Browse packages</LinkButton>
 </div>
 
-The [Miso Music Protocol](https://github.com/misofm/music-protocol) keeps the core small: a composition identifies a written work, a recording points to a composition, and a release contains an ordered list of recordings. Each work has a fixed-supply share type. Licensing, royalties, credits, titles, artwork, and sales belong to separate packages.
+The [Miso Music Protocol](https://github.com/misofm/music-protocol) core is small. A composition identifies a written work, a recording points to a composition, and a release orders recordings. Each work has a fixed-supply share type. Licensing, royalties, credits, titles, artwork, and sales live in separate packages.
 
 <CardGrid>
   <Card title="Understand the objects" icon="ph:puzzle-piece">
-    Learn the relationships and why the core leaves economic and descriptive rules to extensions. [Read the model](/move/music-protocol/).
+    How the objects relate, and why economic and descriptive rules live in extensions. [Read the model](/move/music-protocol/).
   </Card>
   <Card title="Understand ownership" icon="ph:git-branch">
-    See how each work has its own share type, how administration differs from ownership, and how royalties connect. [Explore composition ownership](/move/music-protocol/composition/#composition-shares).
+    Per-work share types, administration versus ownership, and how royalties connect. [Explore composition ownership](/move/music-protocol/composition/#composition-shares).
   </Card>
   <Card title="Choose a package" icon="ph:database">
-    Find metadata extensions, royalty pools, revenue shares, Records, and other Miso contracts. [Browse the packages overview](/move/).
+    Metadata extensions, royalty pools, revenue shares, Records, and more. [Browse the packages overview](/move/).
   </Card>
 </CardGrid>
 
-These pages describe the current source model as of November 2026. Package source, pinned dependencies, and published on-chain generations can differ. Before building a transaction against a network, use the package IDs and APIs for that deployed generation.
+These pages describe the source model as of November 2026. Source, pinned dependencies, and published on-chain generations can differ. Before building a transaction, use the package IDs and APIs of the deployed generation.

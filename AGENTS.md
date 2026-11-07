@@ -20,6 +20,19 @@ Whenever documentation content changes, update `public/llms.txt` in the same cha
 
 These rules are informed by the task/guide/reference separation and working quickstarts in [Stripe](https://docs.stripe.com/checkout/quickstart) and [Bun](https://bun.com/docs/quickstart), the continuing examples and reference format in [React](https://react.dev/learn/thinking-in-react), and the executable examples in [Rust](https://doc.rust-lang.org/book/ch01-02-hello-world.html).
 
+## Writing Style
+
+Maximum meaning in the fewest words. A reader, human or agent, should extract each fact without reading a paragraph. Reference tones: [Stripe](https://docs.stripe.com/payments/accept-a-payment) and [Effect](https://effect.website/docs).
+
+- Open every page with one or two sentences: what the thing is and why you would use it. No "This page is for..." preamble.
+- Short declarative sentences, second person. Imperative for steps ("Call `authorize` once.").
+- One idea per sentence. Do not restate what a table, list, or code block already shows.
+- Facts go in tables and bullets (limits, functions, errors, events). Show code instead of describing it.
+- Cut hedging and throat-clearing: "Note that", "It is important to", "In other words", "As you can see".
+- Never trade facts for brevity. Every rule, limit, number, abort code, caveat, trust or security warning, and failure case stays. Shorter, never vaguer.
+- No marketing voice, no emoji. Keep frontmatter `description` to one short sentence with no bare `: `.
+- Do not edit source excerpts, pinned SHAs, or license notices when tightening prose.
+
 ## Nimbus
 
 The site is built with Nimbus (`@cloudflare/nimbus-docs`), pinned to an exact version because it is pre-1.0. Upgrade with `npx @cloudflare/nimbus-docs migrate --dry-run --diff`, then `outdated` and `diff <file>` for starter files; keep `nimbus.json` committed and never edit it by hand. The release-matched agent guide is `node_modules/@cloudflare/nimbus-docs/dist/docs-for-agents.md`. Miso keeps its own `public/llms.txt`, `src/pages/llms-full.txt.ts`, and `src/pages/[...slug]/index.md.ts` instead of Nimbus's generated agent routes, so the curated reading order in `src/lib/llms.ts` still governs. Files copied from the Nimbus starter stay MIT-licensed (see `LICENSE-NIMBUS`).

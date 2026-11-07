@@ -1,13 +1,13 @@
 ---
 title: Party Profile
-description: Store a Party's profile card of biographies, country, and languages, replaced as a whole.
+description: Store a Party's profile card (biographies, country, languages), replaced whole.
 ---
 
-This page is for developers who render or edit a [Party](/move/party-protocol/)'s profile page. It explains what the `party_profile` card holds, the limits it enforces, and how to replace or clear it.
+`party_profile` stores one profile card on a [Party](/move/party-protocol/): biographies, country, and languages. Use it to render or edit a Party's profile page.
 
 ## The Profile Card
 
-Suppose Dolly Parton's Party, credited as the writer of "I Will Always Love You", sets a profile with a one-line biography, the country `US`, and the language `en`. The whole card is one value stored on the Party:
+Example: Dolly Parton's Party sets a one-line biography, country `US`, and language `en`. The card is one value on the Party:
 
 ```move
 public struct Profile has drop, store {
@@ -25,15 +25,15 @@ public struct Profile has drop, store {
 | `country` | Optional ISO 3166-1 alpha-2 code, such as `US`. |
 | `languages` | Up to 10 ISO 639-1 codes, such as `en`, with no duplicates. |
 
-Lengths count UTF-8 bytes, so text with multibyte characters reaches them sooner. `CountryCode` and `LanguageCode` come from the pinned `country_code` and `language_code` packages, whose `new` functions abort unless the string is an assigned code, so a stored value is always a real code.
+Lengths count UTF-8 bytes. `CountryCode` and `LanguageCode` come from the pinned `country_code` and `language_code` packages. Their `new` aborts unless the string is an assigned code.
 
-Each Party has at most one card, under `PartyProfileKey()`. The card holds no name, genres, or join date: the name is in [`party_name`](/move/framework/party-name/), genres are in [`party_genre`](/move/framework/party-genre/), and the join date comes from the Party's `PartyCreatedEvent`.
+Each Party has at most one card, under `PartyProfileKey()`. It holds no name, genres, or join date: see [`party_name`](/move/framework/party-name/), [`party_genre`](/move/framework/party-genre/), and the Party's `PartyCreatedEvent`.
 
 ## Replacing the Card
 
-`set_profile(party, cap, bio_short, bio_long, country, languages)` writes the whole card; there are no per-field setters. To change one field, read the current card, change it in the client, and send every field again. Build the codes in the same transaction with `country_code::new` and `language_code::new`.
+`set_profile(party, cap, bio_short, bio_long, country, languages)` writes the whole card. There are no per-field setters: read the card, edit client-side, send every field. Build codes in the same transaction with `country_code::new` and `language_code::new`.
 
-Validation runs before the cap is checked (excerpt; the rest builds the event, checks the cap with `uid_mut`, and writes the card):
+Validation runs before the cap check (excerpt; the rest builds the event, checks the cap with `uid_mut`, and writes):
 
 ```move
 assert!(!bio_short.is_empty(), EEmptyBioShort);
@@ -50,13 +50,13 @@ languages.do_ref!(|language| {
 });
 ```
 
-The new card overwrites any existing one. If it equals the stored card, nothing is written and no event is emitted.
+A new card overwrites the existing one. An equal card writes and emits nothing.
 
-`clear_profile(party, cap)` removes the card and reclaims its storage; it is silent when no card is set. Read the card with `has_profile(party)` and `profile(party)`, which aborts when none is set, then the field accessors `bio_short`, `bio_long`, `country`, and `languages`.
+`clear_profile(party, cap)` removes the card and reclaims its storage; silent when none is set. Read with `has_profile(party)` and `profile(party)` (aborts when none is set), then `bio_short`, `bio_long`, `country`, and `languages`.
 
-Biographies are user-controlled text: sanitize them before rendering. Like a name, a profile is a claim by the Party's administrator, not verified information.
+Biographies are user-controlled text: sanitize before rendering. A profile is the Party administrator's unverified claim.
 
-The published layout of `Profile` will not change. The [Party roadmap](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/ROADMAP.md) plans fields such as pronouns in a separate successor package with an explicit migration.
+The published `Profile` layout will not change. The [Party roadmap](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/ROADMAP.md) plans fields such as pronouns in a separate successor package with an explicit migration.
 
 ## Failure Cases
 
@@ -78,11 +78,11 @@ The published layout of `Profile` will not change. The [Party roadmap](https://g
 | `PartyProfileSetEvent` | `party_id`, `bio_short`, `bio_long`, `country`, `languages`; only when the card changes |
 | `PartyProfileClearedEvent` | `party_id`; only when a card was removed |
 
-The set event carries the whole card, with `country` and `languages` as plain code strings, so an indexer never needs to read the Party.
+The set event carries the whole card, with `country` and `languages` as code strings. Indexers need not read the Party.
 
 ## Deployment
 
-At commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_profile/Published.toml) records a mainnet publication at `0x64ad526937620a110d20884027ff268505c76b3a19910619f3afca1f516d46ca`. It was recorded after the last change to this package's source and manifest, so the recorded mainnet generation matches this source. The testnet entry was recorded earlier, before the package was repinned to the mainnet core, and predates this source. The package README does not mention an audit. The package pins `miso_party` at [`b16e0598`](https://github.com/misofm/party-protocol/tree/b16e05982844453b286937cc085d573a92d7cea4), and `country_code` and `language_code` at exact Git revisions. The 23 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+At commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_profile/Published.toml) records a mainnet publication at `0x64ad526937620a110d20884027ff268505c76b3a19910619f3afca1f516d46ca`, It postdates the last source and manifest change, so it matches this source. The testnet entry predates this source and the repin to the mainnet core. The README mentions no audit. Pins `miso_party` at [`b16e0598`](https://github.com/misofm/party-protocol/tree/b16e05982844453b286937cc085d573a92d7cea4), and `country_code` and `language_code` at exact Git revisions. The 23 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
 Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_profile) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_profile/LICENSE.md). Core Party remains Apache-2.0. The docs' Apache license does not relicense the excerpts.
 

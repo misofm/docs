@@ -1,15 +1,15 @@
 ---
 title: Recording Genre
-description: Classify a recording under genres from the shared genre vocabulary, one dynamic field per genre, written by the recording's admin.
+description: Classify a recording under genres from the shared vocabulary, set by its admin.
 ---
 
-This page is for developers who classify recordings by genre or read those classifications for browsing and search. It explains how `recording_genre` stores genre references on a recording, why every genre must come from the [`genre`](/move/framework/genre/) vocabulary, and how this differs from a release's genres.
+`recording_genre` stores genre references on a recording for browsing and search. Every genre must come from the [`genre`](/move/framework/genre/) vocabulary.
 
 ## Genre Belongs to the Recording
 
-Suppose the admin of Whitney Houston's recording of "I Will Always Love You" adds the vocabulary's `POP` and `SOUL` genres, and the admin of Dolly Parton's recording adds `COUNTRY`. The two masters share one composition but are classified separately, because genre describes the audio, and only each recording's admin has standing to classify it. One recording can be a track on many releases, and its genres travel with it.
+Whitney Houston's recording of "I Will Always Love You" adds `POP` and `SOUL`; Dolly Parton's adds `COUNTRY`. The masters share a composition but are classified separately by their own admins. A recording's genres travel with it across every release.
 
-A release such as *The Bodyguard* soundtrack can carry its own product-level genres through [`release_genre`](/move/framework/release-genre/). A compilation can be classified as a product even when its tracks are classified differently. The package README recommends that a client resolving a track's genre read the recording's genres first and fall back to the release's only when the recording has none.
+A release such as *The Bodyguard* soundtrack can carry product-level genres through [`release_genre`](/move/framework/release-genre/). To resolve a track's genre, read the recording's genres first and fall back to the release's only when it has none (README recommendation).
 
 ## Storage
 
@@ -17,11 +17,11 @@ A release such as *The Bodyguard* soundtrack can carry its own product-level gen
 public struct RecordingGenreKey(ID) has copy, drop, store;
 ```
 
-Each genre is one dynamic field on the recording, keyed by the `Genre` object's ID, with the value `true`. There is no on-chain list, ordering, or primary genre. `has_genre(recording, genre_id)` checks one genre; to list them all, list the recording's dynamic fields with the `RecordingGenreKey` key type.
+Each genre is one dynamic field on the recording, keyed by the `Genre` object's ID, with value `true`. No on-chain list, ordering, or primary genre. `has_genre(recording, genre_id)` checks one genre. To list all, list the recording's dynamic fields of key type `RecordingGenreKey`.
 
 ## Adding and Removing Genres
 
-`add_genre` takes the recording's `RecordingAdminCap<RecordingShare>` and the `Genre` object itself:
+`add_genre` takes the `RecordingAdminCap<RecordingShare>` and the `Genre` object:
 
 ```move
 public fun add_genre<RecordingShare>(
@@ -38,15 +38,13 @@ public fun add_genre<RecordingShare>(
 }
 ```
 
-The function shows three rules:
+- **Only vocabulary genres can be added.** The ID comes from a `&Genre`, a frozen object.
+- **Only the recording's admin can write.** Another recording's cap has a different share type, so the transaction is rejected before the call runs.
+- **The event carries the name.** `genre_name` is copied from the `Genre`; indexers need no lookup.
 
-- **Only vocabulary genres can be added.** The ID comes from a `&Genre`, so only an ID that resolves to a real entry in the shared vocabulary can enter the recording. Genres are frozen objects, passed as immutable inputs.
-- **Only the recording's admin can write.** Each share type belongs to exactly one recording, so a cap for another recording has a different type and the transaction is rejected before the call runs.
-- **The event carries the name.** `genre_name` is copied from the `Genre`, so an indexer needs no lookup to display it.
+Anyone can create a missing genre. `genre::new` returns the `Genre` and `genre::freeze_genre` must consume it in the same transaction, so run `add_genre` between them in one programmable transaction. A `Genre` from a different `genre` deployment has a different type and is rejected.
 
-If the genre does not exist yet, anyone can create it. `genre::new` returns the new `Genre`, and `genre::freeze_genre` must consume it in the same transaction, so `add_genre` can run between them in one programmable transaction. A `Genre` from a different `genre` deployment has a different type and is rejected.
-
-`remove_genre(recording, cap, genre_id)` takes only the genre's ID, removes its field, and emits `RecordingGenreRemovedEvent`.
+`remove_genre(recording, cap, genre_id)` takes only the genre ID, removes its field, and emits `RecordingGenreRemovedEvent`.
 
 ## Failure Cases
 
@@ -65,7 +63,7 @@ If the genre does not exist yet, anyone can create it. `genre::new` returns the 
 
 ## Deployment
 
-At commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/recording_genre/Published.toml) records a mainnet generation at `0x390574601f94f3c90d4989ff06ec9bb477ca12556fea7bda440c4b17dd154b1b` and a testnet generation at `0x3d4751aec7ece56e51f82a7d725b6ce47768f36a41beba475e2cca269e7cf732`. The mainnet entry was recorded after the last change to this module, to `genre`, and to the core pin, so it matches this source; the testnet entry predates those changes and is an earlier generation. The package pins `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c) and depends on `genre` by local path, so it accepts only `Genre` objects of the `genre` package it was published against. The README does not say whether the package has been audited. The 5 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+At commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/recording_genre/Published.toml) records a mainnet generation at `0x390574601f94f3c90d4989ff06ec9bb477ca12556fea7bda440c4b17dd154b1b` and a testnet generation at `0x3d4751aec7ece56e51f82a7d725b6ce47768f36a41beba475e2cca269e7cf732`. Mainnet postdates the last change to this module, `genre`, and the core pin, so it matches this source. Testnet predates them. Pins `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c) and depends on `genre` by local path, so it accepts only `Genre` objects of the `genre` package it was published against. The README states no audit status. The 5 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
 Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/recording_genre) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/recording_genre/LICENSE.md). The docs' Apache license does not relicense them.
 

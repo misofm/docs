@@ -1,13 +1,13 @@
 ---
 title: Record
-description: Issue numbered, capped editions of a release as Pressings, and create one numbered Record per sale through authorized Distributors.
+description: Capped, numbered editions of a release (Pressings) and one numbered Record per sale.
 ---
 
-This page is for developers who issue editions of a release, write a Distributor that sells them, or read Records a listener holds. It explains how `record` derives a `Pressing` for each edition of a [Release](/move/music-protocol/release/), how each Pressing numbers and caps its Records, and which packages may create them.
+`record` derives a `Pressing` per edition of a [Release](/move/music-protocol/release/), caps and numbers its Records, and lets only authorized Distributors create them. Use it to sell limited editions, write a Distributor, or read a listener's Records.
 
 ## Editions and Records
 
-Suppose the release admin of *The Bodyguard* soundtrack offers a first edition of 500 Records. That edition is one `Pressing`, derived from the Release. Each sale creates one `Record`, numbered 1 to 500 within the edition. If a second edition follows, it is a separate Pressing with its own cap, and its numbering starts again at 1.
+A first edition of 500 Records of *The Bodyguard* soundtrack is one `Pressing`. Each sale creates one `Record`, numbered 1 to 500. A second edition is a separate Pressing with its own cap, numbered from 1.
 
 ```move
 public struct Pressing has key {
@@ -20,7 +20,7 @@ public struct Pressing has key {
 }
 ```
 
-A Pressing belongs to one release and one `edition`. `supply` counts the Records created so far and `max_supply` is the edition's lifetime cap. `distributors` holds the witness types allowed to create Records, one per sales mechanism. A Pressing has `key` but not `store`, and its module offers no transfer, so it can only be shared with `share`. Unrelated editions are unrelated objects and sell concurrently; sales within one edition serialize on its Pressing.
+`supply` counts Records created. `max_supply` is the lifetime cap. `distributors` holds the witness types allowed to create Records, one per sales mechanism. A Pressing has `key` but not `store` and no transfer, so it can only be shared with `share`. Editions sell concurrently. Sales within one edition serialize on its Pressing.
 
 ```move
 public struct Record has key, store {
@@ -32,11 +32,11 @@ public struct Record has key, store {
 }
 ```
 
-A Record copies its lineage from the Pressing and adds its number. It stores no purchase data: no currency, price, time, buyer, or recipient. The buyer is the sender of the transaction that emitted its `RecordCreatedEvent`, and the current owner is whoever holds it. A Distributor reports sale details such as the currency and price in its own event, as [`record_sale`](/move/framework/record-sale/) does with `RecordSoldEvent<Currency>`.
+A Record copies its lineage from the Pressing and adds its number. It stores no currency, price, time, buyer, or recipient. The buyer is the sender of the transaction that emitted its `RecordCreatedEvent`. The owner is its holder. A Distributor reports sale details in its own event, as [`record_sale`](/move/framework/record-sale/) does with `RecordSoldEvent<Currency>`.
 
-**Access never depends on what was spent.** Gate a feature on a Record's `pressing_id` or `edition`, not on a price. To offer a tier, make it its own Pressing or edition.
+**Access never depends on what was spent.** Gate on a Record's `pressing_id` or `edition`, not a price. Make each tier its own Pressing or edition.
 
-Both objects are derived, so their IDs follow from their parents without a registry:
+IDs derive from parents, with no registry:
 
 ```text
 Release
@@ -44,11 +44,11 @@ Release
     └── RecordKey(number) → Record
 ```
 
-`pressing::derive_address(release, edition)` and `record::derive_address(pressing, number)` compute them. There is no singleton object, table, or package initializer.
+Compute them with `pressing::derive_address(release, edition)` and `record::derive_address(pressing, number)`. There is no singleton, table, or package initializer.
 
 ## Creating an Edition
 
-The release admin creates a Pressing with the Release's `ReleaseAdminCap`:
+The release admin creates a Pressing with the `ReleaseAdminCap`:
 
 ```move
 public fun new(
@@ -90,18 +90,18 @@ public fun new(
 }
 ```
 
-The function shows four rules:
+Rules:
 
-- **The release admin decides.** `release.uid_mut(release_cap)` checks the core cap, and the Pressing is claimed from the Release's UID. A Pressing does not check the release's [Release License](/move/framework/release-license/); a Distributor such as [`record_sale`](/move/framework/record-sale/) does that at sale time.
-- **Editions are sequential.** Edition numbers are `u16` values from 1 through 65,535. Edition `n > 1` requires the claim for edition `n - 1` on the same Release. It does not require the previous edition to have sold out or been shared, so editions 1 and 2 can be created in one transaction.
-- **Each edition exists once.** Claiming an edition twice aborts in `sui::derived_object`.
+- **The release admin decides.** `release.uid_mut(release_cap)` checks the core cap, and the Pressing is claimed from the Release's UID. A Pressing does not check the [Release License](/move/framework/release-license/). A Distributor such as [`record_sale`](/move/framework/record-sale/) does, at sale time.
+- **Editions are sequential.** `u16`, 1 through 65,535. Edition `n > 1` requires the claim for edition `n - 1` on the same Release. The previous edition need not have sold out or been shared, so editions 1 and 2 can be created in one transaction.
+- **Each edition exists once.** Claiming it twice aborts in `sui::derived_object`.
 - **The cap is fixed.** `max_supply` is a positive `u32` with no setter. A different cap needs a new edition.
 
-`new` returns the Pressing unshared with no distributors, alongside a `PressingAdminCap`. The cap is `key, store`, derived from the Pressing at `derive_admin_cap_address`, and gates `authorize_distributor`, `revoke_distributor`, and `uid_mut`, which extensions such as `record_sale`'s price use to store state on the Pressing. The release admin authorizes a Distributor, configures it, and calls `share` in the same transaction.
+`new` returns the unshared Pressing with no distributors, plus a `PressingAdminCap` (`key, store`, derived from the Pressing at `derive_admin_cap_address`). The cap gates `authorize_distributor`, `revoke_distributor`, and `uid_mut`, which extensions such as `record_sale`'s price use to store state on the Pressing. In one transaction, authorize and configure a Distributor, then call `share`.
 
 ## Supply
 
-Every new Record asks the Pressing for the next number. The check, a package-internal function:
+Each new Record takes the next number from the Pressing (package-internal):
 
 ```move
 public(package) fun issue_number<Distributor: drop>(self: &mut Pressing): u32 {
@@ -112,11 +112,11 @@ public(package) fun issue_number<Distributor: drop>(self: &mut Pressing): u32 {
 }
 ```
 
-`max_supply` caps lifetime issuance across every Distributor and currency. A Record's `number` equals the Pressing's `supply` after it is created, so numbers run 1, 2, 3 with no gaps: a creation that aborts rolls back with its transaction and uses no number. Destroying a Record does not lower `supply`, and replacing a Distributor does not reset it.
+`max_supply` caps lifetime issuance across every Distributor and currency. A Record's `number` equals the Pressing's `supply` after creation, so numbers run 1, 2, 3 with no gaps. An aborted creation rolls back and uses no number. Destroying a Record or replacing a Distributor does not lower `supply`.
 
 ## Distributors
 
-A Distributor is a package that decides when and for how much a Record may be created. The Pressing authorizes it by the type of a witness value, and the Distributor passes an instance of that type to `record::new`:
+A Distributor is a package that decides when and for how much a Record is created. The Pressing authorizes it by witness type. The Distributor passes an instance to `record::new`:
 
 ```move
 public fun authorize_distributor<Distributor: drop>(self: &mut Pressing, cap: &PressingAdminCap) {
@@ -128,7 +128,7 @@ public fun authorize_distributor<Distributor: drop>(self: &mut Pressing, cap: &P
 }
 ```
 
-`revoke_distributor` is the mirror image and aborts if the type is not authorized. A Pressing can authorize several Distributors at once. To migrate, authorize the replacement before revoking the old type; the edition keeps its Pressing ID and its numbering.
+`revoke_distributor` mirrors it and aborts if the type is not authorized. A Pressing can authorize several Distributors. To migrate, authorize the replacement, then revoke the old type. The edition keeps its Pressing ID and numbering.
 
 ```move
 public fun new<Distributor: drop>(pressing: &mut Pressing, _: Distributor): Record {
@@ -154,20 +154,20 @@ public fun new<Distributor: drop>(pressing: &mut Pressing, _: Distributor): Reco
 }
 ```
 
-`record::new` is public, so the witness value is the whole authorization. Whoever can construct an authorized `Distributor` can create Records without paying anything. Two consequences for a Distributor's author:
+`record::new` is public, so the witness is the whole authorization: whoever can construct an authorized `Distributor` can create Records without paying. Distributor authors:
 
-- **Keep the witness private.** Construct it only inside the function that has validated the sale, as `record_sale` does. A witness with a public constructor lets anyone create Records.
-- **Make the package immutable before any Pressing authorizes it.** An upgrade could add code that constructs the same witness without the sale checks.
+- **Keep the witness private.** Construct it only inside the function that validated the sale, as `record_sale` does. A public constructor lets anyone create Records.
+- **Make the package immutable before any Pressing authorizes it.** An upgrade could construct the witness without the sale checks.
 
-The Distributor validates payment and sale state; `record` sees no payment and records none. `new` returns the Record rather than transferring it, so the Distributor or the buyer's transaction delivers it, for example as a gift to another address or to a listener's [Player](/move/framework/player/).
+The Distributor validates payment and sale state. `record` sees none. `new` returns the Record untransferred. The Distributor or the buyer's transaction delivers it, for example as a gift or to a listener's [Player](/move/framework/player/).
 
 ## Owning and Extending a Record
 
-`Record` has `key, store`, so its holder uses Sui's own operations: `transfer::public_transfer`, wrapping, sharing, or freezing. This package adds no transfer wrapper and no ownership checks.
+`Record` has `key, store`, so its holder uses Sui's own operations: `transfer::public_transfer`, wrapping, sharing, freezing. This package adds no transfer wrapper or ownership checks.
 
-**An `&Record` is not proof of ownership.** A shared or frozen Record is readable by anyone, so a policy that gates on holding a Record must establish how the Record is owned.
+**An `&Record` is not proof of ownership.** Anyone can read a shared or frozen Record, so a policy that gates on holding one must establish how it is owned.
 
-`uid_mut(record)` is open to whoever can pass the Record mutably, so extensions can attach data to it. Sharing a Record makes that access public. Anyone holding a Record can call `destroy`, which deletes it and emits `RecordDestroyedEvent`; detach any extensions first, or their dynamic fields become unreachable.
+`uid_mut(record)` is open to whoever can pass the Record mutably, so extensions can attach data to it. Sharing a Record makes that access public. Any holder can call `destroy`, which deletes it and emits `RecordDestroyedEvent`. Detach extensions first, or their dynamic fields become unreachable.
 
 ## Failure Cases
 
@@ -196,16 +196,20 @@ The Distributor validates payment and sale state; `record` sees no payment and r
 | `RecordCreatedEvent<Distributor>` | `record_id`, `pressing_id`, `release_id`, `edition`, `number` |
 | `RecordDestroyedEvent` | `record_id` |
 
-The Distributor is the event's type parameter, not a payload field. A new Pressing has supply 0 and no distributors, and `number` in each `RecordCreatedEvent` is the Pressing's supply after that Record, so an indexer can rebuild every Pressing and Record from events. `RecordDestroyedEvent` joins to `RecordCreatedEvent` by `record_id` and does not change supply. Sharing emits nothing, and distributor events fire only when the set changes. No `record` event carries a price or currency; read those from the Distributor's own event.
+- The Distributor is the event's type parameter, not a payload field.
+- A new Pressing has supply 0 and no distributors. `RecordCreatedEvent.number` is the supply after that Record. Indexers rebuild every Pressing and Record from events.
+- `RecordDestroyedEvent` joins to `RecordCreatedEvent` by `record_id` and does not change supply.
+- Sharing emits nothing. Distributor events fire only when the set changes.
+- Price and currency come from the Distributor's event, never a `record` event.
 
 ## Deployment
 
-The package's [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/record/Published.toml) records two generations:
+[`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/record/Published.toml) records two generations:
 
-- **Mainnet** `published-at = "0xec8159f9edca64a8788e17e8bddbf54aa4c980bfa23f32bda3589e0212347024"`, recorded after the last change to the package's sources and manifest, so it corresponds to the source on this page.
-- **Testnet** `published-at = "0xf51af0e4a29d764a6880db65d99aaa7d1802774f7be18e7220a05a2d673b4743"`, recorded before later source changes, including the removal of purchase data from `Record`, so it predates this source.
+- **Mainnet** `published-at = "0xec8159f9edca64a8788e17e8bddbf54aa4c980bfa23f32bda3589e0212347024"`, recorded after the last source and manifest change, so it matches this page.
+- **Testnet** `published-at = "0xf51af0e4a29d764a6880db65d99aaa7d1802774f7be18e7220a05a2d673b4743"`, recorded before later source changes, including removing purchase data from `Record`, so it predates this source.
 
-The README makes no statement about an audit. The package pins `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c), so its Pressings derive only from Releases of that core package. A Distributor works only with Pressings of the `record` package it links. The 40 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+The README makes no audit statement. The package pins `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c), so Pressings derive only from Releases of that core. A Distributor works only with Pressings of the `record` package it links. The 40 unit tests pass locally. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
 Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/record) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/record/LICENSE.md). The docs' Apache license does not relicense them.
 

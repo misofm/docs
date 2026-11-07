@@ -1,18 +1,18 @@
 ---
 title: Player Wallet
-description: Take objects, coins, and accumulator funds sent to a Player's address and return them to whoever holds the Player.
+description: Take objects, coins, and accumulator funds sent to a Player's address, by holding the Player.
 ---
 
-This page is for developers who send Records, coins, or payouts to a listener's Player, or who build the wallet side of a listener app. It explains a Player's two inboxes, how `player_wallet` takes assets out of each by holding the Player, how a transfer of the Player moves its inboxes with it, and the one mistake that locks a Player for good.
+`player_wallet` collects what others sent to a Player's address and returns it to the caller. Use it for the wallet side of a listener app.
 
-`player_wallet` is an [Action](/move/framework/#actions-and-plugins) and the [Player](/move/framework/player/) counterpart of [Party Wallet](/move/framework/party-wallet/). The difference is the authority: a Party is shared, so `party_wallet` takes the Party's `PartyAdminCap`; a Player is owned, so `player_wallet` takes `&mut Player`, which only its holder can pass. Each function returns the asset to the caller. The package stores no data and has no installation surface.
+It is an [Action](/move/framework/#actions-and-plugins) and the [Player](/move/framework/player/) counterpart of [Party Wallet](/move/framework/party-wallet/). A Party is shared, so `party_wallet` takes its `PartyAdminCap`. A Player is owned, so `player_wallet` takes `&mut Player`, which only its holder can pass. It stores no data.
 
 ## A Player's Two Inboxes
 
-A Player's object ID is also an address that can receive assets. Suppose a fan buys a Record of *The Bodyguard* soundtrack through [`record_sale`](/move/framework/record-sale/) and the purchase transaction sends the `Record` to the fan's Player address. Later, a friend sends the fan some SUI the same way. Neither can be used where it lands. `player_wallet` lets the Player's holder take both out:
+A Player's object ID is also an address that can receive assets. If a fan's [`record_sale`](/move/framework/record-sale/) purchase of a *The Bodyguard* Record sends the `Record` to the Player address, and a friend later sends SUI the same way, neither is usable where it lands. The holder takes both out:
 
-- **Objects** sent with `transfer::public_transfer` to the Player's address, including Records and `Coin<T>` objects, are received by ticket with `receive` or `receive_balance`.
-- **Funds** sent with `balance::send_funds` to the Player's address accumulate there and are withdrawn by value with `redeem_balance`.
+- **Objects** sent with `transfer::public_transfer`, including Records and `Coin<T>` objects, are received by ticket with `receive` or `receive_balance`.
+- **Funds** sent with `balance::send_funds` accumulate at the address and are withdrawn by value with `redeem_balance`.
 
 ```move
 public fun inbox_address(player: &Player): address {
@@ -20,7 +20,7 @@ public fun inbox_address(player: &Player): address {
 }
 ```
 
-`inbox_address` is the Player's ID as an address. Only objects with `key + store` can be received; an object without `store` sent to a Player's address cannot be recovered through this package.
+Only `key + store` objects can be received. An object without `store` sent to a Player's address is unrecoverable through this package.
 
 ## Receiving Objects
 
@@ -36,7 +36,11 @@ public fun receive<Item: key + store>(
 }
 ```
 
-The function shows the pattern every operation follows. Authorization is the `&mut Player` argument itself: the package performs no check of its own, and the Player's `uid_mut` gives it the `UID` that owns the inbox. The received object is returned, not transferred, so the same programmable transaction decides where it goes. The `Receiving<Item>` ticket names one object currently owned by the Player's address, at its current version.
+Every operation follows this pattern:
+
+- Authorization is the `&mut Player` argument. The package adds no check; `uid_mut` supplies the `UID` that owns the inbox.
+- The asset is returned, not transferred. The transaction decides where it goes.
+- The `Receiving<Item>` ticket names one object currently owned by the Player's address, at its current version.
 
 ## Receiving Coins and Redeeming Funds
 
@@ -64,15 +68,15 @@ public fun redeem_balance<Currency>(player: &mut Player, value: u64): Balance<Cu
 }
 ```
 
-Both return a `Balance<Currency>`, not a `Coin<Currency>`; convert it with `coin::from_balance` in the same transaction, or pass it to another call that takes a balance. The coin and funds mechanics come from [`hikida`](https://github.com/unconfirmedlabs/hikida/tree/e245b09f5cee183500c1878d8b34d7bf1b85e20d), the same paths `party_wallet` uses.
+Both return a `Balance<Currency>`. Convert it with `coin::from_balance` or pass it to a call that takes a balance. Mechanics come from [`hikida`](https://github.com/unconfirmedlabs/hikida/tree/e245b09f5cee183500c1878d8b34d7bf1b85e20d), the same paths `party_wallet` uses.
 
-Redeeming more than the Player's address holds fails in Sui's accumulator on a network. The Move unit-test VM runs the credit and redemption paths but does not enforce that limit, and its `AccumulatorRoot` snapshot stays at zero; the test `funded_accumulator_snapshot_documents_zero_vm_result` records that. `player_wallet` has no validator test of its own. Its README relies on the [`party_wallet` localnet test](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/e2e), which exercises the same `hikida::redeem_balance` path against a real validator.
+Over-redeeming fails in Sui's accumulator on a network. The Move unit-test VM runs the credit and redemption paths but does not enforce the limit, and its `AccumulatorRoot` snapshot stays at zero (test `funded_accumulator_snapshot_documents_zero_vm_result`). `player_wallet` has no validator test. Its README relies on the [`party_wallet` localnet test](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/e2e), which exercises the same `hikida::redeem_balance` path on a real validator.
 
-A redemption also produces the accumulator's own withdrawal effect. Indexers that read both that effect and `PlayerFundsRedeemedEvent` must not count one redemption twice.
+A redemption also produces the accumulator's own withdrawal effect. If you index that effect and `PlayerFundsRedeemedEvent`, do not count one redemption twice.
 
 ## Composing in One Transaction
 
-Because each operation returns its asset, a caller combines it with other calls in one programmable transaction. The package tests show the merge case (excerpt from the tests; `wallet` is `player_wallet`, and `ticket` builds a `Receiving` for a coin sent to the Player):
+Each operation returns its asset, so combine it with other calls in one programmable transaction. The tests show the merge case (excerpt; `wallet` is `player_wallet`, `ticket` builds a `Receiving` for a coin sent to the Player):
 
 ```move
 let mut player = scenario.take_from_sender<Player>();
@@ -83,13 +87,13 @@ let received = wallet::receive_balance<SUI>(
 assert_eq!(received.value(), 1_000);
 ```
 
-In a real transaction, the balance would go on to `coin::from_balance` and a transfer, or into another package's call, before the transaction ends.
+Before the transaction ends, send the balance through `coin::from_balance` and a transfer, or into another package's call.
 
-The package deliberately has no recipient parameters, internal transfers, coin-returning wrappers, batch helpers, or `entry` functions. Those choices belong to the caller's transaction.
+The package has no recipient parameters, internal transfers, coin-returning wrappers, batch helpers, or `entry` functions. The caller's transaction decides.
 
 ## The Inbox Moves with the Player
 
-A [Player](/move/framework/player/#ownership-and-transfer) has `store` and can change hands. Its address is its object ID, so the inbox goes with it: whoever holds the Player can receive what was sent to it, including items sent before they got it. The package tests check this (excerpt from the tests; the coin was sent to the Player's address before the transfer):
+A [Player](/move/framework/player/#ownership-and-transfer) has `store` and can change hands. Its address is its object ID, so the inbox goes with it. Whoever holds the Player can receive what was sent to it, including items sent before they got it. The tests check this (excerpt; the coin was sent before the transfer):
 
 ```move
 let player = scenario.take_from_sender<Player>();
@@ -104,7 +108,7 @@ Before transferring or selling a Player, take out anything that should stay with
 
 ## Never Send a Player to Its Own Address
 
-Receiving anything from a Player's address requires `&mut` access to that Player. If the Player itself is sent to its own `inbox_address`, receiving it back would require the Player it is trying to receive, so it is locked there permanently along with everything it holds. Before transferring a Player, check that the recipient is not its own `inbox_address`.
+Receiving from a Player's address requires `&mut` access to that Player. Sent to its own `inbox_address`, the Player cannot be received back without itself, so it is locked there permanently with everything it holds. Before transferring a Player, check that the recipient is not its own `inbox_address`.
 
 ## Failure Cases
 
@@ -112,7 +116,7 @@ Receiving anything from a Player's address requires `&mut` access to that Player
 | --- | --- |
 | `receive_balance` with an empty vector | Aborts with `EEmptyCoins` (0). |
 | `redeem_balance` with a `value` of 0 | Aborts with `EZeroValue` (1). |
-| A receiving ticket for an object not owned by the Player's address, or at a stale version | The transaction fails in Sui's native receive; there is no package abort code. |
+| A receiving ticket for an object not owned by the Player's address, or at a stale version | Fails in Sui's native receive; no package abort code. |
 | Redeeming more than the Player's address holds | Fails in Sui's accumulator on a network. |
 | An object without `store` sent to the Player's address | Cannot be received through this package. |
 | A Player sent to its own address | Locked permanently with everything it holds. |
@@ -127,15 +131,15 @@ There is no wrong-authority case: a caller who does not hold the Player cannot p
 | `PlayerCoinsReceivedEvent<Currency>` | `player_id`, `value` (the merged total), `coins` (the number of coins received) |
 | `PlayerFundsRedeemedEvent<Currency>` | `player_id`, `value` |
 
-The events carry no list of coin IDs; the transaction's inputs and effects record which coins were received.
+Events carry no coin IDs. The transaction's inputs and effects record them.
 
 ## Deployment
 
 `player_wallet` depends on [`player`](/move/framework/player/) by local path and pins `hikida` at `e245b09f`. Its [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/player_wallet/Published.toml) records one generation:
 
-- **Mainnet** `published-at = "0xca2ef929d600602e2a274171c840efa15e87b6d89b284d290bbcf04f5a6d03a7"`, version 1, toolchain 1.82.1, recorded after the package was added and after the last change to `player`, so it corresponds to the source on this page.
+- **Mainnet** `published-at = "0xca2ef929d600602e2a274171c840efa15e87b6d89b284d290bbcf04f5a6d03a7"`, version 1, toolchain 1.82.1. Recorded after the package was added and after the last `player` change, so it matches this source.
 
-There is no Testnet generation. The README does not state an audit status. The 11 unit tests pass locally with Sui 1.82.2. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+No Testnet generation. The README states no audit status. The 11 unit tests pass locally with Sui 1.82.2. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
 Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/player_wallet) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/player_wallet/LICENSE.md). The docs' Apache license does not relicense them.
 

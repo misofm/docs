@@ -1,17 +1,15 @@
 ---
 title: Release
-description: Why recordings are grouped into ordered releases, why anyone can create one, and where recording admins' authorization lives.
+description: An ordered track list of recordings that anyone can create. Authorization lives in release_license.
 ---
 
-This page is for developers who group recordings into singles, EPs, albums, or compilations. It explains what a core release fixes, why creating one needs no permission, and where the recording admins' authorization and the release's revenue splits are recorded.
+A release groups [recordings](/move/music-protocol/recording/) into an ordered track list: a single, EP, album, or compilation. One recording can appear on many releases. A release groups a catalog for distribution and creates no new class of rights.
 
-A release groups [recordings](/move/music-protocol/recording/) into an ordered track list. The same recording may appear on several releases. A release establishes a catalog and distribution grouping; it does not create another class of composition or master rights.
-
-In the [overview's example](/move/music-protocol/), *The Bodyguard* soundtrack is one release that includes Whitney Houston's recording of "I Will Always Love You". A later compilation can include the same master. Each release has its own identity, while the recording and its link to the composition stay the same.
+In the [overview's example](/move/music-protocol/), *The Bodyguard* soundtrack is one release containing Whitney Houston's recording of "I Will Always Love You". A later compilation can include the same master. Each release has its own identity. The recording and its composition link stay the same.
 
 ## An Ordered Track List
 
-The complete core object:
+Core object:
 
 ```move
 public struct Release has key {
@@ -20,13 +18,13 @@ public struct Release has key {
 }
 ```
 
-`recording_ids` holds **1 to 255 distinct recording IDs** in track order. Order is part of the release: tracks A then B is a different track list from B then A. The list is fixed once the release is created, and the release refers to existing masters rather than duplicating their audio, shares, or composition links.
+`recording_ids` holds **1 to 255 distinct recording IDs** in track order. A then B differs from B then A. The list is fixed at creation. A release refers to existing masters and never duplicates their audio, shares, or composition links.
 
-A release gets a fresh object ID; it is not derived from its track list. Two releases of the same recordings in the same order are distinct objects, such as an original album and its reissue.
+A release gets a fresh object ID, not one derived from its tracks. Two releases of the same recordings in the same order are distinct objects, such as an album and its reissue.
 
 ## Who Can Create a Release
 
-Each track is a `ReleaseTrack` value, and the only public way to make one takes the recording itself:
+Each track is a `ReleaseTrack`. The only public constructor takes the recording:
 
 ```move
 public fun new_release_track<RecordingShare>(recording: &Recording<RecordingShare>): ReleaseTrack {
@@ -34,9 +32,9 @@ public fun new_release_track<RecordingShare>(recording: &Recording<RecordingShar
 }
 ```
 
-A `ReleaseTrack` can therefore only name a real `Recording` of this package. It needs no admin capability: recordings are shared objects, so any transaction can read one. `ReleaseTrack` has only `drop`, so it cannot be stored or carried into another transaction.
+A `ReleaseTrack` can only name a real `Recording` of this package. It needs no admin capability, because recordings are shared and any transaction can read one. `ReleaseTrack` has only `drop`, so it cannot be stored or carried into another transaction.
 
-The opening checks of `release::new` (excerpt; the rest creates the release and its admin cap and emits `ReleaseCreatedEvent`):
+Opening checks of `release::new` (excerpt; the rest creates the release and its admin cap and emits `ReleaseCreatedEvent`):
 
 ```move
 public fun new(tracks: vector<ReleaseTrack>, ctx: &mut TxContext): (Release, ReleaseAdminCap) {
@@ -48,19 +46,19 @@ public fun new(tracks: vector<ReleaseTrack>, ctx: &mut TxContext): (Release, Rel
     assert!(keys.is_sorted_by!(|a, b| *a < *b), EDuplicateRecording);
 ```
 
-The excerpt shows what core checks: at least one track, at most 255, and no recording twice. Duplicates are found by sorting a copy of the IDs; the stored list keeps the caller's order. Nothing here asks a recording's admin. Anyone can create a release of any recordings, as anyone can compile a playlist.
+Core checks at least one track, at most 255, and no recording twice. Duplicates are found by sorting a copy of the IDs. The stored list keeps the caller's order. Nothing asks a recording's admin. Anyone can create a release of any recordings, like compiling a playlist.
 
 ## Authorization Lives in a Release License
 
-Core leaves permission out on purpose. A release is derived from its recordings, and the Framework's design rule is that anyone may create a derivative while the source grants its terms through a license. The recording admins' authorization therefore lives in the Framework's [`release_license`](/move/framework/release-license/):
+Core omits permission on purpose. A release derives from its recordings, and the Framework rule is that anyone may create a derivative while the source grants terms through a license. Recording admins' authorization lives in [`release_license`](/move/framework/release-license/):
 
 1. The release admin creates the release's license with one revenue split per track.
 2. Each recording admin authorizes that release, with those splits, on their own recording.
 3. Once every track has authorized, the license is permanently `Authorized`. A store such as [`record_sale`](/move/framework/record-sale/) refuses to sell until then.
 
-An on-chain release is not evidence that its recordings' admins approved it. Before distributing or selling a release, check `release_license::is_authorized` or another agreement the recording admins have made.
+An on-chain release is not evidence that its recording admins approved it. Before distributing or selling, check `release_license::is_authorized` or another agreement with the recording admins.
 
-Earlier core generations, such as commit [`3bd54d13`](https://github.com/misofm/music-protocol/tree/3bd54d135058324ce3e326e027eb300e0ceca2d8), required a `ReleaseConsent` from each recording admin and derived the release ID from the track list and a salt. This generation has neither. Published historical generations keep their own behavior.
+Earlier generations, such as commit [`3bd54d13`](https://github.com/misofm/music-protocol/tree/3bd54d135058324ce3e326e027eb300e0ceca2d8), required a `ReleaseConsent` from each recording admin and derived the release ID from the track list and a salt. This generation has neither. Published generations keep their own behavior.
 
 ## Administration
 
@@ -71,9 +69,9 @@ public struct ReleaseAdminCap has key, store {
 }
 ```
 
-`release::new` returns the release with its admin cap, whose ID is derived from the release, so each release has exactly one. `uid_mut(release, cap)` checks `cap.release_id` against the release and aborts with `EUnauthorized` on a mismatch. The cap controls the release's extension surface, and `release_license::new` requires it to create the release's license.
+`release::new` returns the release with its admin cap. The cap's ID derives from the release, so each release has exactly one. `uid_mut(release, cap)` checks `cap.release_id` and aborts with `EUnauthorized` on a mismatch. The cap controls the extension surface, and `release_license::new` requires it.
 
-The `ReleaseAdminCap` grants no administration over the included recordings. A release has no share type and earns nothing itself: [Framework](/move/framework/#how-revenue-moves) packages route release revenue to the recordings and their share holders.
+`ReleaseAdminCap` grants no administration over the included recordings. A release has no share type and earns nothing itself: [Framework](/move/framework/#how-revenue-moves) packages route release revenue to recordings and their share holders.
 
 `Release` has only `key`, so the creating transaction must call `release.share()`, which takes no cap and emits nothing.
 
@@ -92,11 +90,11 @@ The `ReleaseAdminCap` grants no administration over the included recordings. A r
 | --- | --- |
 | `ReleaseCreatedEvent` | `release_id`, `release_admin_cap_id`, `recording_ids` in track order; emitted by `new` |
 
-Readers can follow each recording ID to its composition. Authorization and splits come from `release_license` events.
+Follow each recording ID to its composition. Authorization and splits come from `release_license` events.
 
 ## Fixed Relationships, Extensible Presentation
 
-Titles, artwork, credits, and other presentation data belong to [extensions](/move/framework/#release-extensions). They are managed around the fixed track list without expanding the core release model.
+Titles, artwork, credits, and other presentation data live in [extensions](/move/framework/#release-extensions), managed around the fixed track list.
 
 Contract excerpts © Miso Labs, Inc., licensed under [Apache-2.0](https://github.com/misofm/music-protocol/blob/bc547c79a2d3a6db6543ba7b12260ce70b93731c/LICENSE).
 

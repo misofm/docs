@@ -1,18 +1,16 @@
 ---
 title: Party Wallet
-description: Take objects, coins, and accumulator funds sent to a Party's address and return them to the holder of the Party's admin capability.
+description: Take objects, coins, and accumulator funds sent to a Party's address, using the Party's admin capability.
 ---
 
-This page is for developers who send assets or payouts to a Party, or who administer a Party that has received them. It explains the Party's two inboxes, how `party_wallet` takes assets out of each with the `PartyAdminCap`, how to compose it with other calls or a [Vault](/move/framework/vault/), and why the package has deliberately no plugin.
-
-`party_wallet` is an [Action](/move/framework/#actions-and-plugins): each function accepts the raw capability and returns the asset to the caller. It stores no data.
+`party_wallet` collects what others sent to a Party's address, using the `PartyAdminCap`, and returns it to the caller. It is an [Action](/move/framework/#actions-and-plugins): it takes the raw capability, stores no data, and composes with other calls or a [Vault](/move/framework/vault/).
 
 ## A Party's Two Inboxes
 
-A [Party](/move/party-protocol/) is a shared object, and its object ID is also an address that can receive assets. Suppose Whitney Houston's Party is named as the recipient of a [royalty grant](/move/framework/royalty-grant/). The grant transfers its `RoyaltyGrantRecipientCap` to the Party's address as an object, and every sweep sends the recipient's royalties to the same address as accumulator funds. Neither can be used where it lands. `party_wallet` lets the holder of the Party's `PartyAdminCap` take both out:
+A [Party](/move/party-protocol/) is a shared object whose ID is also an address that can receive assets. If Whitney Houston's Party is the recipient of a [royalty grant](/move/framework/royalty-grant/), the grant sends it a `RoyaltyGrantRecipientCap` as an object and every sweep sends royalties as accumulator funds. Neither is usable where it lands. The `PartyAdminCap` holder takes both out:
 
-- **Objects** sent with `transfer::public_transfer` to the Party's address, including `Coin<T>` objects, are received by ticket with `receive` or `receive_balance`.
-- **Funds** sent with `balance::send_funds` to the Party's address accumulate there and are withdrawn by value with `redeem_balance`.
+- **Objects** sent with `transfer::public_transfer`, including `Coin<T>` objects, are received by ticket with `receive` or `receive_balance`.
+- **Funds** sent with `balance::send_funds` accumulate at the address and are withdrawn by value with `redeem_balance`.
 
 ```move
 public fun inbox_address(party: &Party): address {
@@ -20,7 +18,7 @@ public fun inbox_address(party: &Party): address {
 }
 ```
 
-`inbox_address` is the Party's ID as an address. Only objects with `key + store` can be received; an object without `store` sent to a Party's address cannot be recovered through this package.
+Only `key + store` objects can be received. An object without `store` sent to a Party's address is unrecoverable through this package.
 
 ## Receiving Objects
 
@@ -37,7 +35,11 @@ public fun receive<Item: key + store>(
 }
 ```
 
-The function shows the pattern every operation follows. Authorization is the core Party's `uid_mut(cap)`, which aborts unless the cap belongs to this Party; `party_wallet` adds no check of its own. The received object is returned, not transferred, so the same programmable transaction decides where it goes. The `Receiving<Item>` ticket names one object currently owned by the Party's address, at its current version.
+Every operation follows this pattern:
+
+- Authorization is the core `uid_mut(cap)`, which aborts unless the cap belongs to this Party. `party_wallet` adds no check.
+- The asset is returned, not transferred. The transaction decides where it goes.
+- The `Receiving<Item>` ticket names one object currently owned by the Party's address, at its current version.
 
 ## Receiving Coins and Redeeming Funds
 
@@ -71,15 +73,15 @@ public fun redeem_balance<Currency>(
 }
 ```
 
-Both return a `Balance<Currency>`, not a `Coin<Currency>`; convert it with `coin::from_balance` in the same transaction, or pass it to another call that takes a balance. Zero-value coins are accepted and counted. The coin and funds mechanics come from [`hikida`](https://github.com/unconfirmedlabs/hikida/tree/e245b09f5cee183500c1878d8b34d7bf1b85e20d).
+Both return a `Balance<Currency>`. Convert it with `coin::from_balance` or pass it to a call that takes a balance. Zero-value coins are accepted and counted. Mechanics come from [`hikida`](https://github.com/unconfirmedlabs/hikida/tree/e245b09f5cee183500c1878d8b34d7bf1b85e20d).
 
-Redeeming more than the Party's address holds fails in Sui's accumulator on a network. The Move unit-test VM does not enforce that limit, so the package's [`e2e` localnet test](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/e2e) checks it against a real validator: it funds a Party with 500 MIST, confirms that redeeming 501 fails with no event or asset, and then redeems exactly 500.
+Over-redeeming fails in Sui's accumulator on a network. The Move unit-test VM does not enforce the limit. The [`e2e` localnet test](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/e2e) checks it on a real validator: fund a Party with 500 MIST, confirm redeeming 501 fails with no event or asset, then redeem exactly 500.
 
-A redemption also produces the accumulator's own withdrawal effect. Indexers that read both that effect and `PartyFundsRedeemedEvent` must not count one redemption twice.
+A redemption also produces the accumulator's own withdrawal effect. If you index that effect and `PartyFundsRedeemedEvent`, do not count one redemption twice.
 
 ## Composing in One Transaction
 
-Because each operation returns its asset, a caller combines it with other calls in one programmable transaction. The cap can be owned directly or borrowed from a [Vault](/move/framework/vault/) for the transaction. The package tests show the Vault case (excerpt from the tests; `action` is `party_wallet`, and `ticket` builds a `Receiving` for a coin sent to the Party):
+Each operation returns its asset, so combine it with other calls in one programmable transaction. The cap can be owned or borrowed from a [Vault](/move/framework/vault/). The tests show the Vault case (excerpt; `action` is `party_wallet`, `ticket` builds a `Receiving` for a coin sent to the Party):
 
 ```move
 let (party_admin_cap, receipt) = vault.borrow_as_admin(&vault_admin_cap);
@@ -93,19 +95,19 @@ assert_eq!(balance::destroy_for_testing(received), 900);
 vault.put_back(party_admin_cap, receipt);
 ```
 
-In a real transaction, the balance would go on to `coin::from_balance` and a transfer, or into another package's call, before the transaction ends. The Party cap must be put back in the same transaction; [Vault](/move/framework/vault/#leases) explains why.
+Before the transaction ends, send the balance through `coin::from_balance` and a transfer, or into another package's call. Put the Party cap back in the same transaction; [Vault](/move/framework/vault/#leases) explains why.
 
-The package deliberately has no recipient parameters, internal transfers, coin-returning wrappers, batch helpers, or `entry` functions. Those choices belong to the caller's transaction.
+The package has no recipient parameters, internal transfers, coin-returning wrappers, batch helpers, or `entry` functions. The caller's transaction decides.
 
 ## Why There Is No Wallet Plugin
 
-A plugin is installed automation that borrows a capability from a Vault and calls an Action without the admin present. That suits operations whose result goes somewhere fixed. Every useful `party_wallet` operation instead returns an object or a `Balance` to whoever calls it. A permissionless plugin wrapping it would hand the Party's assets to any caller, creating a way to extract them rather than a safe crank. The repository therefore has no Party wallet plugin, and `party_wallet` defines no witnesses, installation records, or Vault types. Vault appears only in its tests.
+A plugin borrows a capability from a Vault and calls an Action without the admin present, which suits operations whose result goes somewhere fixed. Every `party_wallet` operation returns an object or `Balance` to the caller, so a permissionless plugin would hand the Party's assets to any caller. The repository has no Party wallet plugin. `party_wallet` defines no witnesses, installation records, or Vault types. Vault appears only in its tests.
 
 ## Never Send the PartyAdminCap to Its Own Party
 
-Each Party has exactly one `PartyAdminCap`, derived from the Party when it is created. Receiving anything from the Party's address requires that cap. If the cap itself is sent to the Party's own address, receiving it back would require the cap it is trying to receive, so it is locked there permanently and the Party can never be administered again. The same lock applies to the `VaultAdminCap` of a Vault holding the Party's cap, unless a plugin authorized on that Vault can borrow the cap.
+Each Party has exactly one `PartyAdminCap`, derived at creation, and receiving anything from the Party's address requires it. Sent to the Party's own address, the cap is locked there permanently (receiving it back requires itself) and the Party can never be administered again. The same lock applies to the `VaultAdminCap` of a Vault holding the Party's cap, unless a plugin authorized on that Vault can borrow the cap.
 
-Before transferring a `PartyAdminCap`, or a `VaultAdminCap` for one, check that the recipient address is not `inbox_address` of the Party it controls.
+Before transferring a `PartyAdminCap`, or a `VaultAdminCap` for one, check that the recipient is not `inbox_address` of the Party it controls.
 
 ## Failure Cases
 
@@ -114,7 +116,7 @@ Before transferring a `PartyAdminCap`, or a `VaultAdminCap` for one, check that 
 | A `PartyAdminCap` for another Party | Every operation aborts in `miso_party::party` with `EUnauthorized` (0). |
 | `receive_balance` with an empty vector | Aborts with `EEmptyCoins` (0), before the cap is checked. |
 | `redeem_balance` with a `value` of 0 | Aborts with `EZeroValue` (1), after the cap is checked. |
-| A receiving ticket for an object not owned by the Party's address, or at a stale version | The transaction fails in Sui's native receive; there is no package abort code. |
+| A receiving ticket for an object not owned by the Party's address, or at a stale version | Fails in Sui's native receive; no package abort code. |
 | Redeeming more than the Party's address holds | Fails in Sui's accumulator on a network. |
 | An object without `store` sent to the Party's address | Cannot be received through this package. |
 
@@ -126,16 +128,16 @@ Before transferring a `PartyAdminCap`, or a `VaultAdminCap` for one, check that 
 | `PartyCoinsReceivedEvent<Currency>` | `party_id`, `value` (the merged total), `coins` (the number of coins received) |
 | `PartyFundsRedeemedEvent<Currency>` | `party_id`, `value` |
 
-The events carry no list of coin IDs; the transaction's inputs and effects record which coins were received.
+Events carry no coin IDs. The transaction's inputs and effects record them.
 
 ## Deployment
 
 `party_wallet` pins `miso_party` at [`b16e0598`](https://github.com/misofm/party-protocol/tree/b16e05982844453b286937cc085d573a92d7cea4) and `hikida` at `e245b09f`, and uses `vault` only in test mode. Its [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/Published.toml) records two generations:
 
-- **Mainnet** `published-at = "0x19555c911bfdfe63b2efa3a942cf11f7b5dfe54c929f38fff754a16a3f51508c"`, recorded after the last change to the package's sources and dependency pins, so it corresponds to the source on this page.
-- **Testnet** `published-at = "0xbd3fbf4a6bb5c5a68f3060188f8ae17039fa8e38802bf8058230cf19812d3f59"`, recorded before later source changes and core re-pins, so it predates this source.
+- **Mainnet** `published-at = "0x19555c911bfdfe63b2efa3a942cf11f7b5dfe54c929f38fff754a16a3f51508c"`. Recorded after the last source and pin change, so it matches this source.
+- **Testnet** `published-at = "0xbd3fbf4a6bb5c5a68f3060188f8ae17039fa8e38802bf8058230cf19812d3f59"`. Recorded before later source changes and core re-pins, so it predates this source.
 
-The README does not state an audit status. The 15 unit tests pass locally; run the `e2e` validator test with Sui 1.79.0 and Bun after changes to the funds paths. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+The README states no audit status. The 15 unit tests pass locally. After changing the funds paths, run the `e2e` validator test with Sui 1.79.0 and Bun. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
 Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/party_wallet/LICENSE.md). The docs' Apache license does not relicense them.
 

@@ -1,13 +1,13 @@
 ---
 title: Royalty Pool
-description: Distribute a payout currency to registered holders of shares in a composition or recording.
+description: Pay a payout currency to registered holders of shares in a composition or recording.
 ---
 
-This page is for developers who route revenue to a work's shareholders. It explains how `royalty_pool` turns a work's fixed-supply shares into a claim on one payout currency, the order in which to set a pool up, and where funds can wait or be lost.
+`royalty_pool` turns a work's fixed-supply shares into a claim on one payout currency. Use it to route revenue to shareholders. Follow the setup order below, or funds can wait or be lost.
 
 ## One Pool per Work and Currency
 
-Whitney Houston's recording of "I Will Always Love You" has its own `RecordingShare` type. To pay its holders in a currency, the recording admin creates the recording's pool for that currency. Every revenue stream for the recording in that currency (sales, streams, merchandise) pays holders through the same pool.
+Whitney Houston's recording of "I Will Always Love You" has its own `RecordingShare` type. Its admin creates one pool per payout currency. Every revenue stream in that currency (sales, streams, merchandise) pays holders through it.
 
 ```move
 public struct RoyaltyPool<phantom Share, phantom Currency> has key {
@@ -20,9 +20,9 @@ public struct RoyaltyPool<phantom Share, phantom Currency> has key {
 }
 ```
 
-`Share` is the work's own share type and `Currency` is the payout currency. The pool keeps a cumulative royalty-per-share index rather than a list of holders, so neither a deposit nor a claim loops over holders. `remainder` holds the scaled amounts not yet folded into the index: each deposit's rounding and the sub-base-unit leftover of each stake that unregisters. A later deposit folds it in, so no deposited value is lost. The pool keeps `balance · PRECISION == Σ(shares · index − debt) + remainder` at all times, with `PRECISION = 10^18`, so it never owes more than it holds.
+`Share` is the work's share type, `Currency` the payout currency. The pool keeps a cumulative royalty-per-share index, not a holder list, so deposit and claim never loop over holders. `remainder` holds scaled amounts not yet in the index: each deposit's rounding and each unregistering stake's sub-base-unit leftover. A later deposit folds it in, so no value is lost. The invariant `balance · PRECISION == Σ(shares · index − debt) + remainder`, with `PRECISION = 10^18`, means the pool never owes more than it holds.
 
-The pool's ID is derived from the work, so each work has at most one canonical pool per currency in this package generation. Creation takes the work and its admin cap:
+The pool's ID derives from the work: at most one canonical pool per work and currency in this package generation. Creation takes the work and its admin cap:
 
 ```move
 public fun new_for_composition<CompositionShare, Currency>(
@@ -33,11 +33,11 @@ public fun new_for_composition<CompositionShare, Currency>(
 }
 ```
 
-`new_for_recording` is the same for a `Recording` and its `RecordingAdminCap`. Passing the work fixes `Share` to that work's share type, and the derivation key is private to the package, so no other package can create a pool at these addresses. Creating a second pool for the same work and currency aborts with `derived_object::EObjectAlreadyExists`. Both return the pool **unshared**.
+`new_for_recording` does the same for a `Recording` and its `RecordingAdminCap`. Passing the work fixes `Share`. The derivation key is private, so no other package can create a pool at these addresses. A second pool for the same work and currency aborts with `derived_object::EObjectAlreadyExists`. Both return the pool **unshared**.
 
 ## Stakes
 
-Shares are ordinary coins and can move freely, so the pool cannot pay holders it does not know about. A holder wraps a positive `Balance<Share>` in a stake and registers that stake with the pool:
+Shares are ordinary coins, so the pool cannot pay holders it does not know. A holder wraps a positive `Balance<Share>` in a stake and registers it:
 
 ```move
 public struct RoyaltyPoolStake<phantom Share> has key, store {
@@ -47,31 +47,31 @@ public struct RoyaltyPoolStake<phantom Share> has key, store {
 }
 ```
 
-`royalty_pool_stake::new(balance, ctx)` creates a stake, and `royalty_pool_stake::destroy` returns the balance once every registration is removed. `registrations` maps each pool ID to that registration's accounting debt, so one stake can register in the pools of several currencies for the same work, but only once in each.
+`royalty_pool_stake::new(balance, ctx)` creates a stake. `royalty_pool_stake::destroy` returns the balance once every registration is removed. `registrations` maps each pool ID to its accounting debt. One stake can register once in each pool of a work, across currencies.
 
-**Only registered stakes earn.** Each deposit is divided among the shares registered when it is folded in. Unregistered shares earn nothing, and their portion goes to the registered stakes, so revenue is never stranded. This applies to every holder, including the composition's stake held by a [recording revenue share](/move/framework/recording-revenue-share/).
+**Only registered stakes earn.** Each deposit splits among the shares registered when it is folded in. Unregistered shares earn nothing. Their portion goes to registered stakes, so revenue is never stranded. This includes the composition's stake held by a [recording revenue share](/move/framework/recording-revenue-share/).
 
 A stake is a bearer claim: anyone with `&mut RoyaltyPoolStake` can claim its royalties. Keep stakes address-owned, or wrap them in a module that gates access, as a [royalty grant](/move/framework/royalty-grant/) does. A shared or carelessly wrapped stake can be drained.
 
 ## Setting Up a Pool
 
-These steps run in one programmable transaction, so no revenue can arrive between them:
+Run these steps in one programmable transaction so no revenue arrives between them:
 
-1. Call `royalty_pool::new_for_recording` or `royalty_pool::new_for_composition` for each payout currency the work will accept.
+1. Call `royalty_pool::new_for_recording` or `royalty_pool::new_for_composition` for each payout currency.
 2. Wrap the work's shares with `royalty_pool_stake::new` and call `royalty_pool::register_stake` for every known holder, including the composition's stake from a recording revenue share.
 3. Call `royalty_pool::share` on each pool.
 4. Send each stake to its holder.
 
-Funds sent to the pool's address before step 3 are settled to the stakes registered at the first settle, not to whoever registers first afterwards. The contracts do not enforce this order; Miso's publishing tools do. Revenue is paid to the canonical address returned by `derive_recording_pool_address<RecordingShare, Currency>(recording)` or `derive_composition_pool_address<CompositionShare, Currency>(composition)`. `derive_release_recording_pool_addresses<Currency>(release)` returns one recording-pool address per track, in track-list order.
+Funds sent to the pool's address before step 3 settle to the stakes registered at the first settle, not to whoever registers afterwards. The contracts do not enforce this order. Miso's publishing tools do. Pay revenue to `derive_recording_pool_address<RecordingShare, Currency>(recording)` or `derive_composition_pool_address<CompositionShare, Currency>(composition)`. `derive_release_recording_pool_addresses<Currency>(release)` returns one recording-pool address per track, in track-list order.
 
 ## Depositing, Settling, and Claiming
 
-Revenue reaches a pool in one of two ways:
+Revenue reaches a pool two ways:
 
-- `deposit(pool, balance)` folds a `Balance<Currency>` in directly. It aborts with `ENoStakedShares` while no shares are registered; a zero deposit is a no-op.
-- Funds sent to the pool's address wait there until someone calls `settle(pool, root, clock)`, passing the system `AccumulatorRoot` at `0xacc` and the `Clock` at `0x6`. `receive_coins` turns `Coin<Currency>` objects sent to the address into funds that a later `settle` can fold in.
+- `deposit(pool, balance)` folds a `Balance<Currency>` in directly. It aborts with `ENoStakedShares` while no shares are registered. A zero deposit is a no-op.
+- Funds sent to the pool's address wait until someone calls `settle(pool, root, clock)` with the system `AccumulatorRoot` at `0xacc` and the `Clock` at `0x6`. `receive_coins` turns `Coin<Currency>` objects sent to the address into funds a later `settle` can fold in.
 
-The start of `settle` (excerpt; the rest folds the redeemed funds into the index and returns their value):
+Start of `settle` (excerpt; the rest folds the redeemed funds into the index and returns their value):
 
 ```move
 public fun settle<Share, Currency>(
@@ -86,9 +86,9 @@ public fun settle<Share, Currency>(
     let funds = hikida::redeem_settled_balance<Currency>(&mut self.id, root);
 ```
 
-`settle` redeems at most once per clock timestamp. A second accumulator withdrawal from the same address in the same consensus commit fails the whole transaction with an abort in `funds_accumulator::reserve_object_funds_for_withdrawal` (code 5) that Move cannot catch, so this guard keeps a frequent settler from breaking other callers' registrations. While no shares are registered, funds stay at the address and go to the stakes registered at the next settle. A funded `settle` needs the network's `enable_object_funds_withdraw` protocol feature.
+`settle` redeems at most once per clock timestamp. A second accumulator withdrawal from the same address in the same consensus commit fails the whole transaction with an uncatchable abort in `funds_accumulator::reserve_object_funds_for_withdrawal` (code 5). The guard stops a frequent settler from breaking other callers' registrations. While no shares are registered, funds stay at the address and go to the stakes registered at the next settle. A funded `settle` needs the `enable_object_funds_withdraw` protocol feature.
 
-`register_stake` and `unregister_stake` settle first, so waiting funds go to the stakes that were registered while they arrived. `claim_royalties(pool, stake)` returns the stake's royalties as a `Balance<Currency>` but does not settle; call `settle` first to include the latest funds. `unregister_stake` returns everything the stake can still claim, so no separate claim is needed before leaving. The stake's sub-base-unit leftover stays in the pool's `remainder` and is paid out by the next deposit.
+`register_stake` and `unregister_stake` settle first, so waiting funds go to the stakes registered when they arrived. `claim_royalties(pool, stake)` returns the stake's royalties as a `Balance<Currency>` without settling. Call `settle` first for the latest funds. `unregister_stake` returns everything the stake can still claim, so no prior claim is needed. Its sub-base-unit leftover stays in `remainder` for the next deposit.
 
 ## Failure Cases
 
@@ -112,20 +112,20 @@ public fun settle<Share, Currency>(
 | `RoyaltyPoolStakeUnregisteredEvent<Currency>` | `pool_id`, `stake_id`, `shares`, `value`, `balance`, `staked_shares` |
 | `RoyaltyPoolStakeCreatedEvent<Share>` / `RoyaltyPoolStakeDestroyedEvent<Share>` | `stake_id`, `shares` |
 
-A positive `settle` emits `RoyaltyDepositedEvent`, including the settle inside a registration change. Claims emit only for positive amounts. The README shows how an indexer rebuilds every pool and stake from these events alone.
+A positive `settle`, including one inside a registration change, emits `RoyaltyDepositedEvent`. Claims emit only for positive amounts. The README shows how an indexer rebuilds every pool and stake from events.
 
 ## What a Pool Does Not Do
 
-Pool accounting does not make sales or streams pay into the pool. A [release license](/move/framework/release-license/), a store such as [`record_sale`](/move/framework/record-sale/), or another payer must send revenue to the canonical address in the pool's currency. Nor does a pool decide who holds shares: the work's creator receives the full supply, and allocation is up to the product.
+A pool does not make revenue arrive. A [release license](/move/framework/release-license/), a store such as [`record_sale`](/move/framework/record-sale/), or another payer must send it to the canonical address in the pool's currency. A pool does not decide who holds shares. The work's creator receives the full supply, and allocation is up to the product.
 
 ## Deployment
 
 `royalty_pool` pins `miso_music` at [`bc547c79`](https://github.com/misofm/music-protocol/tree/bc547c79a2d3a6db6543ba7b12260ce70b93731c) and `hikida` at `e245b09f`. Its [`Published.toml`](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/royalty_pool/Published.toml) records two generations:
 
-- **Mainnet** `published-at = "0x155434bddf7ccc477e3a03676900b49b295a031230b5e19021cfa5b092a8bcbf"`, published in transaction `4NeUGoycGYw5NSBW7G1KPUvxfGs9M5D71HxtLeUwpSWb` after the last change to the package's sources and dependency pins, so it corresponds to the source on this page. It replaced an earlier mainnet entry from before the module rename and the `carry` to `remainder` rename.
-- **Testnet** `published-at = "0xd6d13d85d5748ce6faa6b2670e5b8039aa7bf8894735c9506ec78a578a7f9b31"`, recorded before later source changes, including the rename of the modules to `royalty_pool` and `royalty_pool_stake`, so it predates this source.
+- **Mainnet** `published-at = "0x155434bddf7ccc477e3a03676900b49b295a031230b5e19021cfa5b092a8bcbf"`, published in transaction `4NeUGoycGYw5NSBW7G1KPUvxfGs9M5D71HxtLeUwpSWb` after the last source and dependency-pin change, so it matches this page. It replaced an earlier entry from before the module rename and the `carry` to `remainder` rename.
+- **Testnet** `published-at = "0xd6d13d85d5748ce6faa6b2670e5b8039aa7bf8894735c9506ec78a578a7f9b31"`, recorded before later source changes, including renaming the modules to `royalty_pool` and `royalty_pool_stake`, so it predates this source.
 
-Packages that hold stakes or take pool objects, such as [`recording_revenue_share`](/move/framework/recording-revenue-share/) and [`royalty_grant`](/move/framework/royalty-grant/), work only with pools of the `royalty_pool` package they link. The README does not state an audit status. The 59 unit tests pass locally with Sui 1.82.2; the unit-test VM does not settle accumulator funds, so a funded `settle` and the same-commit guard need a localnet or network test. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
+Packages that hold stakes or take pool objects, such as [`recording_revenue_share`](/move/framework/recording-revenue-share/) and [`royalty_grant`](/move/framework/royalty-grant/), work only with pools of the `royalty_pool` package they link. The README states no audit status. The 59 unit tests pass locally with Sui 1.82.2. The unit-test VM does not settle accumulator funds, so test a funded `settle` and the same-commit guard on localnet or a network. See [Compatibility and Deployments](/move/framework/#compatibility-and-deployments).
 
 Excerpts on this page are from [`misofm/framework`](https://github.com/misofm/framework/tree/ffbc8f0b2852932f879f00130117c5b597ea7db7/royalty_pool) at commit `ffbc8f0b2852932f879f00130117c5b597ea7db7`, © Miso Labs, Inc., licensed under [FSL-1.1-ALv2](https://github.com/misofm/framework/blob/ffbc8f0b2852932f879f00130117c5b597ea7db7/royalty_pool/LICENSE.md). The docs' Apache license does not relicense them.
 

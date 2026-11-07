@@ -1,14 +1,14 @@
 # Miso Music Protocol
 
-> Developer documentation for the Miso Music Protocol, a small set of Sui Move primitives for identifying musical compositions, recordings, and releases and connecting them to optional rights, metadata, and payment packages.
+> Developer docs for the Miso Music Protocol: Sui Move primitives that identify compositions, recordings, and releases and attach optional rights, metadata, and payment packages.
 
-The core Move package is `miso_music`. A `Composition` is the written work, a `Recording` is a particular master with an immutable composition ID, and a `Release` is an ordered list of recording IDs. Each composition and recording has its own fixed-supply share type. Admin capabilities control extension writes and the licenses a work grants; owning shares alone does not grant those powers. Anyone can create a release of shared recordings; the Framework's release license records each recording admin's authorization and the release's revenue splits. The pages describe the core sources recorded as published on Sui mainnet (`miso_music` at bc547c79, `miso_party` at b16e0598).
+The core package is `miso_music`. A `Composition` is the written work. A `Recording` is a master with an immutable composition ID. A `Release` is an ordered list of recording IDs. Each composition and recording has its own fixed-supply share type. Admin capabilities control extension writes and the licenses a work grants. Owning shares grants neither. Anyone can create a release of shared recordings. The Framework's release license records each recording admin's authorization and the release's revenue splits. Pages describe the core sources published on Sui mainnet (`miso_music` at bc547c79, `miso_party` at b16e0598).
 
-Read the music overview first, then the separate Party protocol, Composition, Recording, and Release. Share types are explained within the overview and the composition/recording pages. The Move Packages sidebar groups Party Protocol, Music Protocol, and Framework. Party Protocol contains its overview. Music Protocol covers Composition, Recording, and Release. Framework groups every package in misofm/framework after its overview: Composition, Recording, Release, and Party Extensions, Records and Player, Royalties, Audio, and Libraries, each package on its own page titled with the package name. These pages explain the protocol design with inline excerpts from the actual Move contracts; use the supplemental Move source guide only when inspecting the implementation. Add only the extensions needed for the product. A core object link is not proof of real-world authorship or a license, and holding shares pays nothing by itself: payment depends on a funded royalty pool and registered stakes. Pin compatible source revisions and verify published package IDs before constructing transactions against a network.
+Reading order: music overview, Party protocol, Composition, Recording, Release. Share types are explained in the overview and the composition and recording pages. The sidebar groups Party Protocol, Music Protocol (Composition, Recording, Release), and Framework. Framework puts every `misofm/framework` package on its own page after its overview, in groups: Composition, Recording, Release, and Party Extensions, Records and Player, Royalties, Audio, Libraries. Pages show inline excerpts from the Move contracts. Use the Move source guide only to inspect the implementation. Add only the extensions your product needs. A core object link proves neither authorship nor a license. Holding shares pays nothing without a funded royalty pool and registered stakes. Pin source revisions and verify package IDs before building transactions against a network.
 
 ## Start Here
 
-- [Overview](https://docs.miso.fm/move/music-protocol/index.md): The song/master/release model, industry identifier lookups and access, Music's Shared Ledger, share types and fixed supply, the limits of canonical state, and Miso Link's SuiNS bridge.
+- [Overview](https://docs.miso.fm/move/music-protocol/index.md): Song, master, and release model; industry identifiers; the shared ledger; share types and fixed supply; limits of canonical state; Miso Link's SuiNS bridge.
 
 ## Party Protocol
 
@@ -16,15 +16,15 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 
 ## Music Protocol
 
-- [Composition](https://docs.miso.fm/move/music-protocol/composition/index.md): Why the written work has an identity independent of recordings, its unique share type, fixed supply, allocation and royalty participation, its minimal Move definition, capability-gated extension access, and optional extensions.
-- [Recording](https://docs.miso.fm/move/music-protocol/recording/index.md): Why a master has independent identity and shares, its share-type constants, fixed supply and royalty participation, an immutable composition relationship, its Move object and creation event definitions, its one derived admin cap, and release authorization recorded on the recording by the Framework's release license.
-- [Release](https://docs.miso.fm/move/music-protocol/release/index.md): Ordered track lists of 1-255 distinct recordings with fresh release IDs, ReleaseTrack proofs that let anyone release shared recordings, the opening checks of `release::new`, why recording admins' authorization lives in a release license, release administration, failure cases, events, and the earlier consent-and-salt generation.
+- [Composition](https://docs.miso.fm/move/music-protocol/composition/index.md): The written work's identity independent of recordings; its share type, fixed supply, and royalty participation; its Move definition; capability-gated extension access.
+- [Recording](https://docs.miso.fm/move/music-protocol/recording/index.md): A master's identity and share type; constants, fixed supply, and royalty participation; the immutable composition link; object and creation event; its one derived admin cap; release authorization recorded by the release license.
+- [Release](https://docs.miso.fm/move/music-protocol/release/index.md): Ordered track lists of 1-255 distinct recordings with fresh IDs; ReleaseTrack proofs that let anyone release shared recordings; `release::new` checks; authorization in a release license; administration, failure cases, events; the earlier consent-and-salt generation.
 
 
 ## Packages and Framework
 
-- [Packages Overview](https://docs.miso.fm/move/index.md): How core identities, data-model extensions, and business-logic framework packages fit together; core share validation, identifier resolution, compatibility, and licensing.
-- [Framework](https://docs.miso.fm/move/framework/index.md): The misofm/framework packages: how a release sale reaches recording and composition shareholders, how extensions attach to works and Parties, Actions and plugins, and the packages by sidebar group (composition, recording, release, and Party extensions; Records and the Player; royalties; audio; libraries), core pins, and which recorded deployments match the source. Every Framework package has its own page below, in sidebar order.
+- [Packages Overview](https://docs.miso.fm/move/index.md): How core identities, extensions, and framework packages fit together; share validation, identifier resolution, compatibility, licensing.
+- [Framework](https://docs.miso.fm/move/framework/index.md): The misofm/framework packages: how a release sale reaches shareholders, how extensions attach to works and Parties, Actions and plugins, packages by sidebar group, core pins, and which recorded deployments match the source. Each package has its own page below, in sidebar order.
 - [Composition Credits](https://docs.miso.fm/move/framework/composition-credits/index.md): A VecMap of Credit values keyed by Party ID (at most 50, in insertion order); the six writing roles and the absence of a publisher role; building a credit and adding it in one transaction; the credited Party is not asked; changing a credit by removing and re-adding it; failure cases, events, and deployment.
 - [Composition Lyrics](https://docs.miso.fm/move/framework/composition-lyrics/index.md): Zstd-compressed lyrics keyed by ISO 639-1 language; what is checked on-chain (non-empty, at most 32,768 compressed bytes, valid code) versus not (frame, decompression, UTF-8, actual language); untrusted-decoder guidance; clearing leaves bytes in event history; failure cases, events, and deployment.
 - [Composition Title](https://docs.miso.fm/move/framework/composition-title/index.md): A composition's preferred title under CompositionTitleKey; non-empty and at most 300 bytes, checked before the cap; type-bound cap authorization; silent equal sets and absent clears; title as presentation rather than identity or rights; failure cases, events, and deployment.
@@ -66,11 +66,11 @@ Read the music overview first, then the separate Party protocol, Composition, Re
 
 ## Optional
 
-- [Move Source Guide](https://docs.miso.fm/move/music-protocol/integrating/index.md): Supplemental implementation material: reproduce the pinned core tests, pin the dependency, the recorded mainnet package and registry IDs with their publish transaction, the new/share creation flow for each object, and differences from earlier generations.
+- [Move Source Guide](https://docs.miso.fm/move/music-protocol/integrating/index.md): Run the pinned core tests, pin the dependency, find the mainnet package and registry IDs and publish transaction, follow the new/share creation flow, and see differences from earlier generations.
 
 ## Complete Text and Terms
 
-- [Complete Documentation](https://docs.miso.fm/llms-full.txt): All substantive docs pages in one text file, generated from the same Markdown sources as this site.
+- [Complete Documentation](https://docs.miso.fm/llms-full.txt): All docs pages in one text file, generated from the site's Markdown.
 - [Documentation Licensing](https://docs.miso.fm/licensing/index.md): CC BY 4.0 for original prose and diagrams; Apache 2.0 for independently written examples and site software. Copied or adapted package excerpts retain their source licenses, including FSL-1.1-ALv2 where applicable. Inclusion in the docs does not relicense FSL excerpts; the FSL future Apache grant applies separately to each version after two years.
 
 ## Source Repositories
