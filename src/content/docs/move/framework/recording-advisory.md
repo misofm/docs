@@ -16,7 +16,7 @@ public enum Advisory has copy, drop, store {
 }
 ```
 
-A recording holds at most one `Advisory`, under the `RecordingAdvisoryKey()` dynamic field. An absent field means no advisory is asserted: `has_advisory` returns `false`. A clean edit of an explicit recording is its own Recording, marked `NotExplicit`, with "Clean" as its [version](/move/framework/recording-version/).
+A recording holds at most one `Advisory`, under the `RecordingAdvisoryKey()` dynamic field. An absent field means no advisory is asserted: `has_advisory` returns `false`. A clean edit of an explicit recording is its own Recording, marked `NotExplicit`.
 
 Move enums cannot be constructed or matched outside their module. Build with `explicit()` or `not_explicit()`. Test with `is_explicit` or `is_not_explicit`. In a programmable transaction, call the constructor first and pass its result to `set_advisory`.
 

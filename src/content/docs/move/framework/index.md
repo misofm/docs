@@ -64,7 +64,7 @@ The written work: preferred title, writing credits, lyrics. Several recordings c
 
 ## Recording Extensions
 
-A particular master. A studio version and a live take can carry different labels and credits and refer to the same composition.
+A particular master. A studio version and a live take can carry different credits and refer to the same composition.
 
 | Package | Adds |
 | --- | --- |
@@ -73,7 +73,6 @@ A particular master. A studio version and a live take can carry different labels
 | [`recording_genre`](/move/framework/recording-genre/) | Genres, one dynamic field per genre |
 | [`recording_language`](/move/framework/recording-language/) | Ordered languages, or an explicit instrumental indication |
 | [`recording_master`](/move/framework/recording-master/) | References to canonical verified [`audio`](/move/framework/audio/) masters |
-| [`recording_version`](/move/framework/recording-version/) | Take or version label, such as Live or Radio Edit |
 
 ## Release Extensions
 

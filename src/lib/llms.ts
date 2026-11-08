@@ -17,7 +17,6 @@ export const docIds = [
   'move/framework/recording-genre',
   'move/framework/recording-language',
   'move/framework/recording-master',
-  'move/framework/recording-version',
   'move/framework/release-cover-art',
   'move/framework/release-credits',
   'move/framework/release-description',

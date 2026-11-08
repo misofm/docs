@@ -54,7 +54,6 @@ const nimbusConfig = defineNimbusConfig({
                   { label: "Recording Genre", link: "/move/framework/recording-genre/" },
                   { label: "Recording Language", link: "/move/framework/recording-language/" },
                   { label: "Recording Master", link: "/move/framework/recording-master/" },
-                  { label: "Recording Version", link: "/move/framework/recording-version/" },
                 ],
               },
               {
@@ -155,7 +154,8 @@ export default defineConfig({
     "/move/music-protocol/extensions/recording-genre": "/move/framework/recording-genre/",
     "/move/music-protocol/extensions/recording-language": "/move/framework/recording-language/",
     "/move/music-protocol/extensions/recording-master": "/move/framework/recording-master/",
-    "/move/music-protocol/extensions/recording-version": "/move/framework/recording-version/",
+    "/move/music-protocol/extensions/recording-version": "/move/framework/#recording-extensions",
+    "/move/framework/recording-version": "/move/framework/#recording-extensions",
     "/move/music-protocol/extensions/release-cover-art": "/move/framework/release-cover-art/",
     "/move/music-protocol/extensions/release-credits": "/move/framework/release-credits/",
     "/move/music-protocol/extensions/release-description": "/move/framework/release-description/",

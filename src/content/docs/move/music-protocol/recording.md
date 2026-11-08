@@ -51,7 +51,7 @@ A recording keeps one ID across a single, an album, and a later compilation. Rel
 
 ## Audio and metadata live in extensions
 
-Core holds no audio, artist credits, version name, or license terms. [Extension packages](/move/framework/#recording-extensions) attach them under the recording admin's authority and can evolve without changing identity or the composition link.
+Core holds no audio, artist credits, or license terms. [Extension packages](/move/framework/#recording-extensions) attach them under the recording admin's authority and can evolve without changing identity or the composition link.
 
 `recording::new` emits the recording, admin cap, and composition IDs together, so indexers get the core relationship directly. The creating transaction then calls `recording.share()`, which takes no capability and emits nothing.
 

@@ -67,7 +67,7 @@ The object is canonical for its own core state only. Core holds no complete righ
 | Core object | What it fixes | What it leaves out |
 | --- | --- | --- |
 | [Composition](/move/music-protocol/composition/) | Written-work identity and its unique share type | Title, writers, lyrics, recording commission |
-| [Recording](/move/music-protocol/recording/) | Master identity, its share type, and immutable composition ID | Master audio, artist credits, version name, license terms |
+| [Recording](/move/music-protocol/recording/) | Master identity, its share type, and immutable composition ID | Master audio, artist credits, license terms |
 | [Release](/move/music-protocol/release/) | Identity and ordered, distinct recording IDs | Title, cover art, price, recording admins' authorization, revenue splits |
 
 A recording's composition ID is a **relationship**, not proof of a license. Anyone can create a recording that points to any composition. Apps that need distribution permission must rely on an agreement they recognize. A [recording revenue share](/move/framework/recording-revenue-share/) is a voluntary share of the recording's revenue with its composition, not a copyright license. A release is also only a catalog relationship. Anyone can create one. A [release license](/move/framework/release-license/) records each recording admin's authorization and the release's revenue splits.
